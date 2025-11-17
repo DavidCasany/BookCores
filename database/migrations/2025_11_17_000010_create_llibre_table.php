@@ -9,11 +9,30 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up():void
     {
-        Schema::create('llibre', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('llibres', function (Blueprint $table) {
+            $table->id('id_llibre');
+            $table->string('nom');
+            $table->string('img_portada')->nullable();
+            $table->decimal('preu', 8, 2)->default(0);
+            $table->float('nota_promig')->default(0);
+            $table->string('fitxer_pdf')->nullable();
+
+            
+            $table->foreignId('id_autor')
+                ->constrained(table: 'autors')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            
+            $table->foreignId('id_editorial')
+                ->constrained(table: 'editorials', column: 'id_editorial')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

@@ -11,8 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('resenya', function (Blueprint $table) {
-            $table->id();
+        Schema::create('ressenya', function (Blueprint $table) {
+            $table->id('id_ressenya');
+            $table->text('text');
+            $table->unsignedTinyInteger('puntuacio'); 
+            $table->timestamp('data_publicacio')->useCurrent();
+
+            $table->foreignId('id_usuari')
+                  ->constrained(table: 'users')
+                  ->cascadeOnUpdate()
+                  ->cascadeOnDelete();
+
+
+            $table->foreignId('id_llibre')
+                  ->constrained(table: 'llibres', column: 'id_llibre')
+                  ->cascadeOnUpdate()
+                  ->cascadeOnDelete();
+            
             $table->timestamps();
         });
     }
