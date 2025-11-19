@@ -11,25 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ressenya', function (Blueprint $table) {
-            $table->id('id_ressenya');
-            $table->text('text');
-            $table->unsignedTinyInteger('puntuacio'); 
-            $table->timestamp('data_publicacio')->useCurrent();
-
-            $table->foreignId('id_usuari')
-                  ->constrained(table: 'users')
-                  ->cascadeOnUpdate()
-                  ->cascadeOnDelete();
-
-
-            $table->foreignId('id_llibre')
-                  ->constrained(table: 'llibres', column: 'id_llibre')
-                  ->cascadeOnUpdate()
-                  ->cascadeOnDelete();
-            
-            $table->timestamps();
-        });
+        Schema::create('resenyes', function (Blueprint $table) {
+        $table->id();
+        $table->text('text');
+        $table->integer('puntuacio'); // De l'1 al 5
+        
+        $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+        $table->foreignId('llibre_id')->constrained('llibres')->cascadeOnDelete();
+        
+        $table->timestamps(); // created_at serveix com a data_publicació
+    });
     }
 
     /**
