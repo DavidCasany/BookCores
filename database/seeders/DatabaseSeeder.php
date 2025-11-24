@@ -36,14 +36,15 @@ class DatabaseSeeder extends Seeder
             ['nom' => 'Taylor Otwell', 'biografia' => 'Creador de Laravel.', 'user_id' => 1],
         ]);
 
-        // 4. LLIBRES (Ara inclou nota_promig i ids correctes)
+        // 4. LLIBRES (Ara amb GÈNERE)
         DB::table('llibres')->insert([
             [
                 'id_llibre' => 1,
                 'titol' => 'El Nom del Vent',
+                'genere' => 'Fantasia', // <--- NOU CAMP
                 'descripcio' => 'Kvothe explica la seva història.',
                 'preu' => 20.50,
-                'nota_promig' => 4.9, // Ja no donarà error
+                'nota_promig' => 4.9,
                 'img_portada' => 'vent.jpg',
                 'fitxer_pdf' => 'vent.pdf',
                 'autor_id' => 1, 
@@ -53,6 +54,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id_llibre' => 2,
                 'titol' => 'Laravel Up & Running',
+                'genere' => 'Informàtica', // <--- NOU CAMP
                 'descripcio' => 'Guia completa del framework.',
                 'preu' => 45.00,
                 'nota_promig' => 4.5,
