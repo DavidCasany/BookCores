@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -10,104 +11,92 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. CREAR USUARIS
-        DB::table('users')->insert([
-            'name' => 'Admin Proves',
-            'email' => 'admin@bookcores.com',
-            'password' => Hash::make('password'), 
-            'created_at' => now(),
-            'updated_at' => now(),
+        // 1. USUARIS
+        User::factory()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@bookcores.test',
+            'password' => Hash::make('password'),
         ]);
 
-        // Un altre usuari normal
-        DB::table('users')->insert([
-            'name' => 'Laia Lectora',
-            'email' => 'laia@example.com',
-            'password' => Hash::make('12345678'),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $clientId = User::factory()->create([
+            'name' => 'Client Habitual',
+            'email' => 'client@bookcores.test',
+            'password' => Hash::make('password'),
+        ])->id;
 
-        // 2. CREAR EDITORIALS
+        // 2. EDITORIALS
         DB::table('editorials')->insert([
+            ['nom' => 'Editorial Planeta', 'descripcio' => 'Grup editorial líder.'],
+            ['nom' => 'O’Reilly Media', 'descripcio' => 'Llibres tècnics i d\'informàtica.'],
+        ]);
+
+        // 3. AUTORS
+        DB::table('autors')->insert([
+            ['nom' => 'Patrick Rothfuss', 'biografia' => 'Autor de fantasia èpica.', 'user_id' => null],
+            ['nom' => 'Taylor Otwell', 'biografia' => 'Creador de Laravel.', 'user_id' => 1],
+        ]);
+
+        // 4. LLIBRES (Ara inclou nota_promig i ids correctes)
+        DB::table('llibres')->insert([
             [
-                'nom' => 'Editorial Empúries',
-                'descripcio' => 'Especialitzats en literatura catalana.',
-                'created_at' => now(), 'updated_at' => now()
+                'id_llibre' => 1,
+                'titol' => 'El Nom del Vent',
+                'descripcio' => 'Kvothe explica la seva història.',
+                'preu' => 20.50,
+                'nota_promig' => 4.9, // Ja no donarà error
+                'img_portada' => 'vent.jpg',
+                'fitxer_pdf' => 'vent.pdf',
+                'autor_id' => 1, 
+                'editorial_id' => 1,
+                'created_at' => now(), 'updated_at' => now(),
             ],
             [
-                'nom' => 'Penguin Random House',
-                'descripcio' => 'Grup editorial internacional.',
-                'created_at' => now(), 'updated_at' => now()
+                'id_llibre' => 2,
+                'titol' => 'Laravel Up & Running',
+                'descripcio' => 'Guia completa del framework.',
+                'preu' => 45.00,
+                'nota_promig' => 4.5,
+                'img_portada' => 'laravel.jpg',
+                'fitxer_pdf' => 'laravel.pdf',
+                'autor_id' => 2,
+                'editorial_id' => 2,
+                'created_at' => now(), 'updated_at' => now(),
             ]
         ]);
 
-        // 3. CREAR AUTORS
-        // Autor 1: J.K. Rowling (No vinculat a cap usuari, és un autor famós)
-        DB::table('autors')->insert([
-            'nom' => 'J.K. Rowling',
-            'biografia' => 'Autora britànica coneguda per la saga Harry Potter.',
-            'user_id' => null, 
-            'created_at' => now(),
-            'updated_at' => now(),
+        // 5. RESSENYES
+        DB::table('ressenyes')->insert([
+            [
+                'text' => 'Una obra mestra de la fantasia.',
+                'puntuacio' => 5,
+                'user_id' => $clientId,
+                'llibre_id' => 1,
+                'created_at' => now(), 'updated_at' => now(),
+            ]
         ]);
 
-        // Autor 2: Un autor local que també és usuari (vinculat a l'usuari 2, la Laia)
-        // Suposem que la Laia ha escrit un llibre
-        DB::table('autors')->insert([
-            'nom' => 'Laia Lectora',
-            'biografia' => 'Escriptora novella apassionada pel misteri.',
-            'user_id' => 2, // ID de la Laia
-            'created_at' => now(),
-            'updated_at' => now(),
+        // 6. COMPRA (HEADER)
+        $idCompra = DB::table('compres')->insertGetId([
+            'id_compra' => 1,
+            'total' => 65.50,
+            'user_id' => $clientId,
+            'created_at' => now(), 'updated_at' => now(),
         ]);
 
-        // 4. CREAR LLIBRES
-        // Llibre 1 (Harry Potter)
-        DB::table('llibres')->insert([
-            'titol' => 'Harry Potter i la Pedra Filosofal',
-            'descripcio' => 'El nen que va sobreviure comença la seva màgia.',
-            'preu' => 20.50,
-            'img_portada' => 'https://m.media-amazon.com/images/I/81q77Q39nEL._AC_UF1000,1000_QL80_.jpg', // URL de prova
-            'fitxer_pdf' => 'llibres/harry_potter_demo.pdf', // Ruta simulada
-            'autor_id' => 1, // J.K. Rowling
-            'editorial_id' => 2, // Penguin
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // Llibre 2 (Llibre de la Laia)
-        DB::table('llibres')->insert([
-            'titol' => 'Misteri a Vic',
-            'descripcio' => 'Una història de suspens a la plaça major.',
-            'preu' => 15.00,
-            'img_portada' => null, // Sense foto
-            'fitxer_pdf' => 'llibres/misteri_vic.pdf',
-            'autor_id' => 2, // Laia
-            'editorial_id' => 1, // Empúries
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // 5. CREAR COMPRES
-        // L'usuari 1 (Admin) ha comprat el llibre 1
-        DB::table('compres')->insert([
-            'user_id' => 1,
-            'llibre_id' => 1,
-            'preu_pagat' => 20.50,
-            'created_at' => now(), // Comprat ara mateix
-            'updated_at' => now(),
-        ]);
-
-        // 6. CREAR RESENYES
-        // L'usuari 1 opina sobre el llibre 1
-        DB::table('resenyes')->insert([
-            'text' => 'M\'ha encantat, un clàssic indispensable.',
-            'puntuacio' => 5,
-            'user_id' => 1,
-            'llibre_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+        // 7. COMPRA DETALLS (PIVOT)
+        DB::table('compra_llibre')->insert([
+            [
+                'compra_id' => $idCompra,
+                'llibre_id' => 1,
+                'quantitat' => 1,
+                'preu_unitari' => 20.50,
+            ],
+            [
+                'compra_id' => $idCompra,
+                'llibre_id' => 2,
+                'quantitat' => 1,
+                'preu_unitari' => 45.00,
+            ]
         ]);
     }
 }

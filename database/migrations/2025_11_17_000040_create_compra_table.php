@@ -6,30 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('compra', function (Blueprint $table) {
+        // IMPORTANT: Nom en plural 'compres'
+        Schema::create('compres', function (Blueprint $table) {
             $table->id('id_compra');
             $table->decimal('total', 10, 2);
 
-            // Relació 1-N amb Usuaris (1 usuari fa N compres)
-            $table->foreignId('id_usuari')
-                ->constrained(table: 'users') // Taula 'users' de Laravel
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
+            // He unificat a 'user_id' per ser consistent amb la resta
+            $table->foreignId('user_id')
+                  ->constrained('users')
+                  ->cascadeOnDelete();
 
-            $table->timestamps(); // Desa la data de la comanda
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('compra');
+        Schema::dropIfExists('compres');
     }
 };
