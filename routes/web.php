@@ -2,16 +2,26 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Llibre; 
+use App\Models\Llibre;
 
 Route::get('/', function () {
     
+    // 1. Consulta existent: Els millors valorats (per a la secció de baix)
     $llibresDestacats = Llibre::with('autor')
                         ->orderBy('nota_promig', 'desc')
                         ->take(8)
                         ->get();
+
+    // Ordenem per data de creació descendent i n'agafem, per exemple, 10.
+    $llibresRecents = Llibre::orderBy('created_at', 'desc')
+                        ->take(10)
+                        ->get();
     
-    return view('home', ['llibres' => $llibresDestacats]);
+    // 3. Passem les DUES variables a la vista
+    return view('home', [
+        'llibres' => $llibresDestacats,       // variable llibres millor puntuats
+        'llibresRecents' => $llibresRecents   // variable llibres més nous per al carrucel
+    ]);
 })->name('home');
 
 Route::get('/dashboard', function () {
