@@ -17,7 +17,7 @@
 
     {{-- 
         =================================================================
-        1. CARRUSEL DE FONS (SENSE POPPING - LÒGICA DE CLON)
+        1. CARRUSEL DE FONS (LÒGICA ROBUSTA ARRAY SHIFT/PUSH)
         =================================================================
     --}}
     @php
@@ -39,111 +39,86 @@
     <div class="fixed inset-0 w-full h-screen z-0 bg-slate-900 overflow-hidden"
          x-data="{
             books: {{ $llibresJS }},
-            currentIndex: 0,
-            totalSlides: {{ $llibresJS->count() }},
-            isTransitioning: true,
+            isAnimating: false,
             autoplay: null,
 
-            init() {
-                this.startAutoplay();
-            },
-
             startAutoplay() {
-                if (this.totalSlides > 1) {
-                    this.autoplay = setInterval(() => {
-                        this.next();
-                    }, 5000); 
+                if (this.books.length > 1) {
+                    this.autoplay = setInterval(() => { this.slide(); }, 5000); 
                 }
             },
 
-            stopAutoplay() {
-                if (this.autoplay) {
-                    clearInterval(this.autoplay);
-                    this.autoplay = null;
-                }
-            },
-
-            next() {
-                // 1. Comprovem si estem 'encallats' al clon (per inactivitat de la pestanya)
-                if (this.currentIndex >= this.totalSlides) {
-                    // Reset d'emergència a 0 sense animació
-                    this.isTransitioning = false;
-                    this.currentIndex = 0;
-                    
-                    // Donem temps al navegador (50ms) i llavors movem a l'1 normalment
-                    setTimeout(() => {
-                        this.isTransitioning = true;
-                        this.currentIndex = 1;
-                    }, 50);
-                } else {
-                    // 2. Moviment normal
-                    this.isTransitioning = true;
-                    this.currentIndex++;
-                }
+            slide() {
+                // Activem la classe CSS que mou el contenidor cap a l'esquerra (-100%)
+                this.isAnimating = true;
             },
 
             handleTransitionEnd() {
-                // Quan l'animació acaba, si hem arribat al clon (index == totalSlides)
-                if (this.currentIndex >= this.totalSlides) {
-                    // Desactivem animació
-                    this.isTransitioning = false;
-                    // Saltem instantàniament a l'inici real (0)
-                    this.currentIndex = 0;
-                    
-                    // Reactivem l'animació després d'un momentet, llestos pel següent torn
-                    setTimeout(() => {
-                        this.isTransitioning = true;
-                    }, 50);
-                }
+                // Quan acaba el moviment:
+                if (!this.isAnimating) return;
+                
+                // 1. Treiem l'animació (tornem a translate-0 instantàniament)
+                this.isAnimating = false;
+                
+                // 2. Modifiquem l'array real: el primer passa a ser l'últim
+                const firstBook = this.books.shift();
+                this.books.push(firstBook);
+                
+                // Ara books[0] és el que abans era books[1]. 
+                // Com que hem tornat a posició 0, visualment es veu la mateixa imatge que fa un moment.
+            },
+
+            stopAutoplay() {
+                if (this.autoplay) { clearInterval(this.autoplay); this.autoplay = null; }
+            },
+            
+            init() { 
+                this.startAutoplay(); 
             }
          }"
          x-init="init()">
 
-        <!-- PISTA VISUAL -->
+        <!-- CONTENIDOR LLISCANT -->
+        <!-- Utilitzem -translate-x-full per moure'ns al segon element -->
         <div class="flex h-full w-full will-change-transform"
-             :class="isTransitioning ? 'transition-transform duration-1000 ease-in-out' : 'duration-0'"
-             :style="'transform: translateX(-' + (currentIndex * 100) + '%)'"
-             @transitionend.self="handleTransitionEnd()">
+             :class="isAnimating ? 'transition-transform duration-1000 ease-in-out -translate-x-full' : ''"
+             @transitionend="handleTransitionEnd()">
 
-            <!-- 1. BUCLE DELS LLIBRES REALS -->
-            <template x-for="book in books" :key="book.id">
-                <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
-                    <div class="w-full h-full relative">
-                        <template x-if="book.img">
-                            <div class="contents">
-                                <!-- FONS -->
-                                <div class="absolute inset-0">
-                                    <img :src="book.img" class="w-full h-full object-cover brightness-50">
-                                    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
-                                </div>
-                            </div>
-                        </template>
-                        <!-- Fallback -->
-                        <template x-if="!book.img">
-                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
-                        </template>
-                    </div>
-                </div>
-            </template>
-
-            <!-- 2. EL CLON (Còpia exacta del PRIMER llibre al final) -->
-            <template x-if="books.length > 0">
-                <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
+            <!-- NODE 1: Sempre mostra books[0] -->
+            <!-- Afegit 'min-w-full' per ocupar el 100% -->
+            <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
+                <template x-if="books[0]">
                     <div class="w-full h-full relative">
                         <template x-if="books[0].img">
-                            <div class="contents">
-                                <div class="absolute inset-0">
-                                    <img :src="books[0].img" class="w-full h-full object-cover brightness-50">
-                                    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
-                                </div>
+                            <div class="absolute inset-0">
+                                <img :src="books[0].img" class="w-full h-full object-cover brightness-50">
+                                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
                             </div>
                         </template>
                         <template x-if="!books[0].img">
                             <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
                         </template>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
+
+            <!-- NODE 2: Sempre mostra books[1] (el següent) -->
+            <!-- Això permet fer el slide suau. Si només hi ha 1 llibre, no es mostrarà -->
+            <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
+                <template x-if="books[1]">
+                    <div class="w-full h-full relative">
+                        <template x-if="books[1].img">
+                            <div class="absolute inset-0">
+                                <img :src="books[1].img" class="w-full h-full object-cover brightness-50">
+                                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
+                            </div>
+                        </template>
+                        <template x-if="!books[1].img">
+                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
+                        </template>
+                    </div>
+                </template>
+            </div>
 
         </div>
     </div>
