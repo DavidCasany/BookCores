@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
                 'preu' => 19.95,
                 'nota_promig' => 5.0,
                 'img_portada' => 'drag_negre.jpg',
+                'img_hero' => 'h_drag_negre.jpg',
                 'fitxer_pdf' => 'placeholder.pdf',
                 'autor_id' => 1, // Sandra Martínez Romero
                 'editorial_id' => 1,
@@ -60,6 +61,7 @@ class DatabaseSeeder extends Seeder
                 'preu' => 18.50,
                 'nota_promig' => 4.5,
                 'img_portada' => 'bosc_verd.jpg',
+                'img_hero' => 'h_bosc_verd.jpg',
                 'fitxer_pdf' => 'placeholder.pdf',
                 'autor_id' => 2, // Anaïs F. Gómez
                 'editorial_id' => 1,
@@ -73,6 +75,7 @@ class DatabaseSeeder extends Seeder
                 'preu' => 22.00,
                 'nota_promig' => 4.8,
                 'img_portada' => 'vaixell_blau.jpg',
+                'img_hero' => 'h_vaixell_blau.jpg',
                 'fitxer_pdf' => 'placeholder.pdf',
                 'autor_id' => 3, // Laura P. Martínez
                 'editorial_id' => 2,
