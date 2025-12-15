@@ -8,10 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('llibres', function (Blueprint $table) {
-            // Afegeix la columna després de img_portada
-            $table->string('img_hero')->nullable()->after('img_portada');
-        });
+        // Comprovem si la columna ja existeix per no donar error
+        if (!Schema::hasColumn('llibres', 'img_hero')) {
+            Schema::table('llibres', function (Blueprint $table) {
+                $table->string('img_hero')->nullable()->after('img_portada');
+            });
+        }
     }
 
     public function down(): void
