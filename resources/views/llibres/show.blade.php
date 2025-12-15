@@ -70,16 +70,22 @@
                             {{-- Ombra decorativa --}}
                             <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                             
-                            {{-- Imatge --}}
-                            <img src="{{ asset('storage/' . $llibre->fitxer_portada) }}" 
-                                 alt="{{ $llibre->titol }}" 
-                                 class="relative w-64 md:w-80 h-auto rounded-lg shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] transform transition duration-500 hover:scale-[1.02] hover:rotate-1 z-10 object-cover"
-                                 onerror="this.src='https://placehold.co/400x600?text=Sense+Portada'">
+                            {{-- Imatge CORREGIDA: img/ i img_portada --}}
+                            @if($llibre->img_portada)
+                                <img src="{{ asset('img/' . $llibre->img_portada) }}" 
+                                     alt="{{ $llibre->titol }}" 
+                                     class="relative w-64 md:w-80 h-auto rounded-lg shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] transform transition duration-500 hover:scale-[1.02] hover:rotate-1 z-10 object-cover"
+                                     onerror="this.src='https://placehold.co/400x600?text=Sense+Portada'">
+                            @else
+                                <div class="relative w-64 md:w-80 h-96 bg-slate-200 rounded-lg flex items-center justify-center shadow-lg">
+                                    <span class="text-6xl">📘</span>
+                                </div>
+                            @endif
                             
                             {{-- Etiqueta de nota flotant --}}
                             <div class="absolute -top-4 -right-4 z-20 bg-white px-4 py-2 rounded-full shadow-lg flex items-center gap-1 border border-slate-100">
                                 <span class="text-yellow-500 text-xl">★</span>
-                                <span class="font-bold text-slate-900 text-lg">{{ $llibre->nota_promig ?? '-' }}</span>
+                                <span class="font-bold text-slate-900 text-lg">{{ $llibre->nota_promig ? number_format($llibre->nota_promig, 1) : '-' }}</span>
                             </div>
                         </div>
                     </div>
