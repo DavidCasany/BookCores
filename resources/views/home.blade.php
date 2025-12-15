@@ -17,23 +17,17 @@
 
     {{-- 
         =================================================================
-        1. CARRUSEL DE FONS (FUNCIONAL I RESTAURAT)
+        1. CARRUSEL DE FONS
         =================================================================
     --}}
     @php
-        // Preparem les dades per a Alpine.js amb la nova lògica d'imatges
         $llibresJS = $llibresRecents->map(function($llibre) {
-            
-            // Lògica de selecció d'imatge:
             $imgSrc = null;
-            
-            // Prioritzem img_hero, si no img_portada
             if ($llibre->img_hero) {
                 $imgSrc = asset('img/' . $llibre->img_hero);
             } elseif ($llibre->img_portada) {
                 $imgSrc = asset('img/' . $llibre->img_portada);
             }
-
             return [
                 'id' => $llibre->id_llibre,
                 'titol' => $llibre->titol,
@@ -47,33 +41,19 @@
             books: {{ $llibresJS }},
             isAnimating: false,
             autoplay: null,
-
-            startAutoplay() {
-                if (this.books.length > 1) {
-                    this.autoplay = setInterval(() => { this.slide(); }, 5000); 
-                }
-            },
-
-            slide() {
-                this.isAnimating = true;
-            },
-
+            startAutoplay() { if (this.books.length > 1) this.autoplay = setInterval(() => { this.slide(); }, 5000); },
+            slide() { this.isAnimating = true; },
             handleTransitionEnd() {
                 if (!this.isAnimating) return;
                 this.isAnimating = false;
                 const firstBook = this.books.shift();
                 this.books.push(firstBook);
             },
-
-            stopAutoplay() {
-                if (this.autoplay) { clearInterval(this.autoplay); this.autoplay = null; }
-            },
-            
+            stopAutoplay() { if (this.autoplay) { clearInterval(this.autoplay); this.autoplay = null; } },
             init() { this.startAutoplay(); }
          }"
          x-init="init()">
 
-        <!-- PISTA VISUAL -->
         <div class="flex h-full w-full will-change-transform"
              :class="isAnimating ? 'transition-transform duration-1000 ease-in-out -translate-x-full' : ''"
              @transitionend="handleTransitionEnd()">
@@ -83,28 +63,19 @@
                 <template x-if="books[0]">
                     <div class="w-full h-full relative">
                         <template x-if="books[0].img">
-                            <!-- FONS AMBIENT (RESTAURAT) -->
                             <div class="absolute inset-0">
-                                <!-- La imatge s'estira per omplir tot el fons -->
                                 <img :src="books[0].img" class="w-full h-full object-cover brightness-50 transform scale-105 transition-transform duration-[10s] ease-linear">
-                                <!-- Capa fosca per llegir el text -->
                                 <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
                             </div>
-                            
-                            <!-- IMATGE PRINCIPAL (Flotant) -->
-                            <!-- Aquesta és la imatge nítida i centrada -->
                             <div class="relative z-10 w-full h-full flex items-center justify-center p-8 pb-32">
-                                <img :src="books[0].img" 
-                                     :alt="books[0].titol" 
-                                     class="max-h-[50vh] w-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] rounded-lg transform hover:scale-105 transition duration-700 opacity-100 border border-white/10">
+                                <a :href="'/llibres/' + books[0].id" class="block transition transform hover:scale-105 duration-300">
+                                    <!-- AQUI ESTÀ LA SOLUCIÓ: object-contain + w-auto + mx-auto -->
+                                    <img :src="books[0].img" :alt="books[0].titol" class="mx-auto max-h-[50vh] w-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] rounded-lg">
+                                </a>
                             </div>
                         </template>
-                        
-                        <!-- Fallback si no hi ha foto (Fons gris fosc) -->
                         <template x-if="!books[0].img">
-                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600">
-                                <span class="text-6xl">📘</span>
-                            </div>
+                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
                         </template>
                     </div>
                 </template>
@@ -120,13 +91,13 @@
                                 <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
                             </div>
                             <div class="relative z-10 w-full h-full flex items-center justify-center p-8 pb-32">
-                                <img :src="books[1].img" :alt="books[1].titol" class="max-h-[50vh] w-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] rounded-lg transform hover:scale-105 transition duration-700 opacity-100 border border-white/10">
+                                <a :href="'/llibres/' + books[1].id" class="block transition transform hover:scale-105 duration-300">
+                                    <img :src="books[1].img" :alt="books[1].titol" class="mx-auto max-h-[50vh] w-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] rounded-lg">
+                                </a>
                             </div>
                         </template>
                         <template x-if="!books[1].img">
-                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600">
-                                <span class="text-6xl">📘</span>
-                            </div>
+                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
                         </template>
                     </div>
                 </template>
@@ -135,28 +106,19 @@
         </div>
     </div>
 
-    {{-- 
-        =================================================================
-        2. HEADER + TEXT HERO (FLOTANT)
-        =================================================================
-    --}}
-    
+    {{-- HEADER --}}
     <header class="fixed w-full z-50 transition-all duration-300" 
             :class="window.scrollY > 50 ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200 py-2' : 'bg-transparent py-4'">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
-                <!-- LOGO -->
                 <div class="flex-shrink-0 flex items-center gap-2">
                     <a href="/" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors" :class="window.scrollY > 50 ? 'text-slate-900' : 'text-white'">
                         <svg class="h-8 w-8 drop-shadow-md" viewBox="0 0 24 24" fill="none" :stroke="window.scrollY > 50 ? '#3b82f6' : '#ffffff'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                         </svg>
                         <span class="drop-shadow-md">Book<span :class="window.scrollY > 50 ? 'text-blue-600' : 'text-blue-300'">Cores</span></span>
                     </a>
                 </div>
-
-                <!-- MENÚ -->
                 <div class="flex items-center space-x-6">
                     <form action="{{ route('home') }}" method="GET" class="hidden sm:flex items-center">
                         <select name="lang" onchange="this.form.submit()" class="bg-transparent text-sm font-bold focus:ring-0 border-none cursor-pointer outline-none transition-colors"
@@ -167,24 +129,15 @@
                             <option value="ja" class="text-slate-900" {{ app()->getLocale() == 'ja' ? 'selected' : '' }}>JA</option>
                         </select>
                     </form>
-
                     <div class="hidden sm:block h-6 w-px transition-colors" :class="window.scrollY > 50 ? 'bg-slate-300' : 'bg-white/40'"></div>
-
                     <nav class="flex space-x-4 items-center">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="text-sm font-bold transition-colors" :class="window.scrollY > 50 ? 'text-slate-600 hover:text-blue-900' : 'text-white hover:text-blue-200'">
-                                    {{ __('Dashboard') }}
-                                </a>
+                                <a href="{{ url('/dashboard') }}" class="text-sm font-bold transition-colors" :class="window.scrollY > 50 ? 'text-slate-600 hover:text-blue-900' : 'text-white hover:text-blue-200'">{{ __('Dashboard') }}</a>
                             @else
-                                <a href="{{ route('login') }}" class="text-sm font-bold transition-colors" :class="window.scrollY > 50 ? 'text-slate-600 hover:text-blue-900' : 'text-white hover:text-blue-200'">
-                                    {{ __('Inicia sessió') }}
-                                </a>
+                                <a href="{{ route('login') }}" class="text-sm font-bold transition-colors" :class="window.scrollY > 50 ? 'text-slate-600 hover:text-blue-900' : 'text-white hover:text-blue-200'">{{ __('Inicia sessió') }}</a>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="text-sm font-bold px-5 py-2.5 rounded-full transition shadow-lg"
-                                       :class="window.scrollY > 50 ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-white text-slate-900 hover:bg-blue-50'">
-                                        {{ __('Registra\'t') }}
-                                    </a>
+                                    <a href="{{ route('register') }}" class="text-sm font-bold px-5 py-2.5 rounded-full transition shadow-lg" :class="window.scrollY > 50 ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-white text-slate-900 hover:bg-blue-50'">{{ __('Registra\'t') }}</a>
                                 @endif
                             @endauth
                         @endif
@@ -194,7 +147,7 @@
         </div>
     </header>
 
-    <!-- HERO TEXT -->
+    {{-- HERO TEXT --}}
     <div class="relative z-10 w-full h-screen flex flex-col items-center justify-center pointer-events-none pb-20">
         <div class="text-center px-4 sm:px-6 lg:px-8 pointer-events-auto animate-fade-in-up">
             <h1 class="text-5xl md:text-8xl tracking-tight font-black text-white drop-shadow-2xl mb-8 leading-tight">
@@ -210,7 +163,6 @@
                 </a>
             </div>
         </div>
-        
         <div class="absolute bottom-10 animate-bounce">
             <svg class="w-8 h-8 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
         </div>
@@ -218,7 +170,7 @@
 
     {{-- 
         =================================================================
-        3. CONTINGUT QUE PUJA (NOVETATS)
+        3. CONTINGUT QUE PUJA (NOVETATS - AMB LINKS AL DETALL)
         =================================================================
     --}}
     <main id="novetats" class="relative z-20 bg-slate-50 min-h-screen shadow-[0_-20px_60px_rgba(0,0,0,0.5)] rounded-t-[3rem]">
@@ -238,28 +190,32 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
                 @forelse ($llibres as $llibre)
                     <div class="group relative bg-white border border-slate-100 rounded-3xl p-5 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full">
-                        <div class="aspect-w-2 aspect-h-3 w-full overflow-hidden rounded-2xl bg-slate-100 mb-5 relative shadow-inner group-hover:shadow-md transition">
-                            @if($llibre->img_portada)
-                                <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ $llibre->titol }}" class="object-cover w-full h-72 group-hover:scale-110 transition duration-700 ease-in-out">
-                            @else
-                                <div class="flex items-center justify-center h-72 text-slate-400">
-                                    <span class="text-5xl">📖</span>
-                                </div>
-                            @endif
-                            
-                            <span class="absolute top-3 right-3 bg-white/95 backdrop-blur text-slate-900 text-sm font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
-                                <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                {{ number_format($llibre->nota_promig, 1) }}
-                            </span>
-                        </div>
+                        
+                        {{-- AFEGIT: Link al detall del llibre (Imatge) --}}
+                        <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="block">
+                            <div class="aspect-w-2 aspect-h-3 w-full overflow-hidden rounded-2xl bg-slate-100 mb-5 relative shadow-inner group-hover:shadow-md transition">
+                                @if($llibre->img_portada)
+                                    <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ $llibre->titol }}" class="object-cover w-full h-72 group-hover:scale-110 transition duration-700 ease-in-out">
+                                @else
+                                    <div class="flex items-center justify-center h-72 text-slate-400"><span class="text-5xl">📖</span></div>
+                                @endif
+                                
+                                <span class="absolute top-3 right-3 bg-white/95 backdrop-blur text-slate-900 text-sm font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    {{ number_format($llibre->nota_promig, 1) }}
+                                </span>
+                            </div>
+                        </a>
 
                         <div class="flex flex-col flex-grow">
+                            {{-- AFEGIT: Link al detall del llibre (Títol) --}}
                             <h3 class="text-xl font-bold text-slate-900 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
-                                <a href="#">
+                                <a href="{{ route('llibres.show', $llibre->id_llibre) }}">
                                     <span aria-hidden="true" class="absolute inset-0"></span>
                                     {{ $llibre->titol }}
                                 </a>
                             </h3>
+                            
                             <p class="text-base text-slate-500 mt-2 font-medium">
                                 {{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}
                             </p>
@@ -288,9 +244,7 @@
         <footer class="bg-slate-100 border-t border-slate-200 mt-0">
             <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="flex items-center gap-3">
-                    <div class="p-2 bg-white rounded-lg shadow-sm">
-                        <svg class="h-6 w-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    </div>
+                    <div class="p-2 bg-white rounded-lg shadow-sm"><svg class="h-6 w-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
                     <span class="font-serif font-bold text-xl text-slate-900">BookCores</span>
                 </div>
                 <div class="flex gap-8 text-sm font-medium text-slate-600">
@@ -298,20 +252,15 @@
                     <a href="#" class="hover:text-blue-600 transition">{{ __('Contacte') }}</a>
                     <a href="#" class="hover:text-blue-600 transition">{{ __('Política de Privacitat') }}</a>
                 </div>
-                <p class="text-sm text-slate-400">
-                    &copy; {{ date('Y') }} BookCores. {{ __('Tots els drets reservats.') }}
-                </p>
+                <p class="text-sm text-slate-400">&copy; {{ date('Y') }} BookCores. {{ __('Tots els drets reservats.') }}</p>
             </div>
         </footer>
     </main>
 
-    <!-- Script per detectar scroll -->
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.store('scroll', { y: 0 });
-            window.addEventListener('scroll', () => {
-                Alpine.store('scroll').y = window.scrollY;
-            });
+            window.addEventListener('scroll', () => { Alpine.store('scroll').y = window.scrollY; });
         });
     </script>
 

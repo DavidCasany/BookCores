@@ -30,26 +30,26 @@ class DatabaseSeeder extends Seeder
             ['id' => 2, 'nom' => 'Llibres del Futur', 'descripcio' => 'Ciència-ficció i misteri.', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
-        // 3. AUTORS (MODIFICAT: Canvi de nom de l'autora 1)
+        // 3. AUTORS
         DB::table('autors')->insert([
-            ['id' => 1, 'nom' => 'Sandra Martínez Romero', 'biografia' => 'Escriptora apassionada pels dracs i les llegendes.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'nom' => 'Anaïs F. Gómez', 'biografia' => 'Autora especialitzada en misteris de la natura.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 3, 'nom' => 'Laura P. Martínez', 'biografia' => 'Navegant i escriptora d\'aventures estel·lars.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 1, 'nom' => 'Sandra Martínez Romero', 'biografia' => 'Escriptora apassionada pels dracs.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'nom' => 'Anaïs F. Gómez', 'biografia' => 'Autora especialitzada en misteris.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 3, 'nom' => 'Laura P. Martínez', 'biografia' => 'Navegant i escriptora.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
         ]);
 
-        // 4. LLIBRES
+        // 4. LLIBRES (Amb els noms de fitxer REALS)
         DB::table('llibres')->insert([
             [
                 'id_llibre' => 1,
-                'titol' => 'L\'El Ressò de les Cendres',
+                'titol' => 'L\'Alè de la Violeta',
                 'genere' => 'Fantasia',
-                'descripcio' => 'Una història èpica sobre el despertar d\'una espècie extinta.',
+                'descripcio' => 'Una història èpica...',
                 'preu' => 19.95,
-                'nota_promig' => 5.0,
-                'img_portada' => 'drag_negre.jpg',
-                'img_hero' => 'h_drag_negre.jpg',
+                'nota_promig' => 4.8,
+                'img_portada' => 'drag_negre.jpg',      // CORREGIT
+                'img_hero' => 'h_drag_negre.png',       // CORREGIT (.png i prefix h_)
                 'fitxer_pdf' => 'placeholder.pdf',
-                'autor_id' => 1, // Sandra Martínez Romero
+                'autor_id' => 1, 
                 'editorial_id' => 1,
                 'created_at' => now(), 'updated_at' => now(),
             ],
@@ -57,27 +57,27 @@ class DatabaseSeeder extends Seeder
                 'id_llibre' => 2,
                 'titol' => 'L\'Ombra del Bosc',
                 'genere' => 'Misteri',
-                'descripcio' => 'Què s\'amaga entre els arbres quan cau la nit? Un thriller verd.',
+                'descripcio' => 'Thriller verd...',
                 'preu' => 18.50,
                 'nota_promig' => 4.5,
                 'img_portada' => 'bosc_verd.jpg',
-                'img_hero' => 'h_bosc_verd.jpg',
+                'img_hero' => 'h_bosc_verd.png',        // CORREGIT (.png i prefix h_)
                 'fitxer_pdf' => 'placeholder.pdf',
-                'autor_id' => 2, // Anaïs F. Gómez
+                'autor_id' => 2, 
                 'editorial_id' => 1,
                 'created_at' => now(), 'updated_at' => now(),
             ],
             [
                 'id_llibre' => 3,
-                'titol' => 'Navegant Entre Estrelles',
+                'titol' => 'Navegant entre Estrelles',
                 'genere' => 'Ciència-Ficció',
-                'descripcio' => 'El viatge del vaixell blau més enllà de la galàxia coneguda.',
+                'descripcio' => 'Viatge espacial...',
                 'preu' => 22.00,
-                'nota_promig' => 4.8,
+                'nota_promig' => 5.0,
                 'img_portada' => 'vaixell_blau.jpg',
-                'img_hero' => 'h_vaixell_blau.jpg',
+                'img_hero' => 'h_vaixell_blau.png',     // CORREGIT (.png i prefix h_)
                 'fitxer_pdf' => 'placeholder.pdf',
-                'autor_id' => 3, // Laura P. Martínez
+                'autor_id' => 3, 
                 'editorial_id' => 2,
                 'created_at' => now(), 'updated_at' => now(),
             ]
@@ -85,44 +85,17 @@ class DatabaseSeeder extends Seeder
 
         // 5. RESSENYES
         DB::table('ressenyes')->insert([
-            [
-                'text' => 'El drac violeta m\'ha robat el cor!',
-                'puntuacio' => 5,
-                'user_id' => $clientId,
-                'llibre_id' => 1,
-                'created_at' => now(), 'updated_at' => now(),
-            ],
-            [
-                'text' => 'Un viatge increïble per l\'espai.',
-                'puntuacio' => 5,
-                'user_id' => $clientId,
-                'llibre_id' => 3,
-                'created_at' => now(), 'updated_at' => now(),
-            ]
+            ['text' => 'Genial!', 'puntuacio' => 5, 'user_id' => $clientId, 'llibre_id' => 1, 'created_at' => now(), 'updated_at' => now()],
         ]);
 
-        // 6. COMPRA
+        // 6. COMPRES
         $idCompra = DB::table('compres')->insertGetId([
-            'id_compra' => 1,
-            'total' => 41.95,
-            'user_id' => $clientId,
-            'created_at' => now(), 'updated_at' => now(),
+            'id_compra' => 1, 'total' => 41.95, 'user_id' => $clientId, 'created_at' => now(), 'updated_at' => now(),
         ]);
-
-        // 7. DETALLS COMPRA
+        
         DB::table('compra_llibre')->insert([
-            [
-                'compra_id' => $idCompra,
-                'llibre_id' => 1,
-                'quantitat' => 1,
-                'preu_unitari' => 19.95,
-            ],
-            [
-                'compra_id' => $idCompra,
-                'llibre_id' => 3,
-                'quantitat' => 1,
-                'preu_unitari' => 22.00,
-            ]
+            ['compra_id' => $idCompra, 'llibre_id' => 1, 'quantitat' => 1, 'preu_unitari' => 19.95],
+            ['compra_id' => $idCompra, 'llibre_id' => 3, 'quantitat' => 1, 'preu_unitari' => 22.00],
         ]);
     }
 }
