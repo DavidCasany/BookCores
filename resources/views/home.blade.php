@@ -17,7 +17,7 @@
 
     {{-- 
         =================================================================
-        1. CARRUSEL DE FONS
+        1. CARRUSEL DE FONS (SENSE POPPING - LÒGICA DE CLON)
         =================================================================
     --}}
     @php
@@ -39,74 +39,117 @@
     <div class="fixed inset-0 w-full h-screen z-0 bg-slate-900 overflow-hidden"
          x-data="{
             books: {{ $llibresJS }},
-            isAnimating: false,
+            currentIndex: 0,
+            totalSlides: {{ $llibresJS->count() }},
+            isTransitioning: true,
             autoplay: null,
-            startAutoplay() { if (this.books.length > 1) this.autoplay = setInterval(() => { this.slide(); }, 5000); },
-            slide() { this.isAnimating = true; },
-            handleTransitionEnd() {
-                if (!this.isAnimating) return;
-                this.isAnimating = false;
-                const firstBook = this.books.shift();
-                this.books.push(firstBook);
+
+            init() {
+                this.startAutoplay();
             },
-            stopAutoplay() { if (this.autoplay) { clearInterval(this.autoplay); this.autoplay = null; } },
-            init() { this.startAutoplay(); }
+
+            startAutoplay() {
+                if (this.totalSlides > 1) {
+                    this.autoplay = setInterval(() => {
+                        this.next();
+                    }, 5000); 
+                }
+            },
+
+            stopAutoplay() {
+                if (this.autoplay) {
+                    clearInterval(this.autoplay);
+                    this.autoplay = null;
+                }
+            },
+
+            next() {
+                // 1. Comprovem si estem 'encallats' al clon (per inactivitat de la pestanya)
+                if (this.currentIndex >= this.totalSlides) {
+                    // Reset d'emergència a 0 sense animació
+                    this.isTransitioning = false;
+                    this.currentIndex = 0;
+                    
+                    // Donem temps al navegador (50ms) i llavors movem a l'1 normalment
+                    setTimeout(() => {
+                        this.isTransitioning = true;
+                        this.currentIndex = 1;
+                    }, 50);
+                } else {
+                    // 2. Moviment normal
+                    this.isTransitioning = true;
+                    this.currentIndex++;
+                }
+            },
+
+            handleTransitionEnd() {
+                // Quan l'animació acaba, si hem arribat al clon (index == totalSlides)
+                if (this.currentIndex >= this.totalSlides) {
+                    // Desactivem animació
+                    this.isTransitioning = false;
+                    // Saltem instantàniament a l'inici real (0)
+                    this.currentIndex = 0;
+                    
+                    // Reactivem l'animació després d'un momentet, llestos pel següent torn
+                    setTimeout(() => {
+                        this.isTransitioning = true;
+                    }, 50);
+                }
+            }
          }"
          x-init="init()">
 
+        <!-- PISTA VISUAL -->
         <div class="flex h-full w-full will-change-transform"
-             :class="isAnimating ? 'transition-transform duration-1000 ease-in-out -translate-x-full' : ''"
-             @transitionend="handleTransitionEnd()">
+             :class="isTransitioning ? 'transition-transform duration-1000 ease-in-out' : 'duration-0'"
+             :style="'transform: translateX(-' + (currentIndex * 100) + '%)'"
+             @transitionend.self="handleTransitionEnd()">
 
-            <!-- NODE 1 -->
-            <div class="relative w-full h-full flex-shrink-0 flex items-center justify-center">
-                <template x-if="books[0]">
+            <!-- 1. BUCLE DELS LLIBRES REALS -->
+            <template x-for="book in books" :key="book.id">
+                <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
+                    <div class="w-full h-full relative">
+                        <template x-if="book.img">
+                            <div class="contents">
+                                <!-- FONS -->
+                                <div class="absolute inset-0">
+                                    <img :src="book.img" class="w-full h-full object-cover brightness-50">
+                                    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
+                                </div>
+                            </div>
+                        </template>
+                        <!-- Fallback -->
+                        <template x-if="!book.img">
+                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- 2. EL CLON (Còpia exacta del PRIMER llibre al final) -->
+            <template x-if="books.length > 0">
+                <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
                     <div class="w-full h-full relative">
                         <template x-if="books[0].img">
-                            <div class="absolute inset-0">
-                                <img :src="books[0].img" class="w-full h-full object-cover brightness-50 transform scale-105 transition-transform duration-[10s] ease-linear">
-                                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
-                            </div>
-                            <div class="relative z-10 w-full h-full flex items-center justify-center p-8 pb-32">
-                                <a :href="'/llibres/' + books[0].id" class="block transition transform hover:scale-105 duration-300">
-                                    <!-- AQUI ESTÀ LA SOLUCIÓ: object-contain + w-auto + mx-auto -->
-                                    <img :src="books[0].img" :alt="books[0].titol" class="mx-auto max-h-[50vh] w-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] rounded-lg">
-                                </a>
+                            <div class="contents">
+                                <div class="absolute inset-0">
+                                    <img :src="books[0].img" class="w-full h-full object-cover brightness-50">
+                                    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
+                                </div>
                             </div>
                         </template>
                         <template x-if="!books[0].img">
                             <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
                         </template>
                     </div>
-                </template>
-            </div>
-
-            <!-- NODE 2 -->
-            <div class="relative w-full h-full flex-shrink-0 flex items-center justify-center">
-                <template x-if="books[1]">
-                    <div class="w-full h-full relative">
-                        <template x-if="books[1].img">
-                            <div class="absolute inset-0">
-                                <img :src="books[1].img" class="w-full h-full object-cover brightness-50 transform scale-105">
-                                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
-                            </div>
-                            <div class="relative z-10 w-full h-full flex items-center justify-center p-8 pb-32">
-                                <a :href="'/llibres/' + books[1].id" class="block transition transform hover:scale-105 duration-300">
-                                    <img :src="books[1].img" :alt="books[1].titol" class="mx-auto max-h-[50vh] w-auto object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] rounded-lg">
-                                </a>
-                            </div>
-                        </template>
-                        <template x-if="!books[1].img">
-                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
-                        </template>
-                    </div>
-                </template>
-            </div>
+                </div>
+            </template>
 
         </div>
     </div>
 
-    {{-- HEADER --}}
+    {{-- RESTA DE LA PÀGINA (HEADER, HERO TEXT, NOVETATS...) --}}
+    
     <header class="fixed w-full z-50 transition-all duration-300" 
             :class="window.scrollY > 50 ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200 py-2' : 'bg-transparent py-4'">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -147,7 +190,6 @@
         </div>
     </header>
 
-    {{-- HERO TEXT --}}
     <div class="relative z-10 w-full h-screen flex flex-col items-center justify-center pointer-events-none pb-20">
         <div class="text-center px-4 sm:px-6 lg:px-8 pointer-events-auto animate-fade-in-up">
             <h1 class="text-5xl md:text-8xl tracking-tight font-black text-white drop-shadow-2xl mb-8 leading-tight">
@@ -168,13 +210,7 @@
         </div>
     </div>
 
-    {{-- 
-        =================================================================
-        3. CONTINGUT QUE PUJA (NOVETATS - AMB LINKS AL DETALL)
-        =================================================================
-    --}}
     <main id="novetats" class="relative z-20 bg-slate-50 min-h-screen shadow-[0_-20px_60px_rgba(0,0,0,0.5)] rounded-t-[3rem]">
-        
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div class="flex justify-between items-end mb-12 border-b border-slate-200 pb-4">
                 <div>
@@ -190,8 +226,6 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
                 @forelse ($llibres as $llibre)
                     <div class="group relative bg-white border border-slate-100 rounded-3xl p-5 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full">
-                        
-                        {{-- AFEGIT: Link al detall del llibre (Imatge) --}}
                         <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="block">
                             <div class="aspect-w-2 aspect-h-3 w-full overflow-hidden rounded-2xl bg-slate-100 mb-5 relative shadow-inner group-hover:shadow-md transition">
                                 @if($llibre->img_portada)
@@ -199,34 +233,21 @@
                                 @else
                                     <div class="flex items-center justify-center h-72 text-slate-400"><span class="text-5xl">📖</span></div>
                                 @endif
-                                
                                 <span class="absolute top-3 right-3 bg-white/95 backdrop-blur text-slate-900 text-sm font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
                                     <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                     {{ number_format($llibre->nota_promig, 1) }}
                                 </span>
                             </div>
                         </a>
-
                         <div class="flex flex-col flex-grow">
-                            {{-- AFEGIT: Link al detall del llibre (Títol) --}}
                             <h3 class="text-xl font-bold text-slate-900 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
-                                <a href="{{ route('llibres.show', $llibre->id_llibre) }}">
-                                    <span aria-hidden="true" class="absolute inset-0"></span>
-                                    {{ $llibre->titol }}
-                                </a>
+                                <a href="{{ route('llibres.show', $llibre->id_llibre) }}">{{ $llibre->titol }}</a>
                             </h3>
-                            
-                            <p class="text-base text-slate-500 mt-2 font-medium">
-                                {{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}
-                            </p>
+                            <p class="text-base text-slate-500 mt-2 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                             <div class="mt-auto pt-6 flex items-center justify-between border-t border-slate-50">
-                                <p class="text-2xl font-extrabold text-slate-900">
-                                    {{ number_format($llibre->preu, 2, ',', '.') }} €
-                                </p>
+                                <p class="text-2xl font-extrabold text-slate-900">{{ number_format($llibre->preu, 2, ',', '.') }} €</p>
                                 <button class="relative z-10 p-3 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm hover:shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                                 </button>
                             </div>
                         </div>
