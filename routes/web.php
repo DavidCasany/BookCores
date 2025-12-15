@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Llibre;
+use App\Http\Controllers\LlibreController;
 
 Route::get('/', function () {
     
@@ -39,3 +40,6 @@ Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index'
     ->where('idioma', 'ca|en|es|ja');
 
 require __DIR__.'/auth.php';
+
+// Aquesta ruta és PÚBLICA (fora del middleware 'auth')
+Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
