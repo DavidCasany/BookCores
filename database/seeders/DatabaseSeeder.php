@@ -41,11 +41,11 @@ class DatabaseSeeder extends Seeder
         DB::table('llibres')->insert([
             [
                 'id_llibre' => 1,
-                'titol' => 'L\'Alè de la Violeta',
+                'titol' => 'Foc i Cèndres',
                 'genere' => 'Fantasia',
                 'descripcio' => 'Una història èpica...',
                 'preu' => 19.95,
-                'nota_promig' => 4.8,
+                'nota_promig' => 5.0,
                 'img_portada' => 'drag_negre.jpg',      // CORREGIT
                 'img_hero' => 'h_drag_negre.png',       // CORREGIT (.png i prefix h_)
                 'fitxer_pdf' => 'placeholder.pdf',
@@ -73,7 +73,7 @@ class DatabaseSeeder extends Seeder
                 'genere' => 'Ciència-Ficció',
                 'descripcio' => 'Viatge espacial...',
                 'preu' => 22.00,
-                'nota_promig' => 5.0,
+                'nota_promig' => 4.8,
                 'img_portada' => 'vaixell_blau.jpg',
                 'img_hero' => 'h_vaixell_blau.png',     // CORREGIT (.png i prefix h_)
                 'fitxer_pdf' => 'placeholder.pdf',
