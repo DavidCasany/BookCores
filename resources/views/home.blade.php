@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ __('BookCores - La teva llibreria') }}</title>
+    <title>{{ __('La teva llibreria') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900&display=swap" rel="stylesheet" />
@@ -20,7 +20,19 @@
                         serif: ['Georgia', 'serif'],
                     },
                     animation: {
-                        'spin-slow': 'spin 4s linear infinite', // Rotació lenta i constant
+                        'spin-slow': 'spin 4s linear infinite', 
+                        'breathing-glow-purple': 'breathingGlowPurple 4s ease-in-out infinite',
+                        'breathing-glow-warm': 'breathingGlowWarm 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        breathingGlowPurple: {
+                            '0%, 100%': { boxShadow: '0 0 4px 1px rgba(139, 92, 246, 0.4), 0 0 8px 2px rgba(59, 130, 246, 0.2)' },
+                            '50%': { boxShadow: '0 0 8px 2px rgba(139, 92, 246, 0.5), 0 0 12px 4px rgba(59, 130, 246, 0.3)' },
+                        },
+                        breathingGlowWarm: {
+                            '0%, 100%': { boxShadow: '0 0 4px 1px rgba(220, 38, 38, 0.4), 0 0 8px 2px rgba(234, 88, 12, 0.3), 0 0 12px 4px rgba(250, 204, 21, 0.1)' }, 
+                            '50%': { boxShadow: '0 0 8px 2px rgba(220, 38, 38, 0.5), 0 0 12px 4px rgba(234, 88, 12, 0.4), 0 0 16px 6px rgba(250, 204, 21, 0.2)' },
+                        }
                     }
                 }
             }
@@ -29,12 +41,6 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
-{{-- 
-    DATA ALPINE:
-    - strongShadow: Controla la intensitat de l'ombra.
-      És TRUE mentre estem lluny del final (per fer l'efecte "reveal" potent).
-      Es posa FALSE quan arribem a baix de tot (per recuperar l'ombra suau original).
---}}
 <body class="antialiased bg-slate-300 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-500"
       x-data="{ 
           scrollAtTop: true,
@@ -51,13 +57,10 @@
           },
           handleScroll() {
               this.scrollAtTop = (window.scrollY < window.innerHeight - 80);
-              
               const distanceToBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
               
-              // CANVI: Ajustat a 500 (alçada footer) per evitar que es vegi abans d'hora.
-              this.footerVisible = distanceToBottom < 500;
-
-              // Lògica de l'ombra: Si estem aprop del final (< 50px), ombra suau. Si no, ombra forta.
+              // Footer ajustat al 30% de la pantalla (30vh)
+              this.footerVisible = distanceToBottom < (window.innerHeight * 0.30);
               this.strongShadow = distanceToBottom > 50;
           }
       }"
@@ -83,47 +86,29 @@
     @endphp
 
     <script>
-        window.sliderData = @json($llibresCollection);
+        window.sliderData = <?php echo json_encode($llibresCollection); ?>;
     </script>
 
-    {{-- 
-        BOTÓ FLOTANT AMB AURA ROTATÒRIA 
-        - Contenidor div fix: posiciona el conjunt.
-        - Capa de fons (Glow): Utilitza 'conic-gradient' i 'animate-spin-slow'.
-        - Botó: A sobre (z-10), amb fons sòlid.
-    --}}
+    {{-- BOTÓ FLOTANT --}}
     <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
-        
-        {{-- L'aura rotatòria --}}
-        {{-- 
-             darkMode (Sol): Vermell, Taronja, Groc.
-             !darkMode (Lluna): Lila, Blau, Cian.
-             blur-md i opacity-50 per mantenir la discreció.
-        --}}
         <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
              :style="darkMode 
                 ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' 
                 : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'">
         </div>
-
-        {{-- El botó real --}}
         <button @click="toggleTheme()" 
                 class="relative z-10 p-4 rounded-full transition-all duration-300 transform hover:scale-110 border border-slate-200/20 dark:border-slate-700/50"
                 :class="darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white text-slate-800'">
-            
-            {{-- Icona SOL --}}
             <svg x-show="darkMode" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            
-            {{-- Icona LLUNA --}}
             <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
         </button>
     </div>
 
-    {{-- CAPA 1: CARRUSEL FIXE (FONS) --}}
+    {{-- CARRUSEL FIXE AL FONS --}}
     <div class="fixed inset-0 w-full h-screen z-0 bg-slate-900 overflow-hidden"
          x-data="heroSlider()">
         <div class="flex h-full w-full will-change-transform"
@@ -162,7 +147,7 @@
         </div>
     </div>
 
-    {{-- CAPA MÀGICA: FONS SÒLID INTERMEDI --}}
+    {{-- FONS SÒLID INTERMEDI --}}
     <div class="fixed inset-0 w-full h-full bg-slate-300 dark:bg-slate-900 transition-opacity duration-700 pointer-events-none"
          :class="footerVisible ? 'opacity-100 z-5' : 'opacity-0 -z-10'">
     </div>
@@ -223,7 +208,7 @@
         </div>
     </header>
 
-    {{-- HERO TEXT (Z-20) --}}
+    {{-- HERO TEXT --}}
     <div class="relative z-20 w-full h-screen flex flex-col items-center justify-center pointer-events-none pb-20"
          x-data="{
             text1: '',
@@ -273,12 +258,10 @@
         </div>
     </div>
 
-    {{-- CAPA 3: NOVETATS (Z-30) --}}
-    {{-- CANVI: Afegit /90 opacity i backdrop-blur-md per fer-ho semitransparent --}}
-    <main id="novetats" class="relative z-30 mt-[40vh] bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-md min-h-screen rounded-b-[3rem] mb-[500px] transition-all duration-700 ease-out"
-          :class="strongShadow ? 'shadow-[0_250px_300px_rgba(0,0,0,1)]' : 'shadow-[0_20px_50px_rgba(0,0,0,0.8)]'">
+    {{-- NOVETATS --}}
+    <main id="novetats" class="relative z-30 mt-[40vh] bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-md min-h-screen rounded-b-[3rem] mb-[30vh] transition-all duration-700 ease-out"
+          :class="strongShadow ? 'shadow-[0_20px_60px_rgba(0,0,0,0.3)]' : 'shadow-[0_10px_30px_rgba(0,0,0,0.1)]'">
         
-        {{-- CANVI: També aplicat al borde superior --}}
         <div class="absolute -top-12 left-0 w-full h-12 bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-md rounded-t-[3rem] transition-colors duration-500"></div>
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -332,38 +315,36 @@
         </div>
     </main>
 
-    {{-- CAPA 2: FOOTER REVEAL --}}
-    <footer class="fixed bottom-0 left-0 w-full h-[500px] bg-slate-300 dark:bg-slate-900 text-slate-800 dark:text-slate-300 flex flex-col justify-between overflow-hidden transition-colors duration-500"
+    {{-- FOOTER COMPACTE (30vh) --}}
+    <footer class="fixed bottom-0 left-0 w-full h-[30vh] bg-slate-300 dark:bg-slate-900 text-slate-800 dark:text-slate-300 flex flex-col justify-between overflow-hidden transition-colors duration-500"
             :class="footerVisible ? 'z-10' : '-z-10'">
         
-        <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col md:flex-row justify-between items-start gap-12 z-10 relative">
-            <div>
-                <h4 class="text-lg font-bold uppercase tracking-widest mb-6 opacity-60">{{ __('Contacte') }}</h4>
-                <ul class="space-y-4 text-xl font-serif">
-                    <li><a href="mailto:hola@bookcores.cat" class="hover:text-blue-600 transition-colors">hola@bookcores.cat</a></li>
-                    <li><a href="tel:+34931234567" class="hover:text-blue-600 transition-colors">+34 93 123 45 67</a></li>
-                    <li class="opacity-70">Carrer de la Lletra, 42<br>08000 Barcelona</li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-lg font-bold uppercase tracking-widest mb-6 opacity-60">{{ __('Xarxes') }}</h4>
-                <div class="flex gap-6 text-xl">
-                    <a href="#" class="hover:text-blue-600 transition-colors">Instagram</a>
-                    <a href="#" class="hover:text-blue-600 transition-colors">Twitter</a>
-                    <a href="#" class="hover:text-blue-600 transition-colors">LinkedIn</a>
+        <div class="flex-grow flex items-center relative z-10 py-10">
+            <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start gap-12">
+                
+                {{-- Esquerra: Contacte (2 emails) --}}
+                <div class="text-left">
+                    <h4 class="text-lg font-bold uppercase tracking-widest mb-6 opacity-60">{{ __('Contacte') }}</h4>
+                    <ul class="space-y-2 text-xl font-serif">
+                        <li><a href="mailto:hola@bookcores.cat" class="hover:text-blue-600 dark:hover:text-blue-300 transition-colors">alex.tarazaga@uvic.cat</a></li>
+                        <li><a href="mailto:suport@bookcores.cat" class="hover:text-blue-600 dark:hover:text-blue-300 transition-colors">david.casany@uvic.cat</a></li>
+                    </ul>
                 </div>
-                <div class="mt-8 flex gap-4 text-sm opacity-50">
-                    <a href="#" class="hover:underline">{{ __('Avís Legal') }}</a>
-                    <a href="#" class="hover:underline">{{ __('Cookies') }}</a>
-                </div>
-            </div>
-        </div>
 
-        {{-- Part inferior: TEXT GEGANT TALLAT I CENTRAT ABSOLUT --}}
-        <div class="w-full relative h-32 select-none pointer-events-none">
-            <h1 class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-[35%] scale-y-[2] whitespace-nowrap text-[17vw] font-black leading-none text-slate-900 dark:text-white opacity-90 dark:opacity-30 tracking-tighter">
-                BOOKCORES
-            </h1>
+                {{-- Dreta: Xarxes i Legals --}}
+                <div class="text-left md:text-right md:pr-24">
+                    <h4 class="text-lg font-bold uppercase tracking-widest mb-6 opacity-60">{{ __('Segueix-nos') }}</h4>
+                    <div class="flex gap-6 text-xl md:justify-end">
+                        <a href="#" class="hover:text-blue-600 dark:hover:text-blue-300 transition-colors">Instagram</a>
+                        <a href="#" class="hover:text-blue-600 dark:hover:text-blue-300 transition-colors">Twitter</a>
+                        <a href="#" class="hover:text-blue-600 dark:hover:text-blue-300 transition-colors">LinkedIn</a>
+                    </div>
+                    <div class="mt-8 flex gap-4 text-sm opacity-50 md:justify-end">
+                        <a href="#" class="hover:underline">{{ __('Avís Legal') }}</a>
+                        <a href="#" class="hover:underline">{{ __('Cookies') }}</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -385,6 +366,15 @@
     <style>
         .animate-fade-in-up { animation: fadeInUp 1s ease-out forwards; opacity: 0; transform: translateY(20px); }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Ocultar barra de desplaçament */
+        html {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE i Edge */
+        }
+        html::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
     </style>
 
 </body>
