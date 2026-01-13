@@ -156,7 +156,7 @@
     <header class="fixed w-full z-50 py-3 transition-colors duration-300">
         <div class="absolute inset-0 bg-white/20 backdrop-blur-md border-b border-white/20 shadow-sm -z-10 transition-colors duration-300"
              :class="scrollAtTop ? 'bg-white/10 border-white/20' : 'bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 shadow-md'"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex justify-between items-center">
                 <div class="flex-shrink-0 flex items-center gap-2">
                     <a href="/" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors">
@@ -264,7 +264,7 @@
         
         <div class="absolute -top-12 left-0 w-full h-12 bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-md rounded-t-[3rem] transition-colors duration-500"></div>
         
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div class="flex justify-between items-end mb-12 border-b border-slate-200 dark:border-slate-700 pb-4">
                 <div>
                     <h2 class="text-4xl font-bold text-slate-900 dark:text-white">{{ __('Els més ben valorats ⭐') }}</h2>
@@ -320,7 +320,7 @@
             :class="footerVisible ? 'z-10' : '-z-10'">
         
         <div class="flex-grow flex items-center relative z-10 py-10">
-            <div class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start gap-12">
+            <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start gap-12">
                 
                 {{-- Esquerra: Contacte (2 emails) --}}
                 <div class="text-left">
