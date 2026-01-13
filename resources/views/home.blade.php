@@ -320,7 +320,7 @@
             :class="footerVisible ? 'z-10' : '-z-10'">
         
         <div class="flex-grow flex items-center relative z-10 py-10">
-            <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start gap-12">
+            <div class="w-full max-w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start gap-12">
                 
                 {{-- Esquerra: Contacte (2 emails) --}}
                 <div class="text-left">
