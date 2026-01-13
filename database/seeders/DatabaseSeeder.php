@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
         DB::table('llibres')->insert([
             [
                 'id_llibre' => 1,
-                'titol' => 'Foc i Cèndres',
+                'titol' => 'El Ressò de les Cendres',
                 'genere' => 'Fantasia',
                 'descripcio' => 'Una història èpica...',
                 'preu' => 19.95,

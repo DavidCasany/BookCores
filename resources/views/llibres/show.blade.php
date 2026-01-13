@@ -15,7 +15,7 @@
 
     {{-- HEADER (Versió fixa 'blanca' per veure's bé sobre el fons gris) --}}
     <header class="fixed w-full z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-200 py-3">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center">
                 {{-- LOGO --}}
                 <div class="flex-shrink-0 flex items-center gap-2">
@@ -53,7 +53,7 @@
 
     {{-- CONTINGUT PRINCIPAL --}}
     <main class="pt-28 pb-16 min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
             
             {{-- BOTÓ TORNAR --}}
             <a href="/#novetats" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-blue-600 mb-8 transition-colors">
@@ -221,7 +221,7 @@
 
     {{-- FOOTER IDENTIC A LA HOME --}}
     <footer class="bg-white border-t border-slate-200 mt-12">
-        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="w-full max-w-full mx-auto py-12 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-3">
                 <div class="p-2 bg-slate-50 rounded-lg"><svg class="h-6 w-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></div>
                 <span class="font-serif font-bold text-xl text-slate-900">BookCores</span>
