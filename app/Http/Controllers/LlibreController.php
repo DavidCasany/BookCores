@@ -4,9 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Llibre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LlibreController extends Controller
 {
+    public function index()
+    {
+        // Agafem les dades igual que abans
+        $llibresRecents = Llibre::latest()->take(3)->get();
+        $llibres = Llibre::with('autor')->get();
+
+        // COMPROVACIÓ: Si l'usuari està loguejat (Auth::check()), mostrem la nova vista 'home-auth'.
+        // Si no, mostrem la vista antiga, ara reanomenada 'home-guest'.
+        if (Auth::check()) {
+            return view('home-auth', compact('llibres', 'llibresRecents'));
+        } else {
+            return view('home-guest', compact('llibres', 'llibresRecents'));
+        }
+    }
+
     public function show($id)
     {
         // 1. Busquem el llibre per ID

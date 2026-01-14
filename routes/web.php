@@ -5,25 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Llibre;
 use App\Http\Controllers\LlibreController;
 
-Route::get('/', function () {
-    
-    // 1. Consulta existent: Els millors valorats (per a la secció de baix)
-    $llibresDestacats = Llibre::with('autor')
-                        ->orderBy('nota_promig', 'desc')
-                        ->take(8)
-                        ->get();
-
-    // Ordenem per data de creació descendent i n'agafem, per exemple, 10.
-    $llibresRecents = Llibre::orderBy('created_at', 'desc')
-                        ->take(10)
-                        ->get();
-    
-    // 3. Passem les DUES variables a la vista
-    return view('home', [
-        'llibres' => $llibresDestacats,       // variable llibres millor puntuats
-        'llibresRecents' => $llibresRecents   // variable llibres més nous per al carrucel
-    ]);
-})->name('home');
+// --- CANVI AQUI ---
+// Substituïm tota la funció anònima per la crida al controlador
+Route::get('/', [LlibreController::class, 'index'])->name('home');
+// ------------------
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -41,5 +26,5 @@ Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index'
 
 require __DIR__.'/auth.php';
 
-// Aquesta ruta és PÚBLICA (fora del middleware 'auth')
+// Aquesta ruta és PÚBLICA
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
