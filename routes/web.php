@@ -3,7 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Llibre;
-use App\Http\Controllers\LlibreController;
+use App\Http\Controllers\LlibreController;  
+use App\Http\Controllers\CercaController;
 
 // --- CANVI AQUI ---
 // Substituïm tota la funció anònima per la crida al controlador
@@ -19,6 +20,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+// Rutes públiques (fora del auth middleware si vols que tothom pugui buscar)
+Route::get('/cerca', [CercaController::class, 'index'])->name('cerca.index');
+Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
 
 // Canvi idioma
 Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index')
