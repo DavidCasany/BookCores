@@ -70,7 +70,7 @@
             <template x-for="item in results" :key="item.id_llibre || item.id">
                 
                 {{-- CAS: LLIBRE (O llibre dins d'autor/editorial) --}}
-                <div x-show="type === 'llibre' || type === 'tag' || !item.llibres" class="group relative bg-slate-800 rounded-lg overflow-hidden hover:scale-105 transition duration-300">
+                <div x-show=x-show="type === 'autor' || type === 'editorial'" class="group relative bg-slate-800 rounded-lg overflow-hidden hover:scale-105 transition duration-300">
                     <a :href="'/llibre/' + (item.id_llibre || item.id)" class="block">
                         <div class="aspect-w-2 aspect-h-3 w-full bg-slate-700">
                             <img :src="item.img_portada ? '/storage/' + item.img_portada : 'https://placehold.co/400x600?text=No+Img'" 
