@@ -4,49 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Llibre;
-use App\Models\Autor;
-use App\Models\Editorial;
+use App\Models\Autor;      // <--- IMPORTANT: Assegura't que tens això
+use App\Models\Editorial;  // <--- I això
 
 class CercaController extends Controller
 {
-    // Mostra la pàgina de cerca (buid)
     public function index()
     {
         return view('cerca.index');
     }
 
-    // Retorna els resultats en JSON (AJAX)
     public function buscar(Request $request)
     {
         $query = $request->input('q');
         $type = $request->input('type');
-        $tags = $request->input('tags', []); // Array de tags
+        $tags = $request->input('tags', []);
 
-        // 1. CERCA PER LLIBRE (Títol)
-        if ($type === 'llibre') {
-            $books = Llibre::with(['autor', 'editorial'])
-                ->where('titol', 'LIKE', "%{$query}%")
-                // Truc SQL: Ordena primer si el títol és EXACTE, després per Nota
-                ->orderByRaw("CASE WHEN titol = ? THEN 1 ELSE 2 END", [$query])
-                ->orderBy('nota_promig', 'desc')
-                ->limit(20)
-                ->get();
-            
-            return response()->json($books);
-        }
-
-        // 2. CERCA PER AUTOR
+        // --- CERCA D'AUTORS ---
         if ($type === 'autor') {
             $autors = Autor::with(['llibres' => function($q) {
-                    $q->orderBy('nota_promig', 'desc'); // Els llibres de l'autor, els millors primer
+                    // Dins de l'autor, ordenem els llibres per nota
+                    $q->orderBy('nota_promig', 'desc');
                 }])
+                // Busquem per nom (LIKE %...%)
                 ->where('nom', 'LIKE', "%{$query}%")
                 ->get();
             
             return response()->json($autors);
         }
 
-        // 3. CERCA PER EDITORIAL
+        // --- CERCA D'EDITORIALS ---
         if ($type === 'editorial') {
             $editorials = Editorial::with(['llibres' => function($q) {
                     $q->orderBy('nota_promig', 'desc');
@@ -57,25 +44,29 @@ class CercaController extends Controller
             return response()->json($editorials);
         }
 
-        // 4. CERCA PER TAGS (GÈNERE)
+        // --- CERCA PER TAGS (GÈNERE) ---
         if ($type === 'tag') {
-            // Nota: Com que la teva DB actual només té un camp 'genere' (string),
-            // buscarem llibres que coincideixin amb algun dels tags seleccionats.
-            // Si tinguessis una taula 'tags' many-to-many, es faria diferent.
-            
             $books = Llibre::with(['autor', 'editorial']);
 
             if (!empty($tags)) {
                 $books->whereIn('genere', $tags);
             } elseif ($query) {
-                // Si encara no ha afegit el tag al botó, busquem suggeriments
-                 $books->where('genere', 'LIKE', "%{$query}%");
+                // Busquem llibres que tinguin aquest gènere mentre escrivim
+                $books->where('genere', 'LIKE', "%{$query}%");
             }
 
-            $results = $books->orderBy('nota_promig', 'desc')->get();
-            return response()->json($results);
+            return response()->json($books->orderBy('nota_promig', 'desc')->get());
         }
 
-        return response()->json([]);
+        // --- CERCA DE LLIBRES (Per defecte) ---
+        // Si no és cap dels anteriors, assumim que és "llibre"
+        $books = Llibre::with(['autor', 'editorial'])
+            ->where('titol', 'LIKE', "%{$query}%")
+            ->orderByRaw("CASE WHEN titol = ? THEN 1 ELSE 2 END", [$query]) // Prioritzem coincidència exacta
+            ->orderBy('nota_promig', 'desc')
+            ->limit(20)
+            ->get();
+        
+        return response()->json($books);
     }
 }
