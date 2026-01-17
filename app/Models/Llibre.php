@@ -28,7 +28,8 @@ class Llibre extends Model
         return $this->belongsTo(Editorial::class, 'editorial_id');
     }
 
-    public function ressenyas()
+    // 🟢 CORREGIT: 'ressenyes' amb 'e' (abans posava 'ressenyas')
+    public function ressenyes()
     {
         return $this->hasMany(Ressenya::class, 'llibre_id', 'id_llibre');
     }
