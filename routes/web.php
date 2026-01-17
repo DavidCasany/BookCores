@@ -50,3 +50,6 @@ require __DIR__.'/auth.php';
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
 
 Route::get('/biblioteca', [App\Http\Controllers\LlibreController::class, 'biblioteca'])->name('biblioteca');
+
+// Llegir llibre (PDF)
+Route::get('/llegir/{id}', [App\Http\Controllers\LlibreController::class, 'llegir'])->name('llibre.llegir');

@@ -78,7 +78,7 @@ class DatabaseSeeder extends Seeder
                 'nota_promig' => 4.5,
                 'img_portada' => 'bosc_verd.jpg',
                 'img_hero' => 'h_bosc_verd.png',
-                'fitxer_pdf' => 'placeholder.pdf',
+                'fitxer_pdf' => 'L_ombra_del_bosc_demo.pdf',
                 'autor_id' => 2,
                 'editorial_id' => 1,
             ],
@@ -97,7 +97,7 @@ class DatabaseSeeder extends Seeder
             ],
 
             // --- 20 LLIBRES NOUS (Sense imatges, per provar el placeholder) ---
-            ['id_llibre' => 4, 'titol' => 'La Ciutat de Vidre', 'genere' => 'Fantasia', 'descripcio' => 'Una ciutat invisible als ulls dels humans.', 'preu' => 15.90, 'nota_promig' => 4.2, 'autor_id' => 1, 'editorial_id' => 1],
+            ['id_llibre' => 4, 'titol' => 'La Ciutat de Vidre', 'genere' => 'Fantasia', 'descripcio' => 'Una ciutat invisible als ulls dels humans.', 'preu' => 15.90, 'nota_promig' => 4.2,'fitxer_pdf' => 'La_ciutat_de_vidre_demo.pdf', 'autor_id' => 1, 'editorial_id' => 1],
             ['id_llibre' => 5, 'titol' => 'Codi Infinit', 'genere' => 'Informàtica', 'descripcio' => 'Apreneu els secrets dels algorismes moderns.', 'preu' => 29.99, 'nota_promig' => 4.7, 'autor_id' => 5, 'editorial_id' => 4],
             ['id_llibre' => 6, 'titol' => 'Amor a la Toscana', 'genere' => 'Romàntica', 'descripcio' => 'Un estiu que canviarà la vida de la protagonista.', 'preu' => 12.50, 'nota_promig' => 3.9, 'autor_id' => 7, 'editorial_id' => 5],
             ['id_llibre' => 7, 'titol' => 'L\'Enigma del Far', 'genere' => 'Misteri', 'descripcio' => 'Ningú sap qui va encendre el far aquella nit.', 'preu' => 17.00, 'nota_promig' => 4.4, 'autor_id' => 2, 'editorial_id' => 2],
@@ -158,5 +158,6 @@ class DatabaseSeeder extends Seeder
             ['compra_id' => $idCompra, 'llibre_id' => 1, 'quantitat' => 1, 'preu_unitari' => 19.95],
             ['compra_id' => $idCompra, 'llibre_id' => 3, 'quantitat' => 1, 'preu_unitari' => 22.00],
         ]);
+        
     }
 }
