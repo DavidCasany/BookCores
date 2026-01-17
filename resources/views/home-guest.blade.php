@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 
 <head>
     <meta charset="utf-8">
@@ -8,6 +8,15 @@
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900&display=swap" rel="stylesheet" />
+
+    {{-- ⚡ SCRIPT CRÍTIC: Recupera el tema guardat abans de pintar res --}}
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -26,20 +35,12 @@
                     },
                     keyframes: {
                         breathingGlowPurple: {
-                            '0%, 100%': {
-                                boxShadow: '0 0 4px 1px rgba(139, 92, 246, 0.4), 0 0 8px 2px rgba(59, 130, 246, 0.2)'
-                            },
-                            '50%': {
-                                boxShadow: '0 0 8px 2px rgba(139, 92, 246, 0.5), 0 0 12px 4px rgba(59, 130, 246, 0.3)'
-                            },
+                            '0%, 100%': { boxShadow: '0 0 4px 1px rgba(139, 92, 246, 0.4), 0 0 8px 2px rgba(59, 130, 246, 0.2)' },
+                            '50%': { boxShadow: '0 0 8px 2px rgba(139, 92, 246, 0.5), 0 0 12px 4px rgba(59, 130, 246, 0.3)' },
                         },
                         breathingGlowWarm: {
-                            '0%, 100%': {
-                                boxShadow: '0 0 4px 1px rgba(220, 38, 38, 0.4), 0 0 8px 2px rgba(234, 88, 12, 0.3), 0 0 12px 4px rgba(250, 204, 21, 0.1)'
-                            },
-                            '50%': {
-                                boxShadow: '0 0 8px 2px rgba(220, 38, 38, 0.5), 0 0 12px 4px rgba(234, 88, 12, 0.4), 0 0 16px 6px rgba(250, 204, 21, 0.2)'
-                            },
+                            '0%, 100%': { boxShadow: '0 0 4px 1px rgba(220, 38, 38, 0.4), 0 0 8px 2px rgba(234, 88, 12, 0.3), 0 0 12px 4px rgba(250, 204, 21, 0.1)' },
+                            '50%': { boxShadow: '0 0 8px 2px rgba(220, 38, 38, 0.5), 0 0 12px 4px rgba(234, 88, 12, 0.4), 0 0 16px 6px rgba(250, 204, 21, 0.2)' },
                         }
                     }
                 }
@@ -47,46 +48,54 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
 
 <body class="antialiased bg-slate-300 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-500"
     x-data="{ 
           scrollAtTop: true,
-          darkMode: true,
+          // Llegim l'estat real del HTML per saber com començar
+          darkMode: document.documentElement.classList.contains('dark'),
           footerVisible: false,
           strongShadow: true,
           toggleTheme() {
               this.darkMode = !this.darkMode;
               if (this.darkMode) {
                   document.documentElement.classList.add('dark');
+                  localStorage.setItem('theme', 'dark'); // 💾 GUARDEM A MEMÒRIA
               } else {
                   document.documentElement.classList.remove('dark');
+                  localStorage.setItem('theme', 'light'); // 💾 GUARDEM A MEMÒRIA
               }
           },
           handleScroll() {
               this.scrollAtTop = (window.scrollY < window.innerHeight - 80);
               const distanceToBottom = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
-              
-              // Footer ajustat al 30% de la pantalla (30vh)
               this.footerVisible = distanceToBottom < (window.innerHeight * 0.30);
               this.strongShadow = distanceToBottom > 50;
+          },
+          init() {
+              this.handleScroll(); // Executar un cop al principi per si recarreguem a baix de tot
           }
       }"
     @scroll.window="handleScroll()">
 
     @php
     $llibresCollection = $llibresRecents->map(function($llibre) {
-    $imgSrc = null;
-    if ($llibre->img_hero) {
-    $imgSrc = asset('img/' . $llibre->img_hero);
-    } elseif ($llibre->img_portada) {
-    $imgSrc = asset('img/' . $llibre->img_portada);
-    }
-    return [
-    'id' => $llibre->id_llibre,
-    'titol' => $llibre->titol,
-    'img' => $imgSrc,
-    ];
+        $imgSrc = null;
+        if ($llibre->img_hero) {
+            $imgSrc = asset('img/' . $llibre->img_hero);
+        } elseif ($llibre->img_portada) {
+            $imgSrc = asset('img/' . $llibre->img_portada);
+        }
+        return [
+            'id' => $llibre->id_llibre,
+            'titol' => $llibre->titol,
+            'img' => $imgSrc,
+        ];
     })->values();
 
     $titolPart1 = __('Troba la teva');
@@ -97,7 +106,7 @@
         window.sliderData = <?php echo json_encode($llibresCollection); ?>;
     </script>
 
-    {{-- BOTÓ FLOTANT --}}
+    {{-- BOTÓ FLOTANT (Amb persistència) --}}
     <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
         <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
             :style="darkMode 
@@ -122,36 +131,23 @@
         <div class="flex h-full w-full will-change-transform"
             :class="isAnimating ? 'transition-transform duration-1000 ease-in-out -translate-x-full' : ''"
             @transitionend="handleTransitionEnd()">
-            <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
-                <template x-if="books[0]">
-                    <div class="w-full h-full relative">
-                        <template x-if="books[0].img">
+            <template x-for="(book, index) in [books[0], books[1]]" :key="index">
+                <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
+                    <template x-if="book">
+                        <a :href="'/llibre/' + book.id" class="block w-full h-full relative cursor-pointer group">
                             <div class="absolute inset-0">
-                                <img :src="books[0].img" class="w-full h-full object-cover brightness-50">
+                                <template x-if="book.img">
+                                    <img :src="book.img" class="w-full h-full object-cover brightness-50">
+                                </template>
+                                <template x-if="!book.img">
+                                    <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
+                                </template>
                                 <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
                             </div>
-                        </template>
-                        <template x-if="!books[0].img">
-                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
-                        </template>
-                    </div>
-                </template>
-            </div>
-            <div class="relative min-w-full w-full h-full flex-shrink-0 flex items-center justify-center">
-                <template x-if="books[1]">
-                    <div class="w-full h-full relative">
-                        <template x-if="books[1].img">
-                            <div class="absolute inset-0">
-                                <img :src="books[1].img" class="w-full h-full object-cover brightness-50">
-                                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
-                            </div>
-                        </template>
-                        <template x-if="!books[1].img">
-                            <div class="w-full h-full flex items-center justify-center bg-slate-800 text-slate-600"><span class="text-6xl">📘</span></div>
-                        </template>
-                    </div>
-                </template>
-            </div>
+                        </a>
+                    </template>
+                </div>
+            </template>
         </div>
     </div>
 
@@ -201,7 +197,6 @@
                     <div class="hidden sm:block h-6 w-px transition-colors duration-300"
                         :class="scrollAtTop ? 'bg-white/40' : 'bg-slate-300 dark:bg-slate-600'"></div>
                     <nav class="flex space-x-4 items-center">
-                        {{-- 🔍 LUPA DE CERCA --}}
                         <a href="{{ route('cerca.index') }}"
                             class="p-2 transition transform hover:scale-110"
                             :class="window.scrollY > 50 ? 'text-slate-600 hover:text-blue-900' : 'text-white hover:text-blue-200'"
@@ -324,11 +319,11 @@
                         <p class="text-base text-slate-500 dark:text-slate-400 mt-2 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                         <div class="mt-auto pt-6 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
                             <p class="text-2xl font-extrabold text-slate-900 dark:text-white">{{ number_format($llibre->preu, 2, ',', '.') }} €</p>
-                            <button class="relative z-10 p-3 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 dark:hover:text-white transition-all duration-200 shadow-sm hover:shadow-md">
+                            <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="relative z-10 p-3 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 dark:hover:text-white transition-all duration-200 shadow-sm hover:shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                                 </svg>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -420,19 +415,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        /* Ocultar barra de desplaçament */
-        html {
-            scrollbar-width: none;
-            /* Firefox */
-            -ms-overflow-style: none;
-            /* IE i Edge */
-        }
-
-        html::-webkit-scrollbar {
-            display: none;
-            /* Chrome, Safari, Opera */
         }
     </style>
 

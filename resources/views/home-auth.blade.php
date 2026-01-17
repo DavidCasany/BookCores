@@ -137,73 +137,73 @@
                     @php
                     $totalItems = 0;
                     if(auth()->check()){
-                    // Busquem la cistella activa de l'usuari
                     $cistella = \App\Models\Compra::where('user_id', auth()->id())
-                    ->latest() // Agafem l'última (suposem que és l'activa)
-                    ->first();
+                    ->where('estat', 'en_proces') // <--- AFEGIT: Només mirem cistelles obertes
+                        ->latest()
+                        ->first();
 
-                    if($cistella) {
-                    $totalItems = $cistella->llibres->sum('pivot.quantitat');
-                    }
-                    }
-                    @endphp
+                        if($cistella) {
+                        $totalItems = $cistella->llibres->sum('pivot.quantitat');
+                        }
+                        }
+                        @endphp
 
-                    <a href="{{ route('cistella.index') }}"
-                        class="relative p-2 transition transform hover:scale-110 mr-2"
-                        :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
-                        title="La teva cistella">
+                        <a href="{{ route('cistella.index') }}"
+                            class="relative p-2 transition transform hover:scale-110 mr-2"
+                            :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
+                            title="La teva cistella">
 
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
 
-                        @if($totalItems > 0)
-                        <span class="absolute top-0 right-0 -mt-1 -mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full shadow-sm">
-                            {{ $totalItems }}
-                        </span>
-                        @endif
-                    </a>
-                    {{-- 🛒 FI CODI CISTELLA --}}
+                            @if($totalItems > 0)
+                            <span class="absolute top-0 right-0 -mt-1 -mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full shadow-sm">
+                                {{ $totalItems }}
+                            </span>
+                            @endif
+                        </a>
+                        {{-- 🛒 FI CODI CISTELLA --}}
 
-                    {{-- IDIOMA --}}
-                    <form action="{{ route('home') }}" method="GET" class="hidden sm:flex items-center">
-                        <div class="relative group">
-                            <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border"
-                                :class="scrollAtTop ? 'text-white border-white/50 hover:bg-white/10' : 'text-slate-900 dark:text-white border-slate-300 dark:border-slate-600 hover:border-blue-500'">
-                                <option value="ca" class="text-slate-900" {{ app()->getLocale() == 'ca' ? 'selected' : '' }}>CA</option>
-                                <option value="es" class="text-slate-900" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>ES</option>
-                                <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
-                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                </svg>
+                        {{-- IDIOMA --}}
+                        <form action="{{ route('home') }}" method="GET" class="hidden sm:flex items-center">
+                            <div class="relative group">
+                                <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border"
+                                    :class="scrollAtTop ? 'text-white border-white/50 hover:bg-white/10' : 'text-slate-900 dark:text-white border-slate-300 dark:border-slate-600 hover:border-blue-500'">
+                                    <option value="ca" class="text-slate-900" {{ app()->getLocale() == 'ca' ? 'selected' : '' }}>CA</option>
+                                    <option value="es" class="text-slate-900" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>ES</option>
+                                    <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
+                                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="hidden sm:block h-6 w-px transition-colors duration-300" :class="scrollAtTop ? 'bg-white/40' : 'bg-slate-300 dark:bg-slate-600'"></div>
+
+                        {{-- MENÚ USUARI (BOLA BLAVA FIXA) --}}
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
+                                <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                            </button>
+                            <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-3 w-56 rounded-xl shadow-2xl py-2 z-50 border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800" x-cloak
+                                x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 -translate-y-2" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
+                                <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 mb-2">
+                                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Hola,') }}</p>
+                                    <p class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
+                                </div>
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 transition-colors">{{ __('El meu perfil') }}</a>
+                                <div class="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">{{ __('Tancar sessió') }}</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </form>
-
-                    <div class="hidden sm:block h-6 w-px transition-colors duration-300" :class="scrollAtTop ? 'bg-white/40' : 'bg-slate-300 dark:bg-slate-600'"></div>
-
-                    {{-- MENÚ USUARI (BOLA BLAVA FIXA) --}}
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
-                            <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
-                        </button>
-                        <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-3 w-56 rounded-xl shadow-2xl py-2 z-50 border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800" x-cloak
-                            x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 -translate-y-2" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
-                            <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 mb-2">
-                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Hola,') }}</p>
-                                <p class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
-                            </div>
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 transition-colors">{{ __('El meu perfil') }}</a>
-                            <div class="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">{{ __('Tancar sessió') }}</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

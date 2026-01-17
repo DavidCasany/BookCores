@@ -12,7 +12,9 @@ class CistellaController extends Controller
     // MOSTRAR LA CISTELLA
     public function index()
     {
+        // 🟢 CANVI: Filtrem per estat 'en_proces'
         $cistella = Compra::where('user_id', Auth::id())
+                          ->where('estat', 'en_proces') 
                           ->with('llibres')
                           ->latest()
                           ->first();
@@ -26,17 +28,19 @@ class CistellaController extends Controller
         $user = Auth::user();
         $llibre = Llibre::findOrFail($llibre_id);
 
-        // 1. Busquem l'última cistella de l'usuari
-        // Utilitzem latest() que fa servir 'created_at', que segur que existeix
-        $cistella = Compra::where('user_id', $user->id)->latest()->first();
+        // 1. Busquem l'última cistella OBERTA de l'usuari
+        // 🟢 CANVI: Filtrem per estat 'en_proces'
+        $cistella = Compra::where('user_id', $user->id)
+                          ->where('estat', 'en_proces')
+                          ->latest()
+                          ->first();
 
         // Si no en té cap, en creem una de nova
         if (!$cistella) {
             $cistella = Compra::create([
                 'user_id' => $user->id,
-                'total' => 0
-                // ELIMINAT: 'data' => now() (Això causava l'error)
-                // Laravel ja omple 'created_at' automàticament
+                'total' => 0,
+                'estat' => 'en_proces' // Forcem l'estat per seguretat
             ]);
         }
 
@@ -64,7 +68,11 @@ class CistellaController extends Controller
     // ELIMINAR LLIBRE
     public function eliminar($llibre_id)
     {
-        $cistella = Compra::where('user_id', Auth::id())->latest()->first();
+        // 🟢 CANVI: Filtrem per estat 'en_proces'
+        $cistella = Compra::where('user_id', Auth::id())
+                          ->where('estat', 'en_proces')
+                          ->latest()
+                          ->first();
         
         if ($cistella) {
             $cistella->llibres()->detach($llibre_id);
@@ -77,7 +85,11 @@ class CistellaController extends Controller
     // ACTUALITZAR QUANTITAT
     public function actualitzarQuantitat(Request $request, $llibre_id)
     {
-        $cistella = Compra::where('user_id', Auth::id())->latest()->first();
+        // 🟢 CANVI: Filtrem per estat 'en_proces'
+        $cistella = Compra::where('user_id', Auth::id())
+                          ->where('estat', 'en_proces')
+                          ->latest()
+                          ->first();
         
         if (!$cistella) return redirect()->back();
 

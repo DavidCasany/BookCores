@@ -113,10 +113,14 @@
                             <span>{{ number_format($cistella->total, 2) }} €</span>
                         </div>
 
-                        <button class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-blue-900/50 flex justify-center items-center gap-2">
-                            <span>Procedir al Pagament</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                        </button>
+                        {{-- BOTÓ DE PAGAMENT CONNECTAT A STRIPE --}}
+                        <form action="{{ route('pagament.checkout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-blue-900/50 flex justify-center items-center gap-2 group">
+                                <span>Pagar ara</span>
+                                <svg class="w-5 h-5 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

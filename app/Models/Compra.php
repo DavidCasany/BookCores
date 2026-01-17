@@ -14,7 +14,7 @@ class Compra extends Model
     protected $primaryKey = 'id_compra';
 
     // 2. Camps que es poden omplir massivament (necessari per al firstOrCreate)
-    protected $fillable = ['total', 'user_id'];
+    protected $fillable = ['total', 'user_id', 'estat'];
 
     // 3. RELACIÓ CLAU: Una compra té molts llibres
     public function llibres()
