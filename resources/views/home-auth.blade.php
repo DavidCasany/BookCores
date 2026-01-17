@@ -90,7 +90,7 @@
     <header class="fixed w-full z-50 py-3 transition-colors duration-300">
         <div class="absolute inset-0 bg-white/20 backdrop-blur-md border-b border-white/20 shadow-sm -z-10 transition-colors duration-300"
             :class="scrollAtTop ? 'bg-white/10 border-white/20' : 'bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 shadow-md'"></div>
-        
+
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex justify-between items-center">
                 {{-- LOGO --}}
@@ -98,7 +98,8 @@
                     <a href="{{ route('home') }}" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors">
                         <svg class="h-8 w-8 drop-shadow-md transition-colors duration-300" viewBox="0 0 24 24" fill="none"
                             :stroke="scrollAtTop ? '#3b82f6' : (darkMode ? '#60a5fa' : '#2563eb')" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                         </svg>
                         <span class="font-bold transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-900 dark:text-white'">Book</span>
                         <span class="drop-shadow-md font-bold transition-colors duration-300" :class="scrollAtTop ? 'text-blue-500' : 'text-blue-600 dark:text-blue-400'">Cores</span>
@@ -106,21 +107,34 @@
                 </div>
 
                 <div class="flex items-center space-x-6">
+                    {{-- ENLLAÇ BIBLIOTECA --}}
+                    <a href="{{ route('biblioteca') }}"
+                        class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500"
+                        :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'">
+                        {{ __('BIBLIOTECA') }}
+                    </a>
                     {{-- LUPA --}}
                     <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
-                       :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
-                       title="{{ __('Cerca') }}">
-                        <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
+                        title="{{ __('Cerca') }}">
+                        <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
                     </a>
 
-                    {{-- 🛒 CISTELLA --}}
+                    {{-- 🛒 CISTELLA (LÒGICA CORREGIDA PER A STRIPE) --}}
                     @php
                     $totalItems = 0;
                     if(auth()->check()){
-                        $cistella = \App\Models\Compra::where('user_id', auth()->id())->latest()->first();
-                        if($cistella) {
-                            $totalItems = $cistella->llibres->sum('pivot.quantitat');
-                        }
+                    // Aquesta línia és el canvi important: filtre 'en_proces'
+                    $cistella = \App\Models\Compra::where('user_id', auth()->id())
+                    ->where('estat', 'en_proces')
+                    ->latest()
+                    ->first();
+
+                    if($cistella) {
+                    $totalItems = $cistella->llibres->sum('pivot.quantitat');
+                    }
                     }
                     @endphp
 
@@ -148,14 +162,18 @@
                                 <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
-                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
                             </div>
                         </div>
                     </form>
 
                     <div class="hidden sm:block h-6 w-px transition-colors duration-300" :class="scrollAtTop ? 'bg-white/40' : 'bg-slate-300 dark:bg-slate-600'"></div>
 
-                    {{-- MENÚ USUARI --}}
+                    {{-- MENÚ USUARI O LOGIN --}}
+                    @auth
+                    {{-- SI ESTÀ LOGUEJAT --}}
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
                             <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
@@ -175,6 +193,14 @@
                             </div>
                         </div>
                     </div>
+                    @else
+                    {{-- SI ÉS CONVIDAT --}}
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
+                        <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
+                    </div>
+                    @endauth
+
                 </div>
             </div>
         </div>
@@ -224,7 +250,6 @@
                     {{ __('Tendències ara mateix') }} <span class="text-yellow-500">🔥</span>
                 </h2>
                 
-                {{-- Contenidor Relatiu per posar les fletxes --}}
                 <div class="relative group/carousel">
                     {{-- Fletxa Esquerra --}}
                     <button @click="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4">
@@ -259,7 +284,6 @@
                                     </h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                                     
-                                    {{-- ELIMINAT EL BOTÓ PLUS QUE HI HAVIA AQUÍ --}}
                                     <div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
                                         <p class="text-lg font-extrabold text-slate-900 dark:text-white">{{ number_format($llibre->preu, 2, ',', '.') }} €</p>
                                     </div>
@@ -278,7 +302,7 @@
                 </div>
             </div>
 
-            {{-- SECCIÓ RECOMANATS (També amb fletxes) --}}
+            {{-- SECCIÓ RECOMANATS --}}
             <div x-data="{ 
                 scrollLeft() { $refs.container2.scrollBy({ left: -300, behavior: 'smooth' }); },
                 scrollRight() { $refs.container2.scrollBy({ left: 300, behavior: 'smooth' }); }
@@ -288,12 +312,16 @@
                 </h2>
                 
                 <div class="relative group/carousel">
+                    {{-- Fletxa Esquerra --}}
                     <button @click="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
 
                     <div x-ref="container2" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
                         @foreach($llibres->reverse() as $llibre)
+                        {{-- 📊 CÀLCUL NOTA DINÀMICA TAMBÉ AQUESTA FILA --}}
+                        @php $notaLoop = $llibre->ressenyes->avg('puntuacio'); @endphp
+
                         <div class="flex-shrink-0 w-64 snap-center">
                             <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="group relative bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full cursor-pointer decoration-0">
                                 <div class="aspect-[2/3] w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700 relative shadow-md mb-4">
@@ -302,14 +330,28 @@
                                     @else
                                     <div class="flex items-center justify-center h-full text-slate-400"><span class="text-4xl">📖</span></div>
                                     @endif
+
+                                    {{-- NOTA CALCULADA DINÀMICA --}}
+                                    <span class="absolute top-2 right-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-slate-900 dark:text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
+                                        <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                        {{ $notaLoop ? number_format($notaLoop, 1) : '-' }}
+                                    </span>
                                 </div>
-                                <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition">{{ $llibre->titol }}</h3>
-                                <p class="text-lg font-extrabold text-blue-600 dark:text-blue-400 mt-1">{{ number_format($llibre->preu, 2) }} €</p>
+                                <div class="flex flex-col flex-grow">
+                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition">{{ $llibre->titol }}</h3>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
+                                    
+                                    {{-- NOMÉS PREU --}}
+                                    <div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
+                                        <p class="text-lg font-extrabold text-blue-600 dark:text-blue-400">{{ number_format($llibre->preu, 2) }} €</p>
+                                    </div>
+                                </div>
                             </a>
                         </div>
                         @endforeach
                     </div>
 
+                    {{-- Fletxa Dreta --}}
                     <button @click="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
@@ -319,7 +361,7 @@
         </div>
     </main>
 
-    {{-- FOOTER (Sense canvis importants, només per tancar el fitxer) --}}
+    {{-- FOOTER --}}
     <footer class="fixed bottom-0 left-0 w-full h-[30vh] bg-slate-300 dark:bg-slate-900 text-slate-800 dark:text-slate-300 flex flex-col justify-between overflow-hidden transition-colors duration-500"
         :class="footerVisible ? 'z-10' : '-z-10'">
         <div class="flex-grow flex items-center relative z-10 py-10">
