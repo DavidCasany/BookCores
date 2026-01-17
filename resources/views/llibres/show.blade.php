@@ -38,9 +38,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
-        [x-cloak] {
-            display: none !important;
-        }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 
@@ -60,11 +58,13 @@
         }
     }">
 
-    {{-- CÀLCUL DINÀMIC DE LA NOTA MITJANA --}}
+    {{-- 📊 CÀLCUL DINÀMIC DE LA NOTA --}}
     @php
-    // Calculem la mitjana de les puntuacions de les ressenyes d'aquest llibre
-    $mitjana = $llibre->ressenyes->avg('puntuacio');
-    // Si no hi ha ressenyes, $mitjana serà null
+        // Obtenim la col·lecció de ressenyes
+        $ressenyes = $llibre->ressenyes;
+        $teRessenyes = $ressenyes->count() > 0;
+        // Calculem la mitjana només si n'hi ha
+        $mitjana = $teRessenyes ? $ressenyes->avg('puntuacio') : null;
     @endphp
 
     {{-- HEADER --}}
@@ -88,13 +88,17 @@
                 </div>
 
                 <div class="flex items-center space-x-6">
-                    {{-- ENLLAÇ BIBLIOTECA --}}
-                    <a href="{{ route('biblioteca') }}"
-                        class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500"
-                        :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'">
+                    
+                    {{-- 📚 BIBLIOTECA (Només visible si ESTÀS LOGUEJAT) --}}
+                    @auth
+                    <a href="{{ route('biblioteca') }}" 
+                       class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500 hidden sm:block"
+                       :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'">
                         {{ __('BIBLIOTECA') }}
                     </a>
-                    {{-- LUPA --}}
+                    @endauth
+
+                    {{-- LUPA (Visible sempre) --}}
                     <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
                         :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
                         title="{{ __('Cerca') }}">
@@ -103,35 +107,30 @@
                         </svg>
                     </a>
 
-                    {{-- 🛒 CISTELLA (LÒGICA CORREGIDA PER A STRIPE) --}}
-                    @php
-                    $totalItems = 0;
-                    if(auth()->check()){
-                    // Aquesta línia és el canvi important: filtre 'en_proces'
-                    $cistella = \App\Models\Compra::where('user_id', auth()->id())
-                    ->where('estat', 'en_proces')
-                    ->latest()
-                    ->first();
+                    {{-- 🛒 CISTELLA (Només visible si ESTÀS LOGUEJAT) --}}
+                    @auth
+                        @php
+                        $totalItems = 0;
+                        $cistella = \App\Models\Compra::where('user_id', auth()->id())->where('estat', 'en_proces')->latest()->first();
+                        if($cistella) {
+                            $totalItems = $cistella->llibres->sum('pivot.quantitat');
+                        }
+                        @endphp
 
-                    if($cistella) {
-                    $totalItems = $cistella->llibres->sum('pivot.quantitat');
-                    }
-                    }
-                    @endphp
-
-                    <a href="{{ route('cistella.index') }}"
-                        class="relative p-2 transition transform hover:scale-110 mr-2"
-                        :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
-                        title="{{ __('La teva cistella') }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        @if($totalItems > 0)
-                        <span class="absolute top-0 right-0 -mt-1 -mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full shadow-sm">
-                            {{ $totalItems }}
-                        </span>
-                        @endif
-                    </a>
+                        <a href="{{ route('cistella.index') }}"
+                            class="relative p-2 transition transform hover:scale-110 mr-2"
+                            :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
+                            title="{{ __('La teva cistella') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            @if($totalItems > 0)
+                            <span class="absolute top-0 right-0 -mt-1 -mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full shadow-sm">
+                                {{ $totalItems }}
+                            </span>
+                            @endif
+                        </a>
+                    @endauth
 
                     {{-- IDIOMA --}}
                     <form action="{{ route('home') }}" method="GET" class="hidden sm:flex items-center">
@@ -143,9 +142,7 @@
                                 <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
-                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                </svg>
+                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                             </div>
                         </div>
                     </form>
@@ -154,32 +151,30 @@
 
                     {{-- MENÚ USUARI O LOGIN --}}
                     @auth
-                    {{-- SI ESTÀ LOGUEJAT --}}
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
-                            <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
-                        </button>
-                        <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-3 w-56 rounded-xl shadow-2xl py-2 z-50 border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800" x-cloak
-                            x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 -translate-y-2" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
-                            <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 mb-2">
-                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Hola,') }}</p>
-                                <p class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
-                            </div>
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 transition-colors">{{ __('El meu perfil') }}</a>
-                            <div class="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">{{ __('Tancar sessió') }}</button>
-                                </form>
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
+                                <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                            </button>
+                            <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-3 w-56 rounded-xl shadow-2xl py-2 z-50 border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800" x-cloak
+                                x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 -translate-y-2" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
+                                <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 mb-2">
+                                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Hola,') }}</p>
+                                    <p class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
+                                </div>
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 transition-colors">{{ __('El meu perfil') }}</a>
+                                <div class="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">{{ __('Tancar sessió') }}</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     @else
-                    {{-- SI ÉS CONVIDAT --}}
-                    <div class="flex items-center gap-4">
-                        <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
-                        <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
-                    </div>
+                        <div class="flex items-center gap-4">
+                            <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
+                            <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
+                        </div>
                     @endauth
 
                 </div>
@@ -187,22 +182,18 @@
         </div>
     </header>
 
-    {{-- BOTÓ TEMA (AMB GLOW COM AL HOME) --}}
+    {{-- BOTÓ TEMA (AMB GLOW) --}}
     <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
         <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
             :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>
         <button @click="toggleTheme()" class="relative z-10 p-4 rounded-full transition-all duration-300 transform hover:scale-110 border border-slate-200/20 dark:border-slate-700/50"
             :class="darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white text-slate-800'">
-            <svg x-show="darkMode" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            <svg x-show="!darkMode" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
+            <svg x-show="darkMode" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            <svg x-show="!darkMode" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
         </button>
     </div>
 
-    {{-- CONTINGUT --}}
+    {{-- CONTINGUT PRINCIPAL --}}
     <main class="pt-24 pb-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -213,9 +204,11 @@
                 {{ __('Tornar al catàleg') }}
             </a>
 
-            {{-- FITXA LLIBRE --}}
+            {{-- FITXA DEL LLIBRE --}}
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 mb-16">
                 <div class="grid grid-cols-1 md:grid-cols-12">
+                    
+                    {{-- Portada --}}
                     <div class="md:col-span-5 bg-slate-100 dark:bg-slate-900/50 p-8 flex items-center justify-center">
                         <div class="relative group">
                             @if($llibre->img_portada)
@@ -223,19 +216,19 @@
                             @else
                             <div class="w-64 h-96 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-6xl shadow-inner">📘</div>
                             @endif
-
-                            {{-- 🌟 NOTA MITJANA DINÀMICA --}}
+                            
+                            {{-- ETIQUETA DE NOTA (DINÀMICA) --}}
                             <div class="absolute -top-4 -right-4 bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-lg border border-slate-100 dark:border-slate-700 flex items-center gap-1">
-                                {{-- Si hi ha nota, estrella groga. Si no, grisa --}}
-                                <span class="text-xl {{ $mitjana ? 'text-yellow-500' : 'text-slate-300' }}">★</span>
+                                {{-- Si hi ha nota: Estrella groga. Si no: Estrella grisa --}}
+                                <span class="text-xl {{ $teRessenyes ? 'text-yellow-500' : 'text-slate-300' }}">★</span>
                                 <span class="font-black text-slate-900 dark:text-white">
-                                    {{ $mitjana ? number_format($mitjana, 1) : '-' }}
+                                    {{ $teRessenyes ? number_format($mitjana, 1) : '-' }}
                                 </span>
                             </div>
-
                         </div>
                     </div>
 
+                    {{-- Informació --}}
                     <div class="md:col-span-7 p-8 md:p-12 flex flex-col justify-center">
                         <div class="mb-6">
                             <span class="inline-block px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-4">
@@ -272,13 +265,13 @@
                 </div>
             </div>
 
-            {{-- ZONA RESSENYES (XAT/FÒRUM) --}}
+            {{-- ZONA RESSENYES (XAT) --}}
             <div class="max-w-4xl mx-auto">
                 <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                     <span>💬</span> {{ __('Comunitat de lectors') }}
                 </h3>
 
-                {{-- NOVA RESSENYA AMB ESTRELLES INTERACTIVES --}}
+                {{-- FORMULARI RESSENYA --}}
                 @auth
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mb-10">
                     <h4 class="font-bold text-lg mb-4 dark:text-white">{{ __('Publicar una ressenya') }}</h4>
@@ -287,7 +280,6 @@
                         @csrf
                         <input type="hidden" name="llibre_id" value="{{ $llibre->id_llibre }}">
 
-                        {{-- ESTRELLES INTERACTIVES --}}
                         <div class="mb-4" x-data="{ rating: 0, hover: 0 }">
                             <label class="block text-xs font-bold uppercase text-slate-500 mb-1">{{ __('Puntuació') }}</label>
                             <div class="flex gap-2" @mouseleave="hover = 0">
@@ -301,7 +293,7 @@
                                         <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                                     </svg>
                                     </label>
-                                    @endfor
+                                @endfor
                             </div>
                         </div>
 
@@ -319,7 +311,7 @@
                 </div>
                 @endauth
 
-                {{-- LLISTA RESSENYES --}}
+                {{-- LLISTAT RESSENYES --}}
                 <div class="space-y-8">
                     @foreach($llibre->ressenyes->whereNull('resposta_a_id') as $ressenya)
                     <div x-data="{ replyOpen: false }">

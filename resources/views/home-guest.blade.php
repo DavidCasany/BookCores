@@ -84,7 +84,7 @@
     @endphp
 
     <script>
-        window.sliderData = {!! json_encode($llibresCollection) !!};
+        window.sliderData = <?php echo json_encode($llibresCollection); ?>;
     </script>
 
     {{-- BOTÓ TEMA --}}
