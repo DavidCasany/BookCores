@@ -31,4 +31,21 @@ class Compra extends Model
     {
         return $this->belongsTo(User::class);
     }
+    // MOSTRAR LA BIBLIOTECA (Llibres comprats)
+    public function biblioteca()
+    {
+        // 1. Busquem totes les compres PAGADES de l'usuari
+        $compres = Compra::where('user_id', \Illuminate\Support\Facades\Auth::id())
+                         ->where('estat', 'pagat')
+                         ->with('llibres.autor') // Carreguem llibres i autors
+                         ->get();
+
+        // 2. Extraiem els llibres i eliminem duplicats (per si n'ha comprat un dos cops)
+        // Utilitzem flatMap per ajuntar totes les col·leccions de llibres en una de sola
+        $llibres = $compres->flatMap(function ($compra) {
+            return $compra->llibres;
+        })->unique('id_llibre');
+
+        return view('biblioteca.index', compact('llibres'));
+    }
 }

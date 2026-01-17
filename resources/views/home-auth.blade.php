@@ -125,6 +125,12 @@
                 </div>
 
                 <div class="flex items-center space-x-6">
+                    {{-- ENLLAÇ BIBLIOTECA --}}
+                    <a href="{{ route('biblioteca') }}"
+                        class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500"
+                        :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'">
+                        {{ __('BIBLIOTECA') }}
+                    </a>
                     {{-- LUPA --}}
                     <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
                         :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"

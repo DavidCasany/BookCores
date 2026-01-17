@@ -38,7 +38,9 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -60,9 +62,9 @@
 
     {{-- CÀLCUL DINÀMIC DE LA NOTA MITJANA --}}
     @php
-        // Calculem la mitjana de les puntuacions de les ressenyes d'aquest llibre
-        $mitjana = $llibre->ressenyes->avg('puntuacio');
-        // Si no hi ha ressenyes, $mitjana serà null
+    // Calculem la mitjana de les puntuacions de les ressenyes d'aquest llibre
+    $mitjana = $llibre->ressenyes->avg('puntuacio');
+    // Si no hi ha ressenyes, $mitjana serà null
     @endphp
 
     {{-- HEADER --}}
@@ -86,6 +88,12 @@
                 </div>
 
                 <div class="flex items-center space-x-6">
+                    {{-- ENLLAÇ BIBLIOTECA --}}
+                    <a href="{{ route('biblioteca') }}"
+                        class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500"
+                        :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'">
+                        {{ __('BIBLIOTECA') }}
+                    </a>
                     {{-- LUPA --}}
                     <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
                         :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
@@ -97,18 +105,18 @@
 
                     {{-- 🛒 CISTELLA (LÒGICA CORREGIDA PER A STRIPE) --}}
                     @php
-                        $totalItems = 0;
-                        if(auth()->check()){
-                            // Aquesta línia és el canvi important: filtre 'en_proces'
-                            $cistella = \App\Models\Compra::where('user_id', auth()->id())
-                                ->where('estat', 'en_proces') 
-                                ->latest()
-                                ->first();
-                            
-                            if($cistella) {
-                                $totalItems = $cistella->llibres->sum('pivot.quantitat');
-                            }
-                        }
+                    $totalItems = 0;
+                    if(auth()->check()){
+                    // Aquesta línia és el canvi important: filtre 'en_proces'
+                    $cistella = \App\Models\Compra::where('user_id', auth()->id())
+                    ->where('estat', 'en_proces')
+                    ->latest()
+                    ->first();
+
+                    if($cistella) {
+                    $totalItems = $cistella->llibres->sum('pivot.quantitat');
+                    }
+                    }
                     @endphp
 
                     <a href="{{ route('cistella.index') }}"
@@ -135,7 +143,9 @@
                                 <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
-                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
                             </div>
                         </div>
                     </form>
@@ -144,32 +154,32 @@
 
                     {{-- MENÚ USUARI O LOGIN --}}
                     @auth
-                        {{-- SI ESTÀ LOGUEJAT --}}
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
-                                <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
-                            </button>
-                            <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-3 w-56 rounded-xl shadow-2xl py-2 z-50 border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800" x-cloak
-                                x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 -translate-y-2" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
-                                <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 mb-2">
-                                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Hola,') }}</p>
-                                    <p class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
-                                </div>
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 transition-colors">{{ __('El meu perfil') }}</a>
-                                <div class="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">{{ __('Tancar sessió') }}</button>
-                                    </form>
-                                </div>
+                    {{-- SI ESTÀ LOGUEJAT --}}
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
+                            <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                        </button>
+                        <div x-show="open" @click.outside="open = false" class="absolute right-0 mt-3 w-56 rounded-xl shadow-2xl py-2 z-50 border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800" x-cloak
+                            x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 -translate-y-2" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
+                            <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700 mb-2">
+                                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Hola,') }}</p>
+                                <p class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
+                            </div>
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 transition-colors">{{ __('El meu perfil') }}</a>
+                            <div class="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">{{ __('Tancar sessió') }}</button>
+                                </form>
                             </div>
                         </div>
+                    </div>
                     @else
-                        {{-- SI ÉS CONVIDAT --}}
-                        <div class="flex items-center gap-4">
-                            <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
-                            <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
-                        </div>
+                    {{-- SI ÉS CONVIDAT --}}
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
+                        <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
+                    </div>
                     @endauth
 
                 </div>
@@ -183,8 +193,12 @@
             :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>
         <button @click="toggleTheme()" class="relative z-10 p-4 rounded-full transition-all duration-300 transform hover:scale-110 border border-slate-200/20 dark:border-slate-700/50"
             :class="darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white text-slate-800'">
-            <svg x-show="darkMode" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-            <svg x-show="!darkMode" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            <svg x-show="darkMode" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg x-show="!darkMode" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
         </button>
     </div>
 
@@ -209,7 +223,7 @@
                             @else
                             <div class="w-64 h-96 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-6xl shadow-inner">📘</div>
                             @endif
-                            
+
                             {{-- 🌟 NOTA MITJANA DINÀMICA --}}
                             <div class="absolute -top-4 -right-4 bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-lg border border-slate-100 dark:border-slate-700 flex items-center gap-1">
                                 {{-- Si hi ha nota, estrella groga. Si no, grisa --}}

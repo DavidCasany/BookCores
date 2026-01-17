@@ -48,3 +48,5 @@ require __DIR__.'/auth.php';
 
 // Detall llibre (al final per evitar conflictes)
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
+
+Route::get('/biblioteca', [App\Http\Controllers\LlibreController::class, 'biblioteca'])->name('biblioteca');
