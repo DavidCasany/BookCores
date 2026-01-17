@@ -31,7 +31,19 @@ Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
 Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index')
     ->where('idioma', 'ca|en|es|ja');
 
-require DIR.'/auth.php';
+require __DIR__.'/auth.php';
 
 // Detall del llibre (Pública)
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // RUTES CISTELLA
+    Route::post('/cistella/afegir/{id}', [CistellaController::class, 'afegir'])->name('cistella.afegir');
+    Route::get('/cistella', [CistellaController::class, 'index'])->name('cistella.index'); // <--- NOVA RUTA
+    Route::delete('/cistella/eliminar/{id}', [CistellaController::class, 'eliminar'])->name('cistella.eliminar');
+    Route::patch('/cistella/actualitzar/{id}', [CistellaController::class, 'actualitzarQuantitat'])->name('cistella.actualitzar');
+});
