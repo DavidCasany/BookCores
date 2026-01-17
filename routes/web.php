@@ -2,27 +2,28 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Llibre;
-use App\Http\Controllers\LlibreController;  
+use App\Http\Controllers\LlibreController;
 use App\Http\Controllers\CercaController;
+use App\Http\Controllers\CistellaController; // <--- AFEGIT IMPORTACIÓ
 
-// --- CANVI AQUI ---
-// Substituïm tota la funció anònima per la crida al controlador
+// Pàgina d'inici
 Route::get('/', [LlibreController::class, 'index'])->name('home');
-// ------------------
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// RUTES PER A USUARIS REGISTRATS
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // 🟢 NOVA RUTA (Aquesta és la que faltava i feia petar la pàgina)
+    Route::post('/cistella/afegir/{id}', [CistellaController::class, 'afegir'])->name('cistella.afegir');
 });
 
-
-// Rutes públiques (fora del auth middleware si vols que tothom pugui buscar)
+// Rutes públiques de cerca
 Route::get('/cerca', [CercaController::class, 'index'])->name('cerca.index');
 Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
 
@@ -30,7 +31,7 @@ Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
 Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index')
     ->where('idioma', 'ca|en|es|ja');
 
-require __DIR__.'/auth.php';
+require DIR.'/auth.php';
 
-// Aquesta ruta és PÚBLICA
+// Detall del llibre (Pública)
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
