@@ -4,7 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LlibreController;
 use App\Http\Controllers\CercaController;
-use App\Http\Controllers\CistellaController; // <--- AFEGIT IMPORTACIÓ
+use App\Http\Controllers\CistellaController;
+use App\Http\Controllers\RessenyaController; // Assegura't que això està importat
 
 // Pàgina d'inici
 Route::get('/', [LlibreController::class, 'index'])->name('home');
@@ -13,37 +14,31 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// RUTES PER A USUARIS REGISTRATS
+// --- RUTES PER A USUARIS REGISTRATS (TOT JUNT AQUÍ) ---
 Route::middleware('auth')->group(function () {
+    // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // 🟢 NOVA RUTA (Aquesta és la que faltava i feia petar la pàgina)
+    // Cistella
     Route::post('/cistella/afegir/{id}', [CistellaController::class, 'afegir'])->name('cistella.afegir');
+    Route::get('/cistella', [CistellaController::class, 'index'])->name('cistella.index');
+    Route::delete('/cistella/eliminar/{id}', [CistellaController::class, 'eliminar'])->name('cistella.eliminar');
+    
+    // Ressenyes (Aquesta és la ruta que necessites)
+    Route::post('/ressenyes', [RessenyaController::class, 'store'])->name('ressenyes.store');
 });
 
-// Rutes públiques de cerca
+// Rutes públiques
 Route::get('/cerca', [CercaController::class, 'index'])->name('cerca.index');
 Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
 
-// Canvi idioma
+// Idioma
 Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index')
     ->where('idioma', 'ca|en|es|ja');
 
 require __DIR__.'/auth.php';
 
-// Detall del llibre (Pública)
+// Detall llibre
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // RUTES CISTELLA
-    Route::post('/cistella/afegir/{id}', [CistellaController::class, 'afegir'])->name('cistella.afegir');
-    Route::get('/cistella', [CistellaController::class, 'index'])->name('cistella.index'); // <--- NOVA RUTA
-    Route::delete('/cistella/eliminar/{id}', [CistellaController::class, 'eliminar'])->name('cistella.eliminar');
-    Route::patch('/cistella/actualitzar/{id}', [CistellaController::class, 'actualitzarQuantitat'])->name('cistella.actualitzar');
-});

@@ -8,17 +8,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // CORRECCIÓ: 'ressenyes' amb dues S
         Schema::create('ressenyes', function (Blueprint $table) {
             $table->id();
             $table->text('text');
-            $table->integer('puntuacio'); 
+            $table->integer('puntuacio')->nullable();
             
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             
-            // Assegura't que 'llibres' és plural, com vam corregir abans
+            // Relació amb llibres (assegura't que la taula es diu 'llibres' i la clau 'id_llibre')
             $table->foreignId('llibre_id')
                   ->constrained('llibres', column: 'id_llibre')
+                  ->cascadeOnDelete();
+            
+            // AQUESTA ÉS LA CLAU PER A LES RESPOSTES
+            $table->foreignId('resposta_a_id')
+                  ->nullable()
+                  ->constrained('ressenyes') // Es relaciona amb si mateixa
                   ->cascadeOnDelete();
             
             $table->timestamps();
@@ -27,7 +32,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        // CORRECCIÓ: 'ressenyes' amb dues S
         Schema::dropIfExists('ressenyes');
     }
 };
