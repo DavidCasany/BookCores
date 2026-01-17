@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900|georgia:400&display=swap" rel="stylesheet" />
 
-    {{-- ⚡ SCRIPT CRÍTIC ANTIFLAIX --}}
+    {{-- ⚡ SCRIPT CRÍTIC: S'executa abans de carregar el cos per evitar flaix blanc --}}
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -25,26 +25,20 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Figtree', 'sans-serif'],
-                        serif: ['Georgia', 'serif']
-                    },
-                    animation: {
-                        'spin-slow': 'spin 4s linear infinite'
-                    }
+                    fontFamily: { sans: ['Figtree', 'sans-serif'], serif: ['Georgia', 'serif'] },
+                    animation: { 'spin-slow': 'spin 4s linear infinite' }
                 }
             }
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <style>
-        [x-cloak] { display: none !important; }
-    </style>
+    <style> [x-cloak] { display: none !important; } </style>
 </head>
 
 <body class="antialiased bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-500"
     x-data="{ 
         scrollAtTop: false,
+        // Inicialitzem l'estat basant-nos en la classe HTML actual (que l'script del head ja ha posat)
         darkMode: document.documentElement.classList.contains('dark'),
         toggleTheme() {
             this.darkMode = !this.darkMode;
@@ -58,7 +52,7 @@
         }
     }">
 
-    {{-- HEADER (IDÈNTIC AL HOME-AUTH) --}}
+    {{-- HEADER --}}
     <header class="fixed w-full z-50 py-3 transition-colors duration-300">
         <div class="absolute inset-0 bg-white/20 backdrop-blur-md border-b border-white/20 shadow-sm -z-10 transition-colors duration-300"
             :class="scrollAtTop ? 'bg-white/10 border-white/20' : 'bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 shadow-md'"></div>
@@ -88,7 +82,7 @@
                         </svg>
                     </a>
 
-                    {{-- 🛒 CISTELLA --}}
+                    {{-- CISTELLA --}}
                     @php
                     $totalItems = 0;
                     if(auth()->check()){
@@ -130,9 +124,8 @@
 
                     <div class="hidden sm:block h-6 w-px transition-colors duration-300" :class="scrollAtTop ? 'bg-white/40' : 'bg-slate-300 dark:bg-slate-600'"></div>
 
-                    {{-- MENÚ USUARI O LOGIN --}}
+                    {{-- MENÚ USUARI --}}
                     @auth
-                        {{-- SI ESTÀ LOGUEJAT: Mostrem la bola blava amb el menú --}}
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
                                 <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
@@ -153,7 +146,6 @@
                             </div>
                         </div>
                     @else
-                        {{-- SI ÉS CONVIDAT: Mostrem enllaços per entrar --}}
                         <div class="flex items-center gap-4">
                             <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
                             <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
@@ -165,7 +157,7 @@
         </div>
     </header>
 
-    {{-- BOTÓ TEMA (AMB GLOW COM AL HOME) --}}
+    {{-- BOTÓ TEMA (EL MATEIX QUE AL HOME) --}}
     <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
         <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
             :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>
@@ -240,13 +232,13 @@
                 </div>
             </div>
 
-            {{-- ZONA RESSENYES (XAT/FÒRUM) --}}
+            {{-- ZONA RESSENYES --}}
             <div class="max-w-4xl mx-auto">
                 <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                     <span>💬</span> {{ __('Comunitat de lectors') }}
                 </h3>
 
-                {{-- NOVA RESSENYA AMB ESTRELLES INTERACTIVES --}}
+                {{-- NOVA RESSENYA --}}
                 @auth
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mb-10">
                     <h4 class="font-bold text-lg mb-4 dark:text-white">{{ __('Publicar una ressenya') }}</h4>
