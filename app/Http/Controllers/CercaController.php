@@ -63,14 +63,17 @@ class CercaController extends Controller
 
             // 1. Si hi ha tags afegits, filtrem per ells (Lògica AND: ha de complir tots els tags)
             if (!empty($tags)) {
-                foreach ($tags as $tag) {
-                    $books->where(function($q) use ($tag) {
-                        $q->where('genere', $tag)                            // És aquest gènere?
-                          ->orWhereHas('autor', fn($q) => $q->where('nom', $tag))       // O l'autor es diu així?
-                          ->orWhereHas('editorial', fn($q) => $q->where('nom', $tag));  // O l'editorial es diu així?
-                    });
-                }
-            } 
+                $books->where(function($globalQuery) use ($tags) {
+                    foreach ($tags as $tag) {
+                        // Utilitzem orWhere per dir: O és fantasia, O és terror, O és...
+                        $globalQuery->orWhere(function($q) use ($tag) {
+                            $q->where('genere', $tag)
+                              ->orWhereHas('autor', fn($a) => $a->where('nom', $tag))
+                              ->orWhereHas('editorial', fn($e) => $e->where('nom', $tag));
+                        });
+                    }
+                });
+            }
             
             // 2. Si l'usuari està escrivint al input i encara no ha donat a Enter (suggeriments)
             // En aquest cas, busquem llibres que tinguin alguna relació semblant al que escriu

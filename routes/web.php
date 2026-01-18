@@ -8,7 +8,6 @@ use App\Http\Controllers\CistellaController;
 use App\Http\Controllers\RessenyaController;
 use App\Http\Controllers\PagamentController;
 
-
 // Pàgina d'inici
 Route::get('/', [LlibreController::class, 'index'])->name('home');
 
@@ -23,13 +22,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // 🛒 CISTELLA (Aquí és on faltaven coses)
+    // Cistella
     Route::get('/cistella', [CistellaController::class, 'index'])->name('cistella.index');
     Route::post('/cistella/afegir/{id}', [CistellaController::class, 'afegir'])->name('cistella.afegir');
     Route::delete('/cistella/eliminar/{id}', [CistellaController::class, 'eliminar'])->name('cistella.eliminar');
-    Route::patch('/cistella/actualitzar/{id}', [CistellaController::class, 'actualitzarQuantitat'])->name('cistella.actualitzar'); // <--- FALTAVA AQUESTA
+    Route::patch('/cistella/actualitzar/{id}', [CistellaController::class, 'actualitzarQuantitat'])->name('cistella.actualitzar');
 
-    // 💳 PAGAMENT (Preparem el terreny per Stripe)
+    // Pagament
     Route::post('/pagament/checkout', [PagamentController::class, 'checkout'])->name('pagament.checkout');
     Route::get('/pagament/exit', [PagamentController::class, 'exit'])->name('pagament.exit');
     
@@ -37,25 +36,24 @@ Route::middleware('auth')->group(function () {
     Route::post('/ressenyes', [RessenyaController::class, 'store'])->name('ressenyes.store');
 });
 
-// Rutes públiques de cerca
+// --- RUTES PÚBLIQUES ---
+
+// Cerca i Validació de Tags
 Route::get('/cerca', [CercaController::class, 'index'])->name('cerca.index');
 Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
+Route::get('/api/validar-tag', [CercaController::class, 'validarTag'])->name('cerca.validar'); // <--- NOVA RUTA
 
 // Idioma
 Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index')
     ->where('idioma', 'ca|en|es|ja');
 
-require __DIR__.'/auth.php';
-
-// Detall llibre (al final per evitar conflictes)
+// Detall llibre
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
 
-Route::get('/biblioteca', [App\Http\Controllers\LlibreController::class, 'biblioteca'])->name('biblioteca');
+// Biblioteca
+Route::get('/biblioteca', [LlibreController::class, 'biblioteca'])->name('biblioteca');
 
 // Llegir llibre (PDF)
-Route::get('/llegir/{id}', [App\Http\Controllers\LlibreController::class, 'llegir'])->name('llibre.llegir');
+Route::get('/llegir/{id}', [LlibreController::class, 'llegir'])->name('llibre.llegir');
 
-// Rutes Públiques
-Route::get('/cerca', [CercaController::class, 'index'])->name('cerca.index');
-Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
-Route::get('/api/validar-tag', [CercaController::class, 'validarTag'])->name('cerca.validar'); // <--- NOVA RUTA
+require __DIR__.'/auth.php';

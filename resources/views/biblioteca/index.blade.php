@@ -174,17 +174,13 @@
                     const params = new URLSearchParams(window.location.search);
                     if (params.has('q')) this.query = params.get('q');
                     if (params.has('type')) this.type = params.get('type');
-                    // Nota: Els tags des de URL són més complexos de recuperar sense l'array, 
-                    // però el 'q' es restaura bé per a la cerca normal.
                     
                     if (this.query.length > 1 || this.type === 'tag') {
-                        // Si és tag, potser no hi ha 'query' inicial, caldria mirar 'tags[]'
-                        // Per simplicitat, només disparem si hi ha query.
                         if(this.query) this.performSearch();
                     }
                 },
 
-                // ✅ 1. FUNCIÓ VALIDAR I AFEGIR TAG
+                // ✅ 1. FUNCIÓ VALIDAR I AFEGIR TAG (La que et faltava actualitzar)
                 async addTag() {
                     const text = this.query.trim();
                     if (text === '' || this.tags.includes(text)) return;
@@ -202,7 +198,7 @@
                             this.query = '';
                             this.performSearch();
                         } else {
-                            // ❌ NO ÉS VÀLID
+                            // ❌ NO ÉS VÀLID: Mostrem l'error
                             this.inputError = true;
                             // Treiem l'error després de 2 segons
                             setTimeout(() => this.inputError = false, 2000);
