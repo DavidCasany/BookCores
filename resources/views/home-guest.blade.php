@@ -64,7 +64,6 @@
     @scroll.window="handleScroll()">
 
     @php
-    // Preparem les imatges per al slider
     $llibresCollection = $llibresRecents->map(function($llibre) {
         $imgSrc = null;
         if ($llibre->img_hero) {
@@ -78,7 +77,6 @@
         ];
     })->values();
 
-    // TRADUCCIONS DEL TEXT HERO (PHP -> JS)
     $titolPart1 = __('Troba la teva');
     $titolPart2 = __('història preferida');
     @endphp
@@ -98,7 +96,7 @@
         </button>
     </div>
 
-    {{-- HERO FIX (Sense Text als sliders, només fons) --}}
+    {{-- HERO FIX (Sense Text) --}}
     <div class="fixed inset-0 w-full h-screen z-0 bg-slate-900 overflow-hidden" x-data="heroSlider()">
         <div class="flex h-full w-full will-change-transform"
             :class="isAnimating ? 'transition-transform duration-1000 ease-in-out -translate-x-full' : ''"
@@ -123,7 +121,7 @@
         </div>
     </div>
 
-    {{-- FONS SÒLID (Per tapar l'hero quan es fa scroll) --}}
+    {{-- FONS SÒLID --}}
     <div class="fixed inset-0 w-full h-full bg-slate-300 dark:bg-slate-900 transition-opacity duration-700 pointer-events-none" :class="footerVisible ? 'opacity-100 z-5' : 'opacity-0 -z-10'"></div>
 
     {{-- HEADER --}}
@@ -145,6 +143,8 @@
                 </div>
 
                 <div class="flex items-center space-x-6">
+                    
+                    {{-- LUPA --}}
                     <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
                        :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
                        title="{{ __('Cerca') }}">
@@ -158,6 +158,7 @@
                                 <option value="ca" class="text-slate-900" {{ app()->getLocale() == 'ca' ? 'selected' : '' }}>CA</option>
                                 <option value="es" class="text-slate-900" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>ES</option>
                                 <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
+                                <option value="ja" class="text-slate-900" {{ app()->getLocale() == 'ja' ? 'selected' : '' }}>JA</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
                                 <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
@@ -176,7 +177,7 @@
         </div>
     </header>
 
-    {{-- HERO TEXT (AQUÍ ESTÀ EL TEXT QUE NO ES TRADUÏA) --}}
+    {{-- HERO TEXT --}}
     <div class="relative z-20 w-full h-screen flex flex-col items-center justify-center pointer-events-none pb-20"
         x-data="{
             text1: '', text2: '', fullText1: @js($titolPart1), fullText2: @js($titolPart2), cursor: true,
@@ -196,11 +197,9 @@
                 </span>
             </h1>
             <div class="animate-fade-in-up opacity-0" style="animation-delay: 3s; animation-fill-mode: forwards;">
-                {{-- LÍNIA DE SOTA --}}
                 <p class="mt-4 max-w-2xl mx-auto text-xl md:text-2xl text-white/90 drop-shadow-lg font-medium">
                     {{ __('Explora el nostre catàleg i descobreix mons nous.') }}
                 </p>
-                {{-- BOTÓ --}}
                 <div class="mt-12 flex flex-col sm:flex-row justify-center gap-4">
                     <a href="#novetats" class="px-8 py-4 text-lg font-bold rounded-full text-slate-900 bg-white hover:bg-blue-50 transition transform hover:-translate-y-1 shadow-[0_10px_20px_rgba(0,0,0,0.3)]">
                         {{ __('Veure catàleg') }}

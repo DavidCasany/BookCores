@@ -64,7 +64,7 @@
     $llibresCollection = $llibresRecents->map(function($llibre) {
         return [
             'id' => $llibre->id_llibre,
-            'titol' => __($llibre->titol), // <--- TRADUCCIÓ AFEGIDA AQUÍ
+            'titol' => __($llibre->titol),
             'autor' => $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut'),
             'img' => $llibre->img_hero ? asset('img/' . $llibre->img_hero) : ($llibre->img_portada ? asset('img/' . $llibre->img_portada) : null),
         ];
@@ -159,6 +159,7 @@
                                 <option value="ca" class="text-slate-900" {{ app()->getLocale() == 'ca' ? 'selected' : '' }}>CA</option>
                                 <option value="es" class="text-slate-900" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>ES</option>
                                 <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
+                                <option value="ja" class="text-slate-900" {{ app()->getLocale() == 'ja' ? 'selected' : '' }}>JA</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
                                 <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
@@ -279,7 +280,7 @@
 
                                 <div class="flex flex-col flex-grow">
                                     <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
-                                        {{ __($llibre->titol) }} {{-- <--- TRADUCCIÓ AFEGIDA --}}
+                                        {{ __($llibre->titol) }}
                                     </h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                                     
@@ -337,7 +338,7 @@
                                     </span>
                                 </div>
                                 <div class="flex flex-col flex-grow">
-                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition">{{ __($llibre->titol) }}</h3> {{-- <--- TRADUCCIÓ AFEGIDA --}}
+                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition">{{ __($llibre->titol) }}</h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                                     
                                     {{-- NOMÉS PREU --}}
