@@ -13,54 +13,55 @@ class LlibreController extends Controller
     // Pàgina d'inici
     public function index()
     {
+        // 1. Slider: 3 llibres més recents (per al Hero)
         $llibresRecents = Llibre::with('ressenyes')->latest()->take(3)->get();
-        $llibres = Llibre::with(['autor', 'ressenyes'])->get();
+        
+        // 2. Millor Valorats (Per a la secció superior)
+        $millorValorats = Llibre::with(['autor', 'ressenyes'])
+            ->withAvg('ressenyes', 'puntuacio')
+            ->orderByDesc('ressenyes_avg_puntuacio')
+            ->take(10)
+            ->get();
+
+        // 3. Resta de llibres agrupats per gènere
+        $llibresPerGenere = Llibre::with(['autor', 'ressenyes'])
+                                  ->get()
+                                  ->groupBy('genere');
 
         if (Auth::check()) {
-            return view('home-auth', compact('llibres', 'llibresRecents'));
+            return view('home-auth', compact('llibresPerGenere', 'llibresRecents', 'millorValorats'));
         } else {
-            return view('home-guest', compact('llibres', 'llibresRecents'));
+            return view('home-guest', compact('llibresPerGenere', 'llibresRecents', 'millorValorats'));
         }
     }
 
-    // Fitxa del llibre
     public function show($id)
     {
         $llibre = Llibre::with(['autor', 'editorial', 'ressenyes.user'])->findOrFail($id);
         return view('llibres.show', compact('llibre'));
     }
 
-    /**
-     * 📚 LA MEVA BIBLIOTECA (OPTIMITZADA)
-     */
+    // BIBLIOTECA (Es manté igual, agrupada per gènere)
     public function biblioteca(Request $request)
     {
         $user = Auth::user();
         if (!$user) return redirect()->route('login');
 
-        // 1. Consulta optimitzada: Llibres comprats i pagats
         $query = Llibre::whereHas('compres', function($q) use ($user) {
             $q->where('user_id', $user->id)
               ->where('estat', 'pagat'); 
         })->with('autor'); 
 
-        // 2. Filtre de Cerca
         if ($request->has('q') && !empty($request->q)) {
             $query->where('titol', 'LIKE', '%' . $request->q . '%');
         }
 
-        // 3. Ordenació (més recents primer)
-        $query->latest('id_llibre'); 
+        $totsElsLlibres = $query->latest('id_llibre')->get();
+        $llibresPerGenere = $totsElsLlibres->groupBy('genere');
 
-        // 4. Paginació
-        $llibres = $query->paginate(12)->withQueryString();
-
-        return view('biblioteca.index', compact('llibres'));
+        return view('biblioteca.index', compact('llibresPerGenere'));
     }
 
-    /**
-     * 📖 LLEGIR LLIBRE (SEGURETAT)
-     */
     public function llegir($id)
     {
         $llibre = Llibre::findOrFail($id);
@@ -68,7 +69,6 @@ class LlibreController extends Controller
 
         if (!$user) abort(403);
 
-        // 1. Seguretat: Té el llibre comprat?
         $teElLlibre = Compra::where('user_id', $user->id)
             ->where('estat', 'pagat')
             ->whereHas('llibres', function($query) use ($id) {
@@ -76,10 +76,9 @@ class LlibreController extends Controller
             })->exists();
 
         if (!$teElLlibre) {
-            abort(403, "Accés denegat. Has de comprar aquest llibre per llegir-lo.");
+            abort(403, "Accés denegat.");
         }
 
-        // 2. Servir PDF (Assegura't que la ruta és correcta)
         $path = storage_path('app/pdfs/' . $llibre->fitxer_pdf);
 
         if (!file_exists($path)) {
