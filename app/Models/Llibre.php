@@ -9,7 +9,6 @@ class Llibre extends Model
 {
     use HasFactory;
 
-    // ⚠️ AQUESTES 2 LÍNIES SÓN CRÍTIQUES
     protected $table = 'llibres';
     protected $primaryKey = 'id_llibre';
 
@@ -28,9 +27,17 @@ class Llibre extends Model
         return $this->belongsTo(Editorial::class, 'editorial_id');
     }
 
-    // 🟢 CORREGIT: 'ressenyes' amb 'e' (abans posava 'ressenyas')
     public function ressenyes()
     {
         return $this->hasMany(Ressenya::class, 'llibre_id', 'id_llibre');
+    }
+
+    // ✅ AFEGIR AQUESTA FUNCIÓ QUE FALTAVA
+    public function compres()
+    {
+        // Relació inversa de Many-to-Many
+        return $this->belongsToMany(Compra::class, 'compra_llibre', 'llibre_id', 'compra_id')
+                    ->withPivot('quantitat', 'preu_unitari')
+                    ->withTimestamps();
     }
 }
