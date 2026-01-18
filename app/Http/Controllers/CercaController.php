@@ -14,14 +14,13 @@ class CercaController extends Controller
         return view('cerca.index');
     }
 
-    // ✅ NOVA FUNCIÓ: Comprova si el tag existeix a la BD
+    // ✅ Comprova si el tag existeix a la BD
     public function validarTag(Request $request)
     {
         $tag = $request->input('tag');
 
         if (empty($tag)) return response()->json(['valid' => false]);
 
-        // Comprovem si existeix exactament com a Gènere, Autor o Editorial
         $existeixGenere = Llibre::where('genere', $tag)->exists();
         $existeixAutor = Autor::where('nom', $tag)->exists();
         $existeixEditorial = Editorial::where('nom', $tag)->exists();
@@ -35,13 +34,14 @@ class CercaController extends Controller
     {
         $query = $request->input('q');
         $type = $request->input('type');
+        $sort = $request->input('sort', 'relevance'); // 📥 Recuperem el paràmetre de sort
         $tags = $request->input('tags', []);
 
         if (empty($query) && empty($tags)) {
             return response()->json([]);
         }
 
-        // ... (Codi Autor i Editorial es queden igual) ...
+        // --- AUTORS I EDITORIALS (Sense sort avançat, només per nota) ---
         if ($type === 'autor') {
             $autors = Autor::with(['llibres' => function($q) {
                 $q->withAvg('ressenyes', 'puntuacio')->orderByDesc('ressenyes_avg_puntuacio');
@@ -56,16 +56,17 @@ class CercaController extends Controller
             return response()->json($editorials);
         }
 
-        // --- 🏷️ CERCA PER TAGS (MODIFICAT) ---
-        if ($type === 'tag') {
-            $books = Llibre::with(['autor', 'editorial'])
-                           ->withAvg('ressenyes', 'puntuacio');
+        // --- CERCA DE LLIBRES (PER TAG O PER TÍTOL) ---
+        // 1. Preparem la consulta base
+        $books = Llibre::with(['autor', 'editorial'])
+                       ->withAvg('ressenyes', 'puntuacio');
 
-            // 1. Si hi ha tags afegits, filtrem per ells (Lògica AND: ha de complir tots els tags)
+        // 2. Apliquem els filtres (Tag o Títol)
+        if ($type === 'tag') {
             if (!empty($tags)) {
+                // Lògica OR per múltiples tags
                 $books->where(function($globalQuery) use ($tags) {
                     foreach ($tags as $tag) {
-                        // Utilitzem orWhere per dir: O és fantasia, O és terror, O és...
                         $globalQuery->orWhere(function($q) use ($tag) {
                             $q->where('genere', $tag)
                               ->orWhereHas('autor', fn($a) => $a->where('nom', $tag))
@@ -73,29 +74,38 @@ class CercaController extends Controller
                         });
                     }
                 });
-            }
-            
-            // 2. Si l'usuari està escrivint al input i encara no ha donat a Enter (suggeriments)
-            // En aquest cas, busquem llibres que tinguin alguna relació semblant al que escriu
-            elseif ($query) {
+            } elseif ($query) {
+                // Suggeriments mentre escriu
                 $books->where(function($q) use ($query) {
                     $q->where('genere', 'LIKE', "{$query}%")
                       ->orWhereHas('autor', fn($q) => $q->where('nom', 'LIKE', "{$query}%"))
                       ->orWhereHas('editorial', fn($q) => $q->where('nom', 'LIKE', "{$query}%"));
                 });
             }
-
-            return response()->json($books->orderByDesc('ressenyes_avg_puntuacio')->get());
+        } else {
+            // Cerca normal per títol (Comença per...)
+            $books->where('titol', 'LIKE', "{$query}%");
         }
 
-        // --- CERCA DE LLIBRES PER TÍTOL (Per defecte) ---
-        $books = Llibre::with(['autor', 'editorial'])
-            ->withAvg('ressenyes', 'puntuacio')
-            ->where('titol', 'LIKE', "{$query}%")
-            ->orderByDesc('ressenyes_avg_puntuacio')
-            ->limit(20)
-            ->get();
-        
-        return response()->json($books);
+        // 3. 🚀 APLIQUEM L'ORDENACIÓ (SORTING)
+        switch ($sort) {
+            case 'preu_asc':
+                $books->orderBy('preu', 'asc');
+                break;
+            case 'preu_desc':
+                $books->orderBy('preu', 'desc');
+                break;
+            case 'newest':
+                $books->latest(); // Ordena per created_at desc
+                break;
+            case 'relevance':
+            default:
+                // Per defecte: Més ben valorats
+                $books->orderByDesc('ressenyes_avg_puntuacio');
+                break;
+        }
+
+        // 4. Retornem resultats limitats
+        return response()->json($books->limit(20)->get());
     }
 }
