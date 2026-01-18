@@ -15,7 +15,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// --- RUTES PER A USUARIS REGISTRATS ---
+// Rutes d'usuaris registrats
+
 Route::middleware('auth')->group(function () {
     // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -31,12 +32,20 @@ Route::middleware('auth')->group(function () {
     // Pagament
     Route::post('/pagament/checkout', [PagamentController::class, 'checkout'])->name('pagament.checkout');
     Route::get('/pagament/exit', [PagamentController::class, 'exit'])->name('pagament.exit');
-    
+
     // Ressenyes
     Route::post('/ressenyes', [RessenyaController::class, 'store'])->name('ressenyes.store');
-});
 
-// --- RUTES PÚBLIQUES ---
+    // Biblioteca
+    Route::get('/biblioteca', [LlibreController::class, 'biblioteca'])->name('biblioteca');
+
+    // Llegir llibre (PDF)
+    Route::get('/llegir/{id}', [LlibreController::class, 'llegir'])->name('llibre.llegir');
+    
+});
+require __DIR__ . '/auth.php';
+
+// Rutes publiques
 
 // Cerca i Validació de Tags
 Route::get('/cerca', [CercaController::class, 'index'])->name('cerca.index');
@@ -50,10 +59,6 @@ Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index'
 // Detall llibre
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
 
-// Biblioteca
-Route::get('/biblioteca', [LlibreController::class, 'biblioteca'])->name('biblioteca');
 
-// Llegir llibre (PDF)
-Route::get('/llegir/{id}', [LlibreController::class, 'llegir'])->name('llibre.llegir');
 
-require __DIR__.'/auth.php';
+

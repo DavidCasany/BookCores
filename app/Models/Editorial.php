@@ -9,12 +9,12 @@ class Editorial extends Model
 {
     use HasFactory;
 
-    // Definim la taula per evitar problemes de pluralització
+    
     protected $table = 'editorials';
 
     protected $fillable = ['nom', 'descripcio'];
 
-    // Relació: Una editorial té molts llibres
+    // Una editorial té molts llibres (clau forana i clau primria)
     public function llibres()
     {
         return $this->hasMany(Llibre::class, 'editorial_id', 'id');

@@ -1,14 +1,9 @@
 {
     "Panell de Gestió": "Panell de Gestió",
     "Profile": "Perfil",
-    "Log Out": "Tancar sessió",
     "El teu espai - BookCores": "El teu espai - BookCores",
-    "BIBLIOTECA": "BIBLIOTECA",
-    "Cerca": "Cerca",
-    "La teva cistella": "La teva cistella",
     "Hola,": "Hola,",
     "El meu perfil": "El meu perfil",
-    "Tancar sessió": "Tancar sessió",
     "Inicia sessió": "Inicia sessió",
     "Registra't": "Registra't",
     "Tendències ara mateix": "Tendències ara mateix",
@@ -164,7 +159,7 @@
     "Aventures": "Aventures",
     "Terror": "Terror",
 
-    
+
     "Profile Information": "Informació del perfil",
     "Update your account's profile information and email address.": "Actualitza la informació del perfil i l'adreça de correu.",
     "Name": "Nom",
@@ -194,6 +189,7 @@
     "Cerca": "Cerca",
     "La teva cistella": "La teva cistella",
     "Tancar sessió": "Tancar sessió",
-    "La meva Biblioteca": "La meva Biblioteca"
+    "La meva Biblioteca": "La meva Biblioteca",
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Un cop esborrat el compte, tots els seus recursos i dades s'eliminaran permanentment. Abans d'esborrar el compte, si us plau descarrega qualsevol dada o informació que vulguis conservar."
 
 }

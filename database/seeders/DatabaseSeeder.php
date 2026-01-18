@@ -92,7 +92,7 @@ class DatabaseSeeder extends Seeder
                 'nota_promig' => 4.8,
                 'img_portada' => 'vaixell_blau.jpg',
                 'img_hero' => 'h_vaixell_blau.png',
-                'fitxer_pdf' => 'placeholder.pdf',
+                'fitxer_pdf' => 'Navegant_entre_estrelles.pdf',
                 'autor_id' => 3,
                 'editorial_id' => 2,
             ],
