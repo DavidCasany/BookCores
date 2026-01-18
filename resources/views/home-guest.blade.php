@@ -96,7 +96,7 @@
         </button>
     </div>
 
-    {{-- HERO FIX (Sense Text) --}}
+    {{-- CARRUSEL HERO(no text) --}}
     <div class="fixed inset-0 w-full h-screen z-0 bg-slate-900 overflow-hidden" x-data="heroSlider()">
         <div class="flex h-full w-full will-change-transform"
             :class="isAnimating ? 'transition-transform duration-1000 ease-in-out -translate-x-full' : ''"

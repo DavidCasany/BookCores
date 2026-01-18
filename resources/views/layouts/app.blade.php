@@ -32,7 +32,7 @@
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
         <style> [x-cloak] { display: none !important; } </style>
 
-        {{-- ⚡ SCRIPT CRÍTIC ANTIFLAIX --}}
+        {{-- SCRIPT CRÍTIC ANTIFLAIX --}}
         <script>
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -99,7 +99,7 @@
                             <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </a>
     
-                        {{-- 🛒 CISTELLA (LÒGICA INTEGRADA) --}}
+                        {{-- CISTELLA (LÒGICA INTEGRADA) --}}
                         @php
                             $totalItems = 0;
                             if(auth()->check()){

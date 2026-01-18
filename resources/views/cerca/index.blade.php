@@ -72,7 +72,7 @@
 
     <div x-data="cercaApp()" x-init="init()" class="max-w-7xl mx-auto px-4 pt-24">
 
-        {{-- 🔎 BARRA DE CERCA PRINCIPAL --}}
+        {{--BARRA DE CERCA PRINCIPAL --}}
         <div class="flex flex-col md:flex-row gap-4 mb-8 animate-fade-in-down">
             
             {{-- Desplegable Tipus --}}
@@ -136,7 +136,7 @@
             </div>
         </div>
 
-        {{-- 🎛️ BARRA D'EINES --}}
+        {{-- BARRA D'EINES --}}
         <div class="flex flex-col sm:flex-row justify-between items-end sm:items-center mb-6 animate-fade-in-down border-b border-slate-200 dark:border-slate-800 pb-4 gap-4" 
              x-show="results.length > 0 || loading || (query.length > 1)">
             
@@ -147,7 +147,7 @@
                 <span x-show="loading" class="animate-pulse">{{ __('Cercant...') }}</span>
             </p>
 
-            {{-- ✨ CUSTOM DROPDOWN --}}
+            {{-- CUSTOM DROPDOWN --}}
             <div x-data="{ openSort: false }" class="relative z-20">
                 <button @click="openSort = !openSort" @click.outside="openSort = false"
                         class="flex items-center gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-white pl-4 pr-3 py-2.5 rounded-xl font-bold transition shadow-md border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-sm">
@@ -273,7 +273,7 @@
                 validating: false,
                 inputError: false,
 
-                // Opcions d'ordenació (TRADUÏDES)
+                
                 sortOptions: {
                     'relevance': '⭐ {{ __("Millor Valorants") }}',
                     'preu_asc': '📉 {{ __("Preu: Baix a Alt") }}',

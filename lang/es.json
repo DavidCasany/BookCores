@@ -171,31 +171,6 @@
     "Enviar": "Enviar",
     "Login": "Login",
     "per contestar.": "para contestar.",
-
-    "Cistella": "Cesta",
-    "Articles": "Artículos",
-    "Unitat:": "Unidad:",
-    "Eliminar": "Eliminar",
-    "Resum de la comanda": "Resumen del pedido",
-    "Subtotal": "Subtotal",
-    "Impostos": "Impuestos",
-    "Total a pagar": "Total a pagar",
-    "Tramitar comanda": "Tramitar pedido",
-    "Pagament 100% segur amb Stripe": "Pago 100% seguro con Stripe",
-    "Lector": "Lector",
-    "Membre des de": "Miembro desde",
-    "El teu estat": "Tu estado",
-    "Tens tot al dia! Continua explorant el catàleg per trobar la teva propera lectura.": "¡Tienes todo al día! Continúa explorando el catálogo para encontrar tu próxima lectura.",
-    "Explorar Llibres": "Explorar Libros",
-    "Guardar canvis": "Guardar cambios",
-    "Informació del perfil": "Información del perfil",
-    "Actualitza la informació del teu compte i l'adreça de correu electrònic.": "Actualiza la información de tu cuenta y la dirección de correo electrónico.",
-    "Actualitzar contrasenya": "Actualizar contraseña",
-    "Assegura't que el teu compte utilitza una contrasenya llarga i segura.": "Asegúrate de que tu cuenta utiliza una contraseña larga y segura.",
-    "Esborrar compte": "Borrar cuenta",
-    "Un cop esborrat el compte, totes les dades i recursos s'eliminaran permanentment. Si us plau, descarrega qualsevol dada que vulguis conservar abans de procedir.": "Una vez borrada la cuenta, todos los datos y recursos se eliminarán permanentemente. Por favor, descarga cualquier dato que quieras conservar antes de proceder.",
-    "Estàs segur?": "¿Estás seguro?",
-    "Un cop esborrat el compte, totes les dades s'eliminaran permanentment. Introdueix la teva contrasenya per confirmar que vols esborrar el compte de forma definitiva.": "Una vez borrada la cuenta, todos los datos se eliminarán permanentemente. Introduce tu contraseña para confirmar que quieres borrar la cuenta de forma definitiva.",
-    "Cancel·lar": "Cancelar"
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Una vez eliminada la cuenta, todos sus recursos y datos se eliminarán permanentemente. Antes de eliminar tu cuenta, descarga cualquier dato o información que desees conservar."
 
 }

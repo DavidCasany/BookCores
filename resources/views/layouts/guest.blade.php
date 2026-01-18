@@ -10,7 +10,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        {{-- ⚡ SCRIPT DE TEMA (PERQUÈ NO FLAIXEGI AL LOGIN) --}}
+        {{-- SCRIPT DE TEMA (PERQUÈ NO FLAIXEGI AL LOGIN) --}}
         <script>
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
