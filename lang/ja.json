@@ -196,6 +196,32 @@
     "Enviar": "送信",
     "Login": "ログイン",
     "per contestar.": "返信するために。",
-    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "アカウントが削除されると、すべてのリソースとデータが完全に削除されます。アカウントを削除する前に、保持したいデータや情報をダウンロードしてください。"
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "アカウントが削除されると、すべてのリソースとデータが完全に削除されます。アカウントを削除する前に、保持したいデータや情報をダウンロードしてください。",
+
+    "Cistella": "カート",
+    "Articles": "アイテム",
+    "Unitat:": "単価:",
+    "Eliminar": "削除",
+    "Resum de la comanda": "注文概要",
+    "Subtotal": "小計",
+    "Impostos": "税金",
+    "Total a pagar": "支払総額",
+    "Tramitar comanda": "チェックアウト",
+    "Pagament 100% segur amb Stripe": "Stripeによる100%安全な支払い",
+    "Lector": "読者",
+    "Membre des de": "登録日",
+    "El teu estat": "ステータス",
+    "Tens tot al dia! Continua explorant el catàleg per trobar la teva propera lectura.": "すべて順調です！カタログを探索して、次の読み物を見つけてください。",
+    "Explorar Llibres": "本を探す",
+    "Guardar canvis": "変更を保存",
+    "Informació del perfil": "プロフィール情報",
+    "Actualitza la informació del teu compte i l'adreça de correu electrònic.": "アカウントのプロフィール情報とメールアドレスを更新してください。",
+    "Actualitzar contrasenya": "パスワードの更新",
+    "Assegura't que el teu compte utilitza una contrasenya llarga i segura.": "アカウントを安全に保つために、長くランダムなパスワードを使用していることを確認してください。",
+    "Esborrar compte": "アカウント削除",
+    "Un cop esborrat el compte, totes les dades i recursos s'eliminaran permanentment. Si us plau, descarrega qualsevol dada que vulguis conservar abans de procedir.": "アカウントが削除されると、すべてのリソースとデータが完全に削除されます。保持したいデータや情報をダウンロードしてください。",
+    "Estàs segur?": "本当によろしいですか？",
+    "Un cop esborrat el compte, totes les dades s'eliminaran permanentment. Introdueix la teva contrasenya per confirmar que vols esborrar el compte de forma definitiva.": "アカウントが削除されると、すべてのリソースとデータが完全に削除されます。アカウントを完全に削除することを確認するためにパスワードを入力してください。",
+    "Cancel·lar": "キャンセル"
 
 }
