@@ -91,15 +91,6 @@
 
                 <div class="flex items-center space-x-6">
                     
-                    {{-- 🟢 NOMÉS SI ESTÀS AUTENTICAT VEUS LA BIBLIOTECA --}}
-                    @auth
-                    <a href="{{ route('biblioteca') }}"
-                        class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500"
-                        :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'">
-                        {{ __('BIBLIOTECA') }}
-                    </a>
-                    @endauth
-
                     {{-- LUPA (Visible sempre) --}}
                     <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
                         :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
@@ -109,42 +100,23 @@
                         </svg>
                     </a>
 
-                    {{-- 🟢 NOMÉS SI ESTÀS AUTENTICAT VEUS LA CISTELLA --}}
-                    @auth
-                        @php
-                        $totalItems = 0;
-                        if(auth()->check()){
-                            $cistella = \App\Models\Compra::where('user_id', auth()->id())->where('estat', 'en_proces')->latest()->first();
-                            if($cistella) { $totalItems = $cistella->llibres->sum('pivot.quantitat'); }
-                        }
-                        @endphp
+{{-- IDIOMA --}}
+                    <form action="{{ url()->current() }}" method="GET" class="hidden sm:flex items-center">
+                        
+                        {{-- Mantenim els paràmetres actuals (com cerques o filtres) al canviar idioma --}}
+                        @foreach(request()->except('lang') as $key => $value)
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
 
-                        <a href="{{ route('cistella.index') }}"
-                            class="relative p-2 transition transform hover:scale-110 mr-2"
-                            :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
-                            title="{{ __('La teva cistella') }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            @if($totalItems > 0)
-                            <span class="absolute top-0 right-0 -mt-1 -mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full shadow-sm">
-                                {{ $totalItems }}
-                            </span>
-                            @endif
-                        </a>
-                    @endauth
-
-                    {{-- IDIOMA --}}
-                    <form action="{{ route('home') }}" method="GET" class="hidden sm:flex items-center">
                         <div class="relative group">
                             <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border"
-                                :class="scrollAtTop ? 'text-white border-white/50 hover:bg-white/10' : 'text-slate-900 dark:text-white border-slate-300 dark:border-slate-600 hover:border-blue-500'">
+                                :class="scrollAtTop ? 'text-slate-900 dark:text-white border-slate-300 dark:border-slate-600 hover:border-blue-500' : 'text-slate-900 dark:text-white border-slate-300 dark:border-slate-600 hover:border-blue-500'">
                                 <option value="ca" class="text-slate-900" {{ app()->getLocale() == 'ca' ? 'selected' : '' }}>CA</option>
                                 <option value="es" class="text-slate-900" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>ES</option>
                                 <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
                                 <option value="ja" class="text-slate-900" {{ app()->getLocale() == 'ja' ? 'selected' : '' }}>JA</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-slate-600 dark:text-slate-300' : 'text-slate-600 dark:text-slate-300'">
                                 <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                             </div>
                         </div>
@@ -335,9 +307,6 @@
                                 @endif
                             </div>
                             <p class="text-slate-600 dark:text-slate-300 leading-relaxed ml-13">{{ $ressenya->text }}</p>
-                            
-                            {{-- NOMÉS BOTÓ DE CONTESTAR SI ESTÀS AUTENTICAT --}}
-                            @auth
                             <div class="mt-4 flex justify-end">
                                 <button @click="replyOpen = !replyOpen" class="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -346,7 +315,6 @@
                                     {{ __('Contestar') }}
                                 </button>
                             </div>
-                            @endauth
                         </div>
 
                         @if(method_exists($ressenya, 'respostes') && $ressenya->respostes->count() > 0)

@@ -1,28 +1,30 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+        
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="font-serif text-3xl font-bold text-slate-800 dark:text-white leading-tight">
+                {{ __('El meu Perfil') }}
+            </h2>
+        </div>
 
-    <div class="py-12">
-        <div class="w-full mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
+        {{-- SECCIÓ 1: INFORMACIÓ PERFIL --}}
+        <div class="p-4 sm:p-8 bg-white dark:bg-slate-800 shadow-xl sm:rounded-3xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div class="max-w-xl">
+                @include('profile.partials.update-profile-information-form')
             </div>
+        </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
+        {{-- SECCIÓ 2: CONTRASENYA --}}
+        <div class="p-4 sm:p-8 bg-white dark:bg-slate-800 shadow-xl sm:rounded-3xl border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+            <div class="max-w-xl">
+                @include('profile.partials.update-password-form')
             </div>
+        </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
+        {{-- SECCIÓ 3: ELIMINAR COMPTE (PERILL) --}}
+        <div class="p-4 sm:p-8 bg-red-50 dark:bg-red-900/20 shadow-xl sm:rounded-3xl border border-red-200 dark:border-red-800 transition-colors duration-300">
+            <div class="max-w-xl">
+                @include('profile.partials.delete-user-form')
             </div>
         </div>
     </div>
