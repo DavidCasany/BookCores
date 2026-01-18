@@ -148,6 +148,32 @@
     "Enviar": "Send",
     "Login": "Login",
     "per contestar.": "to reply.",
-    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain."
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.",
+
+    "Cistella": "Cart",
+    "Articles": "Items",
+    "Unitat:": "Unit:",
+    "Eliminar": "Remove",
+    "Resum de la comanda": "Order Summary",
+    "Subtotal": "Subtotal",
+    "Impostos": "Taxes",
+    "Total a pagar": "Total to pay",
+    "Tramitar comanda": "Checkout",
+    "Pagament 100% segur amb Stripe": "100% secure payment with Stripe",
+    "Lector": "Reader",
+    "Membre des de": "Member since",
+    "El teu estat": "Your status",
+    "Tens tot al dia! Continua explorant el catàleg per trobar la teva propera lectura.": "You're all caught up! Continue exploring the catalog to find your next read.",
+    "Explorar Llibres": "Explore Books",
+    "Guardar canvis": "Save changes",
+    "Informació del perfil": "Profile Information",
+    "Actualitza la informació del teu compte i l'adreça de correu electrònic.": "Update your account's profile information and email address.",
+    "Actualitzar contrasenya": "Update Password",
+    "Assegura't que el teu compte utilitza una contrasenya llarga i segura.": "Ensure your account is using a long, random password to stay secure.",
+    "Esborrar compte": "Delete Account",
+    "Un cop esborrat el compte, totes les dades i recursos s'eliminaran permanentment. Si us plau, descarrega qualsevol dada que vulguis conservar abans de procedir.": "Once your account is deleted, all of its resources and data will be permanently deleted. Please download any data or information that you wish to retain.",
+    "Estàs segur?": "Are you sure?",
+    "Un cop esborrat el compte, totes les dades s'eliminaran permanentment. Introdueix la teva contrasenya per confirmar que vols esborrar el compte de forma definitiva.": "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.",
+    "Cancel·lar": "Cancel"
 
 }
