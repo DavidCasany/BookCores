@@ -13,17 +13,17 @@ class LlibreController extends Controller
     // Pàgina d'inici
     public function index()
     {
-        // 1. Slider: 3 llibres més recents (per al Hero)
+        // Slier amb recents per fotos hero)
         $llibresRecents = Llibre::with('ressenyes')->latest()->take(3)->get();
         
-        // 2. Millor Valorats (Per a la secció superior)
+        // Millor Valorats per primera fila
         $millorValorats = Llibre::with(['autor', 'ressenyes'])
             ->withAvg('ressenyes', 'puntuacio')
             ->orderByDesc('ressenyes_avg_puntuacio')
             ->take(10)
             ->get();
 
-        // 3. Resta de llibres agrupats per gènere
+        // Llibre per gènere
         $llibresPerGenere = Llibre::with(['autor', 'ressenyes'])
                                   ->get()
                                   ->groupBy('genere');
@@ -41,7 +41,7 @@ class LlibreController extends Controller
         return view('llibres.show', compact('llibre'));
     }
 
-    // BIBLIOTECA (Es manté igual, agrupada per gènere)
+
     public function biblioteca(Request $request)
     {
         $user = Auth::user();

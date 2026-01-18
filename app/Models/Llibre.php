@@ -32,7 +32,7 @@ class Llibre extends Model
         return $this->hasMany(Ressenya::class, 'llibre_id', 'id_llibre');
     }
 
-    // ✅ AFEGIR AQUESTA FUNCIÓ QUE FALTAVA
+    
     public function compres()
     {
         // Relació inversa de Many-to-Many

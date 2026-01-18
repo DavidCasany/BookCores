@@ -12,7 +12,6 @@ class PagamentController extends Controller
 {
     public function checkout()
     {
-        // 1. Busquem la cistella OBERTA de l'usuari
         $cistella = Compra::where('user_id', Auth::id())
                           ->where('estat', 'en_proces')
                           ->with('llibres')
@@ -23,10 +22,10 @@ class PagamentController extends Controller
             return redirect()->route('cistella.index');
         }
 
-        // 2. Configurem Stripe amb la clau secreta del .env
+        // Stripe amb clau secreta (en el .env)
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        // 3. Creem la llista de productes per a Stripe
+        // Se li passa a Stripe la llista de llibres per pagar
         $lineItems = [];
         foreach ($cistella->llibres as $llibre) {
             $lineItems[] = [
@@ -35,35 +34,34 @@ class PagamentController extends Controller
                     'product_data' => [
                         'name' => $llibre->titol,
                     ],
-                    'unit_amount' => $llibre->pivot->preu_unitari * 100, // Stripe vol cèntims!
+                    'unit_amount' => $llibre->pivot->preu_unitari * 100,
                 ],
                 'quantity' => $llibre->pivot->quantitat,
             ];
         }
 
-        // 4. Iniciem la sessió de pagament a Stripe
+        // Sessió de pagament Stripe
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'success_url' => route('pagament.exit'), // On torna si paga bé
-            'cancel_url' => route('cistella.index'), // On torna si cancel·la
+            'success_url' => route('pagament.exit'), 
+            'cancel_url' => route('cistella.index'), 
         ]);
 
-        // 5. Redirigim l'usuari cap a Stripe
         return redirect($session->url);
     }
 
     public function exit()
     {
-        // L'usuari torna de Stripe -> Marquem com a PAGAT
+
         $cistella = Compra::where('user_id', Auth::id())
                           ->where('estat', 'en_proces')
                           ->latest()
                           ->first();
 
         if ($cistella) {
-            $cistella->estat = 'pagat'; // Canviem l'estat!
+            $cistella->estat = 'pagat'; 
             $cistella->save();
         }
 

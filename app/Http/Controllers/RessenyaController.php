@@ -15,7 +15,7 @@ class RessenyaController extends Controller
             'text' => 'required|string|max:1000',
             'llibre_id' => 'required|exists:llibres,id_llibre',
             'puntuacio' => 'nullable|integer|min:1|max:5',
-            'resposta_a_id' => 'nullable|exists:ressenyes,id', // Validem que sigui una resposta vàlida
+            'resposta_a_id' => 'nullable|exists:ressenyes,id', 
         ]);
 
         // Guardem a la BD
@@ -24,7 +24,7 @@ class RessenyaController extends Controller
             'llibre_id' => $request->llibre_id,
             'text' => $request->text,
             'puntuacio' => $request->puntuacio,
-            'resposta_a_id' => $request->resposta_a_id, // Important: Ha de dir 'resposta_a_id'
+            'resposta_a_id' => $request->resposta_a_id,
         ]);
 
         return back()->with('success', 'Comentari publicat!');
