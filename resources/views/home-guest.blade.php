@@ -73,8 +73,6 @@
         }
         return [
             'id' => $llibre->id_llibre,
-            'titol' => $llibre->titol,
-            'autor' => $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut'),
             'img' => $imgSrc,
         ];
     })->values();
@@ -98,7 +96,7 @@
         </button>
     </div>
 
-    {{-- HERO FIX --}}
+    {{-- HERO FIX (Sense Text) --}}
     <div class="fixed inset-0 w-full h-screen z-0 bg-slate-900 overflow-hidden" x-data="heroSlider()">
         <div class="flex h-full w-full will-change-transform"
             :class="isAnimating ? 'transition-transform duration-1000 ease-in-out -translate-x-full' : ''"
@@ -116,12 +114,6 @@
                                 </template>
                                 <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
                             </div>
-                            <div class="absolute bottom-0 left-0 w-full z-20 pb-16 pl-4 md:pl-12 lg:pl-16 flex items-end">
-                                <div class="max-w-3xl p-4">
-                                    <h1 class="text-4xl md:text-7xl font-black text-white drop-shadow-2xl leading-none mb-2" x-text="book.titol"></h1>
-                                    <p class="text-xl md:text-3xl text-blue-200 font-serif italic drop-shadow-lg" x-text="book.autor"></p>
-                                </div>
-                            </div>
                         </a>
                     </template>
                 </div>
@@ -132,74 +124,62 @@
     {{-- FONS SÒLID --}}
     <div class="fixed inset-0 w-full h-full bg-slate-300 dark:bg-slate-900 transition-opacity duration-700 pointer-events-none" :class="footerVisible ? 'opacity-100 z-5' : 'opacity-0 -z-10'"></div>
 
-    {{-- HEADER --}}
+    {{-- HEADER (Net i sense codi residual) --}}
     <header class="fixed w-full z-50 py-3 transition-colors duration-300">
         <div class="absolute inset-0 bg-white/20 backdrop-blur-md border-b border-white/20 shadow-sm -z-10 transition-colors duration-300"
             :class="scrollAtTop ? 'bg-white/10 border-white/20' : 'bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 shadow-md'"></div>
+        
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex justify-between items-center">
                 <div class="flex-shrink-0 flex items-center gap-2">
-                    <a href="/" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors">
+                    <a href="{{ route('home') }}" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors">
                         <svg class="h-8 w-8 drop-shadow-md transition-colors duration-300" viewBox="0 0 24 24" fill="none"
                             :stroke="scrollAtTop ? '#3b82f6' : (darkMode ? '#60a5fa' : '#2563eb')" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                         </svg>
-                        <span class="font-bold transition-colors duration-300"
-                            :class="scrollAtTop ? 'text-white' : 'text-slate-900 dark:text-white'">Book</span>
-                        <span class="drop-shadow-md font-bold transition-colors duration-300"
-                            :class="scrollAtTop ? 'text-blue-500' : 'text-blue-600 dark:text-blue-400'">Cores</span>
+                        <span class="font-bold transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-900 dark:text-white'">Book</span>
+                        <span class="drop-shadow-md font-bold transition-colors duration-300" :class="scrollAtTop ? 'text-blue-500' : 'text-blue-600 dark:text-blue-400'">Cores</span>
                     </a>
                 </div>
+
                 <div class="flex items-center space-x-6">
+                    
+                    {{-- LUPA --}}
+                    <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
+                       :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
+                       title="{{ __('Cerca') }}">
+                        <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </a>
+
+                    {{-- IDIOMA --}}
                     <form action="{{ route('home') }}" method="GET" class="hidden sm:flex items-center">
                         <div class="relative group">
-                            <select name="lang" onchange="this.form.submit()"
-                                class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border"
+                            <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border"
                                 :class="scrollAtTop ? 'text-white border-white/50 hover:bg-white/10' : 'text-slate-900 dark:text-white border-slate-300 dark:border-slate-600 hover:border-blue-500'">
-                                <option value="ca" class="text-slate-900 bg-white" {{ app()->getLocale() == 'ca' ? 'selected' : '' }}>CA</option>
-                                <option value="es" class="text-slate-900 bg-white" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>ES</option>
-                                <option value="en" class="text-slate-900 bg-white" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
-                                <option value="ja" class="text-slate-900 bg-white" {{ app()->getLocale() == 'ja' ? 'selected' : '' }}>JA</option>
+                                <option value="ca" class="text-slate-900" {{ app()->getLocale() == 'ca' ? 'selected' : '' }}>CA</option>
+                                <option value="es" class="text-slate-900" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>ES</option>
+                                <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300"
-                                :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
-                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                </svg>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors duration-300" :class="scrollAtTop ? 'text-white' : 'text-slate-600 dark:text-slate-300'">
+                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                             </div>
                         </div>
                     </form>
-                    <div class="hidden sm:block h-6 w-px transition-colors duration-300"
-                        :class="scrollAtTop ? 'bg-white/40' : 'bg-slate-300 dark:bg-slate-600'"></div>
-                    <nav class="flex space-x-4 items-center">
-                        <a href="{{ route('cerca.index') }}"
-                            class="p-2 transition transform hover:scale-110"
-                            :class="window.scrollY > 50 ? 'text-slate-600 hover:text-blue-900' : 'text-white hover:text-blue-200'"
-                            title="{{ __('Cerca') }}">
-                            <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </a>
-                        @if (Route::has('login'))
-                        @auth
-                        <a href="{{ url('/dashboard') }}" class="text-sm font-bold transition-colors duration-300 hover:text-blue-500"
-                            :class="scrollAtTop ? 'text-white' : 'text-slate-900 dark:text-white'">{{ __('Dashboard') }}</a>
-                        @else
-                        <a href="{{ route('login') }}" class="text-sm font-bold transition-colors duration-300 hover:text-blue-500"
-                            :class="scrollAtTop ? 'text-white' : 'text-slate-900 dark:text-white'">{{ __('Inicia sessió') }}</a>
-                        @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="text-sm font-bold px-5 py-2.5 rounded-full transition shadow-lg bg-blue-600 text-white hover:bg-blue-700">{{ __('Registra\'t') }}</a>
-                        @endif
-                        @endauth
-                        @endif
-                    </nav>
+
+                    <div class="hidden sm:block h-6 w-px transition-colors duration-300" :class="scrollAtTop ? 'bg-white/40' : 'bg-slate-300 dark:bg-slate-600'"></div>
+
+                    {{-- LOGIN / REGISTER (Sense comprovacions @auth perquè estem al Guest) --}}
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('login') }}" class="text-sm font-bold transition-colors duration-300 hover:text-blue-500" :class="scrollAtTop ? 'text-white' : 'text-slate-900 dark:text-white'">{{ __('Inicia sessió') }}</a>
+                        <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
+                    </div>
+
                 </div>
             </div>
         </div>
     </header>
 
-    {{-- HERO TEXT --}}
+    {{-- HERO TEXT (Benvinguda) --}}
     <div class="relative z-20 w-full h-screen flex flex-col items-center justify-center pointer-events-none pb-20"
         x-data="{
             text1: '', text2: '', fullText1: @js($titolPart1), fullText2: @js($titolPart2), cursor: true,
@@ -229,7 +209,8 @@
                 </div>
             </div>
         </div>
-        <div class="absolute bottom-10 animate-bounce">
+        {{-- ⏬ FLETXA MOGUDA MÉS AMUNT (bottom-24) --}}
+        <div class="absolute bottom-24 animate-bounce">
             <svg class="w-8 h-8 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
         </div>
     </div>
@@ -255,7 +236,6 @@
 
                     <div x-ref="container" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
                         @forelse ($llibres as $llibre)
-                        {{-- Càlcul nota per al loop --}}
                         @php $notaLoop = $llibre->ressenyes->avg('puntuacio'); @endphp
                         
                         <div class="flex-shrink-0 w-64 snap-center">
@@ -268,7 +248,6 @@
                                     <div class="flex items-center justify-center h-full text-slate-400"><span class="text-4xl">📖</span></div>
                                     @endif
                                     
-                                    {{-- NOTA CALCULADA DINÀMICA --}}
                                     <span class="absolute top-2 right-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-slate-900 dark:text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
                                         <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                                         {{ $notaLoop ? number_format($notaLoop, 1) : '-' }}
@@ -281,7 +260,6 @@
                                     </h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                                     
-                                    {{-- SENSE BOTÓ PLUS --}}
                                     <div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
                                         <p class="text-lg font-extrabold text-slate-900 dark:text-white">{{ number_format($llibre->preu, 2, ',', '.') }} €</p>
                                     </div>
@@ -293,7 +271,6 @@
                         @endforelse
                     </div>
 
-                    {{-- Fletxa Dreta --}}
                     <button @click="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
@@ -310,14 +287,12 @@
                 </h2>
                 
                 <div class="relative group/carousel">
-                    {{-- Fletxa Esquerra --}}
                     <button @click="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
 
                     <div x-ref="container2" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
                         @foreach($llibres->reverse() as $llibre)
-                        {{-- 📊 CÀLCUL NOTA DINÀMICA TAMBÉ AQUESTA FILA --}}
                         @php $notaLoop = $llibre->ressenyes->avg('puntuacio'); @endphp
 
                         <div class="flex-shrink-0 w-64 snap-center">
@@ -329,7 +304,6 @@
                                     <div class="flex items-center justify-center h-full text-slate-400"><span class="text-4xl">📖</span></div>
                                     @endif
 
-                                    {{-- NOTA CALCULADA DINÀMICA --}}
                                     <span class="absolute top-2 right-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-slate-900 dark:text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
                                         <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                                         {{ $notaLoop ? number_format($notaLoop, 1) : '-' }}
@@ -339,7 +313,6 @@
                                     <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition">{{ $llibre->titol }}</h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                                     
-                                    {{-- NOMÉS PREU --}}
                                     <div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
                                         <p class="text-lg font-extrabold text-blue-600 dark:text-blue-400">{{ number_format($llibre->preu, 2) }} €</p>
                                     </div>
@@ -349,7 +322,6 @@
                         @endforeach
                     </div>
 
-                    {{-- Fletxa Dreta --}}
                     <button @click="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
