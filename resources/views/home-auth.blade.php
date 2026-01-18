@@ -120,7 +120,7 @@
                         </svg>
                     </a>
 
-                    {{-- 🛒 CISTELLA --}}
+                    {{-- CISTELLA --}}
                     @php
                     $totalItems = 0;
                     if(auth()->check()){
@@ -230,7 +230,7 @@
     <main id="novetats" class="relative z-30 -mt-12 bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-md min-h-screen rounded-t-[3rem] transition-all duration-700 ease-out">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
             
-            {{-- 1. MILLOR VALORATS --}}
+            {{-- 1.MILLOR VALORATS --}}
             <div class="mb-16" x-data="{ 
                 scrollLeft() { $refs.container.scrollBy({ left: -300, behavior: 'smooth' }); },
                 scrollRight() { $refs.container.scrollBy({ left: 300, behavior: 'smooth' }); }
@@ -286,7 +286,7 @@
                 </div>
             </div>
 
-            {{-- 2. BUCLE PER GÈNERE --}}
+            {{-- 2.BUCLE PER GÈNERE --}}
             @foreach ($llibresPerGenere as $genere => $llibres)
             <div class="mb-16" x-data="{ 
                 scrollLeft() { $refs.container.scrollBy({ left: -300, behavior: 'smooth' }); },
