@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900|georgia:400&display=swap" rel="stylesheet" />
 
-    {{-- SCRIPT ANTIFLAIX --}}
+    <!-- // evitar flash al carregar -->
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -32,7 +32,6 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
         [x-cloak] { display: none !important; }
-        /* Amagar scrollbar estètic */
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -57,13 +56,13 @@
     }"
     @scroll.window="handleScroll()">
 
-    {{-- HEADER BOOKCORES (El mateix que a Home Auth) --}}
+    <!-- // header -->
     <header class="fixed w-full z-50 py-3 transition-colors duration-300">
         <div class="absolute inset-0 bg-white/70 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-md -z-10 transition-colors duration-300"></div>
 
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex justify-between items-center">
-                {{-- LOGO --}}
+                <!-- // logo -->
                 <div class="flex-shrink-0 flex items-center gap-2">
                     <a href="{{ route('home') }}" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors">
                         <svg class="h-8 w-8 text-blue-600 dark:text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -75,13 +74,13 @@
                 </div>
 
                 <div class="flex items-center space-x-6">
-                    {{-- ENLLAÇ BIBLIOTECA --}}
+                    <!-- // biblio -->
                     <a href="{{ route('biblioteca') }}"
                         class="mr-4 font-bold text-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors border-b-2 border-transparent hover:border-blue-500">
                         {{ __('BIBLIOTECA') }}
                     </a>
                     
-                    {{-- LUPA --}}
+                    <!-- // lupa -->
                     <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110 text-slate-600 dark:text-slate-300 hover:text-blue-600"
                         title="{{ __('Cerca') }}">
                         <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +88,7 @@
                         </svg>
                     </a>
 
-                    {{-- 🛒 CISTELLA --}}
+                    <!-- // icona cistella -->
                     @php
                     $totalItems = 0;
                     if(auth()->check()){
@@ -117,7 +116,7 @@
                         @endif
                     </a>
 
-                    {{-- IDIOMA --}}
+                    <!-- // idioma -->
                     <form action="{{ route('profile.edit') }}" method="GET" class="hidden sm:flex items-center">
                         <div class="relative group">
                             <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border border-slate-300 dark:border-slate-600 hover:border-blue-500 text-slate-600 dark:text-slate-300">
@@ -136,7 +135,7 @@
 
                     <div class="hidden sm:block h-6 w-px bg-slate-300 dark:bg-slate-600"></div>
 
-                    {{-- MENÚ USUARI --}}
+                    <!-- // bola usuari -->
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
                             <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
@@ -147,7 +146,6 @@
                                 <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Hola,') }}</p>
                                 <p class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
                             </div>
-                            {{-- En aquest cas estem al perfil, no cal enllaç a perfil --}}
                             <span class="block px-4 py-2 text-sm text-blue-600 dark:text-blue-400 font-bold bg-slate-50 dark:bg-slate-700/50">{{ __('El meu perfil') }}</span>
                             <div class="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
                                 <form method="POST" action="{{ route('logout') }}">
@@ -165,9 +163,7 @@
 
     <main class="pt-32 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {{-- CAPÇALERA DE PERFIL HERO --}}
         <div class="relative bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl shadow-xl overflow-hidden mb-10 p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 text-white">
-            {{-- Cercle amb inicial --}}
             <div class="w-32 h-32 rounded-full bg-white/20 backdrop-blur-md border-4 border-white/30 flex items-center justify-center shadow-2xl">
                 <span class="text-6xl font-black">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
             </div>
@@ -185,29 +181,28 @@
                 </div>
             </div>
 
-            {{-- Decoració de fons --}}
+            <!-- // fons -->
             <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
             <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-blue-400/20 rounded-full blur-2xl"></div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            {{-- COLUMNA ESQUERRA: INFORMACIÓ I CONTRASENYA --}}
+            <!-- // info i contrassenya, columna esq -->
             <div class="space-y-8">
-                {{-- Targeta Informació --}}
+                <!-- // info -->
                 <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700">
                     @include('profile.partials.update-profile-information-form')
                 </div>
 
-                {{-- Targeta Contrasenya --}}
+                <!-- // contra -->
                 <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-700">
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
 
-            {{-- COLUMNA DRETA: ZONA DE PERILL I ALTRES --}}
+            <!-- // columna dreta -->
             <div class="space-y-8">
-                {{-- ESTAT --}}
                 <div class="bg-blue-50 dark:bg-slate-800/50 p-8 rounded-3xl border border-blue-100 dark:border-slate-700 text-center">
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">🌟 {{ __('El teu estat') }}</h3>
                     <p class="text-slate-600 dark:text-slate-400 mb-6">
@@ -218,7 +213,7 @@
                     </a>
                 </div>
 
-                {{-- Targeta Esborrar Compte --}}
+                <!-- // borrar compte -->
                 <div class="bg-red-50 dark:bg-red-900/10 p-8 rounded-3xl border border-red-100 dark:border-red-900/30">
                     @include('profile.partials.delete-user-form')
                 </div>
@@ -226,14 +221,23 @@
         </div>
     </main>
 
-    {{-- FOOTER --}}
+    
     <footer class="bg-slate-200 dark:bg-slate-800 py-8 mt-auto border-t border-slate-300 dark:border-slate-700">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <p class="text-slate-600 dark:text-slate-400 text-sm font-medium">© {{ date('Y') }} BookCores. {{ __('La teva llibreria digital.') }}</p>
         </div>
     </footer>
 
-    {{-- BOTÓ TEMA FLOTANT --}}
+    <!-- // botó temma -->
     <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
         <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
-            :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4
+            :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>
+        <button @click="toggleTheme()" class="relative z-10 p-4 rounded-full transition-all duration-300 transform hover:scale-110 border border-slate-200/20 dark:border-slate-700/50"
+            :class="darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white text-slate-800'">
+            <svg x-show="darkMode" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            <svg x-show="!darkMode" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+        </button>
+    </div>
+
+</body>
+</html>

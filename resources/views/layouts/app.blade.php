@@ -32,7 +32,7 @@
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
         <style> [x-cloak] { display: none !important; } </style>
 
-        {{-- SCRIPT CRÍTIC ANTIFLAIX --}}
+        <!-- // script solventar flas -->
         <script>
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -61,18 +61,14 @@
         }"
         @scroll.window="handleScroll()">
         
-        {{-- 
-            =============================================
-            HEADER (Còpia exacta del Home-Auth)
-            =============================================
-        --}}
+        <!-- // header -->
         <header class="fixed w-full z-50 py-3 transition-colors duration-300">
             <div class="absolute inset-0 bg-white/20 backdrop-blur-md border-b border-white/20 shadow-sm -z-10 transition-colors duration-300"
                 :class="scrollAtTop ? 'bg-slate-900/10 border-slate-900/10 dark:bg-white/10 dark:border-white/10' : 'bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 shadow-md'"></div>
             
             <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="flex justify-between items-center">
-                    {{-- LOGO --}}
+                    <!-- // logo -->
                     <div class="flex-shrink-0 flex items-center gap-2">
                         <a href="{{ route('home') }}" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors">
                             <svg class="h-8 w-8 drop-shadow-md transition-colors duration-300" viewBox="0 0 24 24" fill="none"
@@ -85,21 +81,21 @@
                     </div>
     
                     <div class="flex items-center space-x-6">
-                        {{-- ENLLAÇ BIBLIOTECA --}}
+                        <!-- // biblio -->
                         <a href="{{ route('biblioteca') }}" 
                            class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500"
                            :class="scrollAtTop ? 'text-slate-600 dark:text-slate-300 hover:text-blue-600' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'">
                             {{ __('BIBLIOTECA') }}
                         </a>
 
-                        {{-- LUPA --}}
+                        <!-- // lupa -->
                         <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
                            :class="scrollAtTop ? 'text-slate-600 dark:text-slate-300 hover:text-blue-600' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
                            title="{{ __('Cerca') }}">
                             <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </a>
     
-                        {{-- CISTELLA (LÒGICA INTEGRADA) --}}
+                        <!-- // cistella -->
                         @php
                             $totalItems = 0;
                             if(auth()->check()){
@@ -130,10 +126,10 @@
                             @endif
                         </a>
     
-                        {{-- IDIOMA --}}
+                    <!-- // idioma -->
                     <form action="{{ url()->current() }}" method="GET" class="hidden sm:flex items-center">
                         
-                        {{-- Mantenim els paràmetres actuals (com cerques o filtres) al canviar idioma --}}
+                       <!-- // mantenir parametres de busqueda -->
                         @foreach(request()->except('lang') as $key => $value)
                             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
@@ -154,7 +150,7 @@
     
                         <div class="hidden sm:block h-6 w-px transition-colors duration-300" :class="scrollAtTop ? 'bg-slate-300 dark:bg-slate-600' : 'bg-slate-300 dark:bg-slate-600'"></div>
     
-                        {{-- MENÚ USUARI --}}
+                        <!-- // bola usuari -->
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none"
                                 :class="scrollAtTop ? 'bg-blue-600 border-blue-600 text-white' : 'bg-blue-600 border-blue-600 text-white'">
@@ -184,7 +180,7 @@
             {{ $slot }}
         </main>
 
-        {{-- BOTÓ TEMA FLOTANT --}}
+        <!-- // botó tema -->
         <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
             <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
                 :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>

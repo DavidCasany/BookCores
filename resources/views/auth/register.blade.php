@@ -25,37 +25,22 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
-{{-- 
-    ESTRUCTURA DE PÀGINA:
-    - bg-slate-900: Fons fosc per defecte per evitar parpellejos blancs.
-    - overflow-hidden: Per evitar barres de desplaçament durant l'animació.
-    - x-data="{ isEntering: true }": Controla l'estat inicial de l'animació.
---}}
+
 <body class="antialiased bg-slate-900 text-slate-100 h-screen w-full overflow-hidden flex items-center justify-center relative"
       x-data="{ isEntering: true }"
       x-init="setTimeout(() => isEntering = false, 50)">
 
-    {{-- 
-        FONS FIX (Imatge estàtica)
-        He posat la imatge del bosc com a exemple, idealment hauria de ser la mateixa
-        que es veia a la home en el moment de clicar, però una imatge fixa elegant funciona bé.
-    --}}
+  
     <div class="fixed inset-0 z-0">
         <img src="{{ asset('img/bosc_verd.jpg') }}" class="w-full h-full object-cover brightness-[0.3]" alt="Fons">
-        {{-- Degradat per millorar llegibilitat --}}
         <div class="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-900/50 to-slate-900/80"></div>
     </div>
 
-    {{-- 
-        CONTENIDOR PRINCIPAL AMB ANIMACIÓ
-        - transition-transform duration-700 ease-out: Mateixa durada que la sortida de la home.
-        - translate-x-full: Comença fora a la dreta.
-        - translate-x-0: Es mou al centre quan isEntering passa a false.
-    --}}
+    
     <div class="relative z-10 w-full max-w-md px-6 py-12 transition-all duration-700 ease-out transform"
          :class="isEntering ? 'translate-x-full opacity-0 scale-95' : 'translate-x-0 opacity-100 scale-100'">
 
-        {{-- Logo i Títol --}}
+        <!-- // logo i títol -->
         <div class="mb-8 text-center">
             <a href="/" class="inline-flex items-center gap-3 text-4xl font-serif font-bold text-white hover:opacity-80 transition-opacity">
                 <svg class="h-10 w-10 text-blue-500 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -66,12 +51,12 @@
             <p class="mt-3 text-slate-400 font-medium text-lg">{{ __('Crea el teu compte') }}</p>
         </div>
 
-        {{-- Targeta de Formulari (Glassmorphism) --}}
+        <!-- // formulari -->
         <div class="w-full bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-8">
             <form method="POST" action="{{ route('register') }}">
                 @csrf
 
-                <!-- Name -->
+                <!-- // nom -->
                 <div>
                     <label for="name" class="block text-sm font-bold text-slate-300 mb-1 ml-1">{{ __('Nom') }}</label>
                     <input id="name" class="block w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-500 transition-all outline-none" 
@@ -79,7 +64,7 @@
                     <x-input-error :messages="$errors->get('name')" class="mt-2 text-red-400 text-sm" />
                 </div>
 
-                <!-- Email Address -->
+                <!-- // gmail -->
                 <div class="mt-5">
                     <label for="email" class="block text-sm font-bold text-slate-300 mb-1 ml-1">{{ __('Email') }}</label>
                     <input id="email" class="block w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-500 transition-all outline-none" 
@@ -87,7 +72,7 @@
                     <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-400 text-sm" />
                 </div>
 
-                <!-- Password -->
+                <!-- // contrassenya -->
                 <div class="mt-5">
                     <label for="password" class="block text-sm font-bold text-slate-300 mb-1 ml-1">{{ __('Contrasenya') }}</label>
                     <input id="password" class="block w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-500 transition-all outline-none" 
@@ -95,7 +80,7 @@
                     <x-input-error :messages="$errors->get('password')" class="mt-2 text-red-400 text-sm" />
                 </div>
 
-                <!-- Confirm Password -->
+                <!-- // confirmar contrassenya -->
                 <div class="mt-5">
                     <label for="password_confirmation" class="block text-sm font-bold text-slate-300 mb-1 ml-1">{{ __('Confirmar Contrasenya') }}</label>
                     <input id="password_confirmation" class="block w-full px-4 py-3 bg-slate-800/50 border border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-slate-500 transition-all outline-none" 

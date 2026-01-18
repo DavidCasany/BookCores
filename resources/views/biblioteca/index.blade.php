@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900|georgia:400&display=swap" rel="stylesheet" />
 
-    {{-- SCRIPT ANTIFLAIX --}}
+    <!-- // codi per evitar flas al carregar la pàgina -->
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -50,11 +50,11 @@
         }
     }">
 
-    {{-- HEADER --}}
+    <!-- // header -->
     <header class="fixed w-full z-50 py-3 transition-colors duration-300 bg-white/70 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex justify-between items-center">
-                {{-- LOGO --}}
+
                 <div class="flex-shrink-0 flex items-center gap-2">
                     <a href="{{ route('home') }}" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors">
                         <svg class="h-8 w-8 text-blue-600 dark:text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -70,7 +70,7 @@
                         {{ __('TORNAR AL CATÀLEG') }}
                     </a>
 
-                    {{-- SELECTOR IDIOMA (AMB JA) --}}
+                    <!-- // idioma -->
                     <form action="{{ route('biblioteca') }}" method="GET" class="hidden sm:flex items-center">
                         <div class="relative group">
                             <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border border-slate-300 dark:border-slate-600 hover:border-blue-500 text-slate-600 dark:text-slate-300">
@@ -85,7 +85,7 @@
                         </div>
                     </form>
                     
-                    {{-- MENÚ USUARI --}}
+                    <!-- // bola usuari -->
                     @auth
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white font-bold border-2 border-blue-600 hover:scale-105 transition shadow-lg">
@@ -108,7 +108,7 @@
         </div>
     </header>
 
-    {{-- BOTÓ TEMA FLOTANT --}}
+    <!-- // boto tema -->
     <div class="fixed bottom-6 right-6 z-[60]">
         <button @click="toggleTheme()" class="p-4 rounded-full bg-slate-800 text-yellow-400 shadow-lg hover:scale-110 transition border border-slate-700 group">
             <svg x-show="darkMode" class="h-6 w-6 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
@@ -116,11 +116,11 @@
         </button>
     </div>
 
-    {{-- MAIN CONTENT --}}
+
     <main class="pt-32 pb-20 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            {{-- CAPÇALERA I CERCADOR --}}
+            <!-- // buscador -->
             <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
                 <div class="flex items-center gap-3">
                     <span class="text-4xl">📚</span>
@@ -136,7 +136,7 @@
                 </form>
             </div>
 
-            {{-- CONTINGUT: BUCLE PER GÈNERE --}}
+            <!-- // bucle segons gènere -->
             @if($llibresPerGenere->isEmpty())
                 <div class="col-span-full py-20 text-center bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
                     <div class="text-6xl mb-4 opacity-50 grayscale">📭</div>
@@ -189,13 +189,12 @@
                                         </div>
                                     </div>
 
-                                    {{-- INFO --}}
                                     <div class="flex-grow">
                                         <h3 class="font-bold text-lg text-slate-900 dark:text-white line-clamp-1 mb-1" title="{{ __($llibre->titol) }}">{{ __($llibre->titol) }}</h3>
                                         <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                                     </div>
 
-                                    {{-- BOTÓ LLEGIR --}}
+                                    <!-- // llegir llibre -->
                                     <a href="{{ route('llibre.llegir', $llibre->id_llibre) }}" target="_blank" class="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-center font-bold rounded-xl transition shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 group-hover:shadow-blue-500/40">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                                         {{ __('Llegir ara') }}
@@ -217,7 +216,7 @@
         </div>
     </main>
 
-    {{-- FOOTER --}}
+    
     <footer class="bg-slate-200 dark:bg-slate-800 py-8 mt-auto border-t border-slate-300 dark:border-slate-700">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <p class="text-slate-600 dark:text-slate-400 text-sm font-medium">© {{ date('Y') }} BookCores. {{ __('La teva llibreria digital.') }}</p>

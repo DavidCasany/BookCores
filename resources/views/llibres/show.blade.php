@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900|georgia:400&display=swap" rel="stylesheet" />
 
-    // codi per evitar flash al carregar pagina
+    <!-- // codi per evitar flash al carregar pagina -->
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -58,7 +58,7 @@
         }
     }">
 
-    // calcul de la nota i URL per tornar enrrere
+    <!-- // calcul de la nota i URL per tornar enrrere -->
     @php
         $ressenyes = $llibre->ressenyes;
         $teRessenyes = $ressenyes->count() > 0;
@@ -69,14 +69,14 @@
         $isFromSearch = str_contains($previousUrl, 'cerca');
     @endphp
 
-    // header
+    <!-- // header -->
     <header class="fixed w-full z-50 py-3 transition-colors duration-300">
         <div class="absolute inset-0 bg-white/20 backdrop-blur-md border-b border-white/20 shadow-sm -z-10 transition-colors duration-300"
             :class="scrollAtTop ? 'bg-white/10 border-white/20' : 'bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 shadow-md'"></div>
 
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex justify-between items-center">
-                // logo
+                <!-- // logo -->
                 <div class="flex-shrink-0 flex items-center gap-2">
                     <a href="{{ route('home') }}" class="font-serif text-2xl font-bold flex items-center gap-2 transition-colors">
                         <svg class="h-8 w-8 drop-shadow-md transition-colors duration-300" viewBox="0 0 24 24" fill="none"
@@ -91,7 +91,7 @@
 
                 <div class="flex items-center space-x-6">
                     
-                    // biblioteca si loguejat
+                    <!-- // biblioteca si loguejat -->
                     @auth
                     <a href="{{ route('biblioteca') }}"
                         class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500"
@@ -134,7 +134,7 @@
                         </a>
                     @endauth
 
-                    // idiaoma
+                    <!-- // idiaoma -->
                     <form action="{{ route('llibres.show', $llibre->id_llibre) }}" method="GET" class="hidden sm:flex items-center">
                         <div class="relative group">
                             <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border"
@@ -152,9 +152,9 @@
 
                     <div class="hidden sm:block h-6 w-px transition-colors duration-300" :class="scrollAtTop ? 'bg-white/40' : 'bg-slate-300 dark:bg-slate-600'"></div>
 
-                    // bola del usuari loguejat o login
+                    <!-- // bola del usuari loguejat o login -->
                     @auth
-                        // si s'està loguejat, bola blava amb inicial del username
+                        <!-- // si s'està loguejat, bola blava amb inicial del username -->
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
                                 <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
@@ -175,7 +175,7 @@
                             </div>
                         </div>
                     @else
-                        // quan no està loguejat, opcions de loguejar
+                        <!-- // quan no està loguejat, opcions de loguejar -->
                         <div class="flex items-center gap-4">
                             <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
                             <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __("Registra't") }}</a>
@@ -187,7 +187,7 @@
         </div>
     </header>
 
-    // botó tema
+    <!-- // botó tema -->
     <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
         <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
             :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>
@@ -203,7 +203,7 @@
     <main class="pt-24 pb-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            //tornar
+            <!-- //tornar -->
             <a href="{{ $isFromSearch ? $previousUrl : route('home') }}" class="inline-flex items-center text-sm font-bold text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 mb-8 transition-colors group">
                 <svg class="w-4 h-4 mr-1 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -211,7 +211,7 @@
                 {{ $isFromSearch ? __('Tornar a la cerca') : __('Tornar al catàleg') }}
             </a>
 
-            // llibre
+            <!-- // llibre -->
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 mb-16">
                 <div class="grid grid-cols-1 md:grid-cols-12">
                     <div class="md:col-span-5 bg-slate-100 dark:bg-slate-900/50 p-8 flex items-center justify-center">
@@ -222,7 +222,7 @@
                             <div class="w-64 h-96 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-6xl shadow-inner">📘</div>
                             @endif
                             
-                            // nota mitjana llibre
+                            <!-- // nota mitjana llibre -->
                             <div class="absolute -top-4 -right-4 bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-lg border border-slate-100 dark:border-slate-700 flex items-center gap-1">
                                 <span class="text-xl {{ $teRessenyes ? 'text-yellow-500' : 'text-slate-300' }}">★</span>
                                 <span class="font-black text-slate-900 dark:text-white">
@@ -268,7 +268,7 @@
                 </div>
             </div>
 
-            // espai ressenyes
+            <!-- // espai ressenyes -->
             <div class="max-w-4xl mx-auto">
                 <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                     <span>💬</span> {{ __('Comunitat de lectors') }}
@@ -313,7 +313,7 @@
                 </div>
                 @endauth
 
-                // llista ressenyes 
+                <!-- // llista ressenyes -->
                 <div class="space-y-8">
                     @foreach($llibre->ressenyes->whereNull('resposta_a_id') as $ressenya)
                     <div x-data="{ replyOpen: false }">
@@ -337,7 +337,7 @@
                             </div>
                             <p class="text-slate-600 dark:text-slate-300 leading-relaxed ml-13">{{ $ressenya->text }}</p>
                             
-                            // sol pot contestar l'usuari si està loguejat
+                            <!-- // sol pot contestar l'usuari si està loguejat -->
                             @auth
                             <div class="mt-4 flex justify-end">
                                 <button @click="replyOpen = !replyOpen" class="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">

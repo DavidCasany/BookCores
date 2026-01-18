@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900|georgia:400&display=swap" rel="stylesheet" />
 
-    // codi per evitar flash al carregar pag
+    <!-- // codi per evitar flash al carregar pag -->
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -48,10 +48,10 @@
         }
     }">
 
-    // header
+    <!-- // header -->
     <header class="fixed w-full z-50 py-4 transition-colors duration-300 bg-white/70 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            // tornar clicant el logo
+            <!-- // tornar clicant el logo -->
             <a href="{{ route('home') }}" class="flex items-center gap-2 group text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
                 <div class="p-2 rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -60,7 +60,7 @@
             </a>
 
             <div class="flex items-center gap-4">
-                // idioma
+                <!-- // idioma -->
                 <form action="{{ route('cistella.index') }}" method="GET" class="hidden sm:flex items-center">
                     <div class="relative group">
                         <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border border-slate-300 dark:border-slate-600 hover:border-blue-500 text-slate-600 dark:text-slate-300">
@@ -77,7 +77,7 @@
 
                 <div class="h-6 w-px bg-slate-300 dark:bg-slate-600 hidden sm:block"></div>
 
-                // títol
+                <!-- // títol -->
                 <div class="flex items-center gap-2">
                     <span class="text-2xl">🛒</span>
                     <span class="font-black text-xl tracking-tight">{{ __('Cistella') }}</span>
@@ -89,7 +89,7 @@
     <main class="pt-32 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
 
         @if(!$cistella || $cistella->llibres->isEmpty())
-            // cistella buida
+            <!-- // cistella buida -->
             <div class="flex flex-col items-center justify-center py-20 text-center animate-fade-in-up">
                 <div class="w-48 h-48 bg-blue-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-8 shadow-inner border border-blue-100 dark:border-slate-700">
                     <svg class="w-24 h-24 text-blue-200 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
@@ -106,7 +106,7 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
                 
-                // llista de productes
+                <!-- // llista de productes -->
                 <div class="lg:col-span-2 space-y-6">
                     <div class="flex items-center justify-between mb-2">
                         <h3 class="font-bold text-slate-500 dark:text-slate-400 uppercase text-xs tracking-wider">{{ $cistella->llibres->count() }} {{ __('Articles') }}</h3>
@@ -114,14 +114,14 @@
 
                     @foreach($cistella->llibres as $llibre)
                     <div class="group relative bg-white dark:bg-slate-800 p-5 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row gap-6">
-                        
-                        // img llibre
+
+                        <!-- // img llibre -->
                         <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="shrink-0 w-full sm:w-28 aspect-[2/3] rounded-xl overflow-hidden shadow-md relative bg-slate-200 dark:bg-slate-700">
                             <img src="{{ $llibre->img_portada ? asset('img/' . $llibre->img_portada) : 'https://placehold.co/400x600' }}" 
                                  class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         </a>
 
-                        // info compra
+                        <!-- // info compra -->
                         <div class="flex-grow flex flex-col justify-between">
                             <div>
                                 <div class="flex justify-between items-start">
@@ -129,7 +129,7 @@
                                         <a href="{{ route('llibres.show', $llibre->id_llibre) }}">{{ __($llibre->titol) }}</a>
                                     </h3>
                                     
-                                    // boto paperera/eliminar
+                                    <!-- // boto paperera/eliminar -->
                                     <form action="{{ route('cistella.eliminar', $llibre->id_llibre) }}" method="POST">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-slate-300 hover:text-red-500 transition p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full" title="{{ __('Eliminar') }}">
@@ -141,7 +141,7 @@
                                 <p class="text-xs text-slate-400 mt-1 uppercase">{{ __($llibre->genere) }}</p>
                             </div>
 
-                            // preu i quantitat
+                            <!-- // preu i quantitat -->
                             <div class="flex items-end justify-between mt-4 sm:mt-0">
                                 <div class="flex items-center bg-slate-100 dark:bg-slate-900 rounded-xl p-1 shadow-inner border border-slate-200 dark:border-slate-700">
                                     <form action="{{ route('cistella.actualitzar', $llibre->id_llibre) }}" method="POST">
@@ -169,7 +169,7 @@
                     @endforeach
                 </div>
 
-                // resum de la compra
+                <!-- // resum de la compra -->
                 <div class="lg:col-span-1">
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-700 sticky top-28">
                         <h3 class="text-xl font-black text-slate-900 dark:text-white mb-6 flex items-center gap-2">
@@ -181,7 +181,7 @@
                             <span class="text-4xl font-black text-blue-600 dark:text-blue-400">{{ number_format($cistella->total, 2) }} €</span>
                         </div>
 
-                        // botó pagament
+                        <!-- // botó pagament -->
                         <form action="{{ route('pagament.checkout') }}" method="POST">
                             @csrf
                             <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-lg rounded-2xl shadow-lg shadow-blue-500/40 transition transform hover:-translate-y-1 flex items-center justify-center gap-3">
@@ -195,7 +195,7 @@
         @endif
     </main>
 
-    // botó tema
+    <!-- // botó tema -->
     <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
         <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
             :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>

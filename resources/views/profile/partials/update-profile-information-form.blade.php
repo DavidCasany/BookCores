@@ -16,14 +16,14 @@
         @csrf
         @method('patch')
 
-        {{-- NOM --}}
+        <!-- nom -->
         <div>
             <label for="name" class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1 ml-1">{{ __('Nom') }}</label>
             <input id="name" name="name" type="text" class="w-full rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition shadow-sm py-3 px-4" value="{{ old('name', $user->name) }}" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        {{-- EMAIL --}}
+        <!-- gmail -->
         <div>
             <label for="email" class="block text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-1 ml-1">{{ __('Correu electrònic') }}</label>
             <input id="email" name="email" type="email" class="w-full rounded-xl border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition shadow-sm py-3 px-4" value="{{ old('email', $user->email) }}" required autocomplete="username" />
@@ -47,7 +47,7 @@
             @endif
         </div>
 
-        {{-- BOTÓ --}}
+        <!-- botó -->
         <div class="flex items-center gap-4 pt-4">
             <button type="submit" class="px-6 py-2.5 bg-slate-900 dark:bg-blue-600 hover:bg-slate-700 dark:hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
                 {{ __('Guardar canvis') }}
