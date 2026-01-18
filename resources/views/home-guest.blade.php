@@ -151,6 +151,7 @@
                         <svg class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </a>
 
+                    {{-- IDIOMA --}}
                     <form action="{{ route('home') }}" method="GET" class="hidden sm:flex items-center">
                         <div class="relative group">
                             <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border"
@@ -216,95 +217,117 @@
     <main id="novetats" class="relative z-30 -mt-12 bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-md min-h-screen rounded-t-[3rem] transition-all duration-700 ease-out">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
             
-            <div class="mb-12" x-data="{ 
+            {{-- 1. MILLOR VALORATS (TOP RATED) --}}
+            <div class="mb-16" x-data="{ 
                 scrollLeft() { $refs.container.scrollBy({ left: -300, behavior: 'smooth' }); },
                 scrollRight() { $refs.container.scrollBy({ left: 300, behavior: 'smooth' }); }
             }">
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2 ml-2">
-                    {{ __('Tendències ara mateix') }} <span class="text-yellow-500">🔥</span>
+                    {{ __('Millor Valorats') }} <span class="text-yellow-500">⭐</span>
                 </h2>
+                
                 <div class="relative group/carousel">
                     <button @click="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
+
                     <div x-ref="container" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
-                        @forelse ($llibres as $llibre)
+                        @foreach ($millorValorats as $llibre)
                         @php $notaLoop = $llibre->ressenyes->avg('puntuacio'); @endphp
+                        
                         <div class="flex-shrink-0 w-64 snap-center">
                             <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="group relative bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full cursor-pointer decoration-0">
+                                
                                 <div class="aspect-[2/3] w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700 relative shadow-md group-hover:shadow-lg transition mb-4">
                                     @if($llibre->img_portada)
                                     <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ __($llibre->titol) }}" class="object-cover w-full h-full group-hover:scale-110 transition duration-700 ease-in-out">
                                     @else
                                     <div class="flex items-center justify-center h-full text-slate-400"><span class="text-4xl">📖</span></div>
                                     @endif
+                                    
                                     <span class="absolute top-2 right-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-slate-900 dark:text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
-                                        <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                                        {{ $notaLoop ? number_format($notaLoop, 1) : '-' }}
+                                        <svg class="w-3 h-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                        {{ number_format($notaLoop, 1) }}
                                     </span>
                                 </div>
+
                                 <div class="flex flex-col flex-grow">
-                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">{{ __($llibre->titol) }}</h3>
+                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+                                        {{ __($llibre->titol) }}
+                                    </h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
+                                    
                                     <div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
                                         <p class="text-lg font-extrabold text-slate-900 dark:text-white">{{ number_format($llibre->preu, 2, ',', '.') }} €</p>
                                     </div>
                                 </div>
                             </a>
                         </div>
-                        @empty
-                        <div class="w-full text-center py-10 text-slate-500">{{ __('No hi ha llibres disponibles.') }}</div>
-                        @endforelse
+                        @endforeach
                     </div>
+
                     <button @click="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
             </div>
 
-            <div x-data="{ 
-                scrollLeft() { $refs.container2.scrollBy({ left: -300, behavior: 'smooth' }); },
-                scrollRight() { $refs.container2.scrollBy({ left: 300, behavior: 'smooth' }); }
+            {{-- 2. BUCLE PER GÈNERE --}}
+            @foreach ($llibresPerGenere as $genere => $llibres)
+            <div class="mb-16" x-data="{ 
+                scrollLeft() { $refs.container.scrollBy({ left: -300, behavior: 'smooth' }); },
+                scrollRight() { $refs.container.scrollBy({ left: 300, behavior: 'smooth' }); }
             }">
-                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2 ml-2">
-                    {{ __('Recomanats per a tu') }} <span>✨</span>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2 ml-2 uppercase tracking-wide">
+                    {{ __($genere) }} <span class="text-blue-500">📚</span>
                 </h2>
+                
                 <div class="relative group/carousel">
                     <button @click="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
-                    <div x-ref="container2" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
-                        @foreach($llibres->reverse() as $llibre)
+
+                    <div x-ref="container" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
+                        @foreach ($llibres as $llibre)
                         @php $notaLoop = $llibre->ressenyes->avg('puntuacio'); @endphp
+                        
                         <div class="flex-shrink-0 w-64 snap-center">
                             <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="group relative bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full cursor-pointer decoration-0">
-                                <div class="aspect-[2/3] w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700 relative shadow-md mb-4">
+                                
+                                <div class="aspect-[2/3] w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700 relative shadow-md group-hover:shadow-lg transition mb-4">
                                     @if($llibre->img_portada)
-                                    <img src="{{ asset('img/' . $llibre->img_portada) }}" class="object-cover w-full h-full group-hover:scale-110 transition duration-700">
+                                    <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ __($llibre->titol) }}" class="object-cover w-full h-full group-hover:scale-110 transition duration-700 ease-in-out">
                                     @else
                                     <div class="flex items-center justify-center h-full text-slate-400"><span class="text-4xl">📖</span></div>
                                     @endif
+                                    
                                     <span class="absolute top-2 right-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-slate-900 dark:text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
                                         <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                                         {{ $notaLoop ? number_format($notaLoop, 1) : '-' }}
                                     </span>
                                 </div>
+
                                 <div class="flex flex-col flex-grow">
-                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition">{{ __($llibre->titol) }}</h3>
+                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+                                        {{ __($llibre->titol) }}
+                                    </h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
+                                    
                                     <div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
-                                        <p class="text-lg font-extrabold text-blue-600 dark:text-blue-400">{{ number_format($llibre->preu, 2) }} €</p>
+                                        <p class="text-lg font-extrabold text-slate-900 dark:text-white">{{ number_format($llibre->preu, 2, ',', '.') }} €</p>
                                     </div>
                                 </div>
                             </a>
                         </div>
                         @endforeach
                     </div>
+
                     <button @click="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
             </div>
+            @endforeach
 
         </div>
     </main>

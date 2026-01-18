@@ -32,7 +32,7 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <style>[x-cloak] { display: none !important; }</style>
+    <style>[x-cloak] { display: none !important; } .hide-scroll::-webkit-scrollbar { display: none; } .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }</style>
 </head>
 
 <body class="antialiased bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-500"
@@ -69,6 +69,21 @@
                     <a href="{{ route('home') }}" class="font-bold text-sm text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors hidden sm:block">
                         {{ __('TORNAR AL CATÀLEG') }}
                     </a>
+
+                    {{-- SELECTOR IDIOMA (AMB JA) --}}
+                    <form action="{{ route('biblioteca') }}" method="GET" class="hidden sm:flex items-center">
+                        <div class="relative group">
+                            <select name="lang" onchange="this.form.submit()" class="appearance-none bg-transparent rounded-full py-1 pl-4 pr-8 text-sm font-bold cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 border border-slate-300 dark:border-slate-600 hover:border-blue-500 text-slate-600 dark:text-slate-300">
+                                <option value="ca" class="text-slate-900" {{ app()->getLocale() == 'ca' ? 'selected' : '' }}>CA</option>
+                                <option value="es" class="text-slate-900" {{ app()->getLocale() == 'es' ? 'selected' : '' }}>ES</option>
+                                <option value="en" class="text-slate-900" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>EN</option>
+                                <option value="ja" class="text-slate-900" {{ app()->getLocale() == 'ja' ? 'selected' : '' }}>JA</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-600 dark:text-slate-300">
+                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                            </div>
+                        </div>
+                    </form>
                     
                     {{-- MENÚ USUARI --}}
                     @auth
@@ -93,17 +108,11 @@
         </div>
     </header>
 
-    {{-- ✨ BOTÓ TEMA FLOTANT (CORREGIT AMB LLUMS) --}}
-    <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
-        {{-- L'efecte de llum/gradient de fons --}}
-        <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
-            :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>
-        
-        {{-- El botó --}}
-        <button @click="toggleTheme()" class="relative z-10 p-4 rounded-full transition-all duration-300 transform hover:scale-110 border border-slate-200/20 dark:border-slate-700/50"
-            :class="darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white text-slate-800'">
-            <svg x-show="darkMode" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-            <svg x-show="!darkMode" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+    {{-- BOTÓ TEMA FLOTANT --}}
+    <div class="fixed bottom-6 right-6 z-[60]">
+        <button @click="toggleTheme()" class="p-4 rounded-full bg-slate-800 text-yellow-400 shadow-lg hover:scale-110 transition border border-slate-700 group">
+            <svg x-show="darkMode" class="h-6 w-6 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            <svg x-show="!darkMode" class="h-6 w-6 text-white group-hover:text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
         </button>
     </div>
 
@@ -118,53 +127,21 @@
                     <h1 class="text-3xl font-black text-slate-900 dark:text-white">{{ __('La meva biblioteca') }}</h1>
                 </div>
 
-                {{-- CERCADOR DINS BIBLIOTECA --}}
                 <form action="{{ route('biblioteca') }}" method="GET" class="w-full md:w-auto relative group">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
-                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Busca els teus llibres..." 
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="{{ __('Busca els teus llibres...') }}" 
                            class="pl-10 pr-4 py-2.5 w-full md:w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-slate-900 dark:text-white shadow-sm transition-all focus:w-full md:focus:w-80">
                 </form>
             </div>
 
-            {{-- GRID LLIBRES --}}
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                @forelse ($llibres as $llibre)
-                <div class="group bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-lg border border-slate-100 dark:border-slate-700 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
-                    {{-- PORTADA --}}
-                    <div class="aspect-[2/3] rounded-xl overflow-hidden mb-4 relative shadow-md bg-slate-200 dark:bg-slate-700 group-hover:shadow-lg transition">
-                        @if($llibre->img_portada)
-                        <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ $llibre->titol }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        @else
-                        <div class="w-full h-full flex items-center justify-center text-4xl">📘</div>
-                        @endif
-                        
-                        {{-- Overlay "Veure fitxa" --}}
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="px-4 py-1 bg-white/90 text-slate-900 rounded-full text-xs font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition">
-                                Veure fitxa
-                            </a>
-                        </div>
-                    </div>
-
-                    {{-- INFO --}}
-                    <div class="flex-grow">
-                        <h3 class="font-bold text-lg text-slate-900 dark:text-white line-clamp-1 mb-1" title="{{ $llibre->titol }}">{{ $llibre->titol }}</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">{{ $llibre->autor ? $llibre->autor->nom : 'Autor Desconegut' }}</p>
-                    </div>
-
-                    {{-- BOTÓ LLEGIR --}}
-                    <a href="{{ route('llibre.llegir', $llibre->id_llibre) }}" target="_blank" class="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-center font-bold rounded-xl transition shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 group-hover:shadow-blue-500/40">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                        {{ __('Llegir ara') }}
-                    </a>
-                </div>
-                @empty
+            {{-- CONTINGUT: BUCLE PER GÈNERE --}}
+            @if($llibresPerGenere->isEmpty())
                 <div class="col-span-full py-20 text-center bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700">
                     <div class="text-6xl mb-4 opacity-50 grayscale">📭</div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                        {{ request('q') ? __('No s\'han trobat llibres amb aquesta cerca.') : __('La teva biblioteca està buida') }}
+                        {{ request('q') ? __("No s'han trobat llibres amb aquesta cerca.") : __('La teva biblioteca està buida') }}
                     </h3>
                     
                     @if(request('q'))
@@ -176,13 +153,66 @@
                         </a>
                     @endif
                 </div>
-                @endforelse
-            </div>
+            @else
+            
+                @foreach ($llibresPerGenere as $genere => $llibres)
+                <div class="mb-12" x-data="{ 
+                    scrollLeft() { $refs.container.scrollBy({ left: -300, behavior: 'smooth' }); },
+                    scrollRight() { $refs.container.scrollBy({ left: 300, behavior: 'smooth' }); }
+                }">
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2 ml-2 border-b border-slate-200 dark:border-slate-700 pb-2">
+                        {{ __($genere) }} <span class="text-sm bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-full">{{ $llibres->count() }}</span>
+                    </h2>
+                    
+                    <div class="relative group/carousel">
+                        <button @click="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        </button>
 
-            {{-- PAGINACIÓ (Links de Laravel) --}}
-            <div class="mt-10">
-                {{ $llibres->links() }}
-            </div>
+                        <div x-ref="container" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
+                            @foreach ($llibres as $llibre)
+                            <div class="flex-shrink-0 w-56 snap-center">
+                                <div class="group bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-lg border border-slate-100 dark:border-slate-700 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                                    {{-- PORTADA --}}
+                                    <div class="aspect-[2/3] rounded-xl overflow-hidden mb-4 relative shadow-md bg-slate-200 dark:bg-slate-700 group-hover:shadow-lg transition">
+                                        @if($llibre->img_portada)
+                                        <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ __($llibre->titol) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                        @else
+                                        <div class="w-full h-full flex items-center justify-center text-4xl">📘</div>
+                                        @endif
+                                        
+                                        {{-- Overlay "Veure fitxa" --}}
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="px-4 py-1 bg-white/90 text-slate-900 rounded-full text-xs font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition">
+                                                {{ __('Veure fitxa') }}
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {{-- INFO --}}
+                                    <div class="flex-grow">
+                                        <h3 class="font-bold text-lg text-slate-900 dark:text-white line-clamp-1 mb-1" title="{{ __($llibre->titol) }}">{{ __($llibre->titol) }}</h3>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
+                                    </div>
+
+                                    {{-- BOTÓ LLEGIR --}}
+                                    <a href="{{ route('llibre.llegir', $llibre->id_llibre) }}" target="_blank" class="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-center font-bold rounded-xl transition shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 group-hover:shadow-blue-500/40">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                        {{ __('Llegir ara') }}
+                                    </a>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        <button @click="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                @endforeach
+
+            @endif
 
         </div>
     </main>
