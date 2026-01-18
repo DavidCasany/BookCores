@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Llibre;
-use App\Models\Autor;      // <--- IMPORTANT: Assegura't que tens això
-use App\Models\Editorial;  // <--- I això
+use App\Models\Autor;
+use App\Models\Editorial;
 
 class CercaController extends Controller
 {
@@ -14,56 +14,82 @@ class CercaController extends Controller
         return view('cerca.index');
     }
 
+    // ✅ NOVA FUNCIÓ: Comprova si el tag existeix a la BD
+    public function validarTag(Request $request)
+    {
+        $tag = $request->input('tag');
+
+        if (empty($tag)) return response()->json(['valid' => false]);
+
+        // Comprovem si existeix exactament com a Gènere, Autor o Editorial
+        $existeixGenere = Llibre::where('genere', $tag)->exists();
+        $existeixAutor = Autor::where('nom', $tag)->exists();
+        $existeixEditorial = Editorial::where('nom', $tag)->exists();
+
+        return response()->json([
+            'valid' => $existeixGenere || $existeixAutor || $existeixEditorial
+        ]);
+    }
+
     public function buscar(Request $request)
     {
         $query = $request->input('q');
         $type = $request->input('type');
         $tags = $request->input('tags', []);
 
-        // --- CERCA D'AUTORS ---
+        if (empty($query) && empty($tags)) {
+            return response()->json([]);
+        }
+
+        // ... (Codi Autor i Editorial es queden igual) ...
         if ($type === 'autor') {
             $autors = Autor::with(['llibres' => function($q) {
-                    // Dins de l'autor, ordenem els llibres per nota
-                    $q->orderBy('nota_promig', 'desc');
-                }])
-                // Busquem per nom (LIKE %...%)
-                ->where('nom', 'LIKE', "%{$query}%")
-                ->get();
-            
+                $q->withAvg('ressenyes', 'puntuacio')->orderByDesc('ressenyes_avg_puntuacio');
+            }])->where('nom', 'LIKE', "%{$query}%")->get();
             return response()->json($autors);
         }
 
-        // --- CERCA D'EDITORIALS ---
         if ($type === 'editorial') {
             $editorials = Editorial::with(['llibres' => function($q) {
-                    $q->orderBy('nota_promig', 'desc');
-                }])
-                ->where('nom', 'LIKE', "%{$query}%")
-                ->get();
-            
+                $q->withAvg('ressenyes', 'puntuacio')->orderByDesc('ressenyes_avg_puntuacio');
+            }])->where('nom', 'LIKE', "%{$query}%")->get();
             return response()->json($editorials);
         }
 
-        // --- CERCA PER TAGS (GÈNERE) ---
+        // --- 🏷️ CERCA PER TAGS (MODIFICAT) ---
         if ($type === 'tag') {
-            $books = Llibre::with(['autor', 'editorial']);
+            $books = Llibre::with(['autor', 'editorial'])
+                           ->withAvg('ressenyes', 'puntuacio');
 
+            // 1. Si hi ha tags afegits, filtrem per ells (Lògica AND: ha de complir tots els tags)
             if (!empty($tags)) {
-                $books->whereIn('genere', $tags);
-            } elseif ($query) {
-                // Busquem llibres que tinguin aquest gènere mentre escrivim
-                $books->where('genere', 'LIKE', "%{$query}%");
+                foreach ($tags as $tag) {
+                    $books->where(function($q) use ($tag) {
+                        $q->where('genere', $tag)                            // És aquest gènere?
+                          ->orWhereHas('autor', fn($q) => $q->where('nom', $tag))       // O l'autor es diu així?
+                          ->orWhereHas('editorial', fn($q) => $q->where('nom', $tag));  // O l'editorial es diu així?
+                    });
+                }
+            } 
+            
+            // 2. Si l'usuari està escrivint al input i encara no ha donat a Enter (suggeriments)
+            // En aquest cas, busquem llibres que tinguin alguna relació semblant al que escriu
+            elseif ($query) {
+                $books->where(function($q) use ($query) {
+                    $q->where('genere', 'LIKE', "{$query}%")
+                      ->orWhereHas('autor', fn($q) => $q->where('nom', 'LIKE', "{$query}%"))
+                      ->orWhereHas('editorial', fn($q) => $q->where('nom', 'LIKE', "{$query}%"));
+                });
             }
 
-            return response()->json($books->orderBy('nota_promig', 'desc')->get());
+            return response()->json($books->orderByDesc('ressenyes_avg_puntuacio')->get());
         }
 
-        // --- CERCA DE LLIBRES (Per defecte) ---
-        // Si no és cap dels anteriors, assumim que és "llibre"
+        // --- CERCA DE LLIBRES PER TÍTOL (Per defecte) ---
         $books = Llibre::with(['autor', 'editorial'])
-            ->where('titol', 'LIKE', "%{$query}%")
-            ->orderByRaw("CASE WHEN titol = ? THEN 1 ELSE 2 END", [$query]) // Prioritzem coincidència exacta
-            ->orderBy('nota_promig', 'desc')
+            ->withAvg('ressenyes', 'puntuacio')
+            ->where('titol', 'LIKE', "{$query}%")
+            ->orderByDesc('ressenyes_avg_puntuacio')
             ->limit(20)
             ->get();
         

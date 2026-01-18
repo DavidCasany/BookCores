@@ -58,16 +58,18 @@
         }
     }">
 
-    {{-- 📊 CÀLCUL DINÀMIC DE LA NOTA --}}
+    {{-- 📊 CÀLCUL DINÀMIC DE LA NOTA I CONTROL DE RUTA ANTERIOR --}}
     @php
-        // Obtenim la col·lecció de ressenyes
         $ressenyes = $llibre->ressenyes;
         $teRessenyes = $ressenyes->count() > 0;
-        // Calculem la mitjana només si n'hi ha
         $mitjana = $teRessenyes ? $ressenyes->avg('puntuacio') : null;
+
+        // Detectar si venim de la cerca per tornar allà
+        $previousUrl = url()->previous();
+        $isFromSearch = str_contains($previousUrl, 'cerca');
     @endphp
 
-    {{-- HEADER --}}
+    {{-- HEADER SIMPLIFICAT (Sense Biblioteca ni Cistella) --}}
     <header class="fixed w-full z-50 py-3 transition-colors duration-300">
         <div class="absolute inset-0 bg-white/20 backdrop-blur-md border-b border-white/20 shadow-sm -z-10 transition-colors duration-300"
             :class="scrollAtTop ? 'bg-white/10 border-white/20' : 'bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-700 shadow-md'"></div>
@@ -89,15 +91,6 @@
 
                 <div class="flex items-center space-x-6">
                     
-                    {{-- 📚 BIBLIOTECA (Només visible si ESTÀS LOGUEJAT) --}}
-                    @auth
-                    <a href="{{ route('biblioteca') }}" 
-                       class="mr-4 font-bold text-sm transition-colors border-b-2 border-transparent hover:border-blue-500 hidden sm:block"
-                       :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'">
-                        {{ __('BIBLIOTECA') }}
-                    </a>
-                    @endauth
-
                     {{-- LUPA (Visible sempre) --}}
                     <a href="{{ route('cerca.index') }}" class="p-2 transition transform hover:scale-110"
                         :class="scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
@@ -106,31 +99,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </a>
-
-                    {{-- 🛒 CISTELLA (Només visible si ESTÀS LOGUEJAT) --}}
-                    @auth
-                        @php
-                        $totalItems = 0;
-                        $cistella = \App\Models\Compra::where('user_id', auth()->id())->where('estat', 'en_proces')->latest()->first();
-                        if($cistella) {
-                            $totalItems = $cistella->llibres->sum('pivot.quantitat');
-                        }
-                        @endphp
-
-                        <a href="{{ route('cistella.index') }}"
-                            class="relative p-2 transition transform hover:scale-110 mr-2"
-                            :class="typeof scrollAtTop !== 'undefined' && scrollAtTop ? 'text-white hover:text-blue-200' : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'"
-                            title="{{ __('La teva cistella') }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            @if($totalItems > 0)
-                            <span class="absolute top-0 right-0 -mt-1 -mr-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full shadow-sm">
-                                {{ $totalItems }}
-                            </span>
-                            @endif
-                        </a>
-                    @endauth
 
                     {{-- IDIOMA --}}
                     <form action="{{ route('home') }}" method="GET" class="hidden sm:flex items-center">
@@ -151,6 +119,7 @@
 
                     {{-- MENÚ USUARI O LOGIN --}}
                     @auth
+                        {{-- SI ESTÀ LOGUEJAT: BOLA BLAVA --}}
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300 shadow-lg hover:scale-105 focus:outline-none bg-blue-600 border-blue-600 text-white">
                                 <span class="font-bold text-lg leading-none pt-0.5">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
@@ -171,6 +140,7 @@
                             </div>
                         </div>
                     @else
+                        {{-- SI ÉS CONVIDAT: LINKS DE TEXT --}}
                         <div class="flex items-center gap-4">
                             <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
                             <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
@@ -182,7 +152,7 @@
         </div>
     </header>
 
-    {{-- BOTÓ TEMA (AMB GLOW) --}}
+    {{-- BOTÓ TEMA --}}
     <div class="fixed bottom-6 right-6 z-[60] flex items-center justify-center group">
         <div class="absolute inset-0 -m-[2px] rounded-full blur-md opacity-60 animate-spin-slow transition-all duration-500"
             :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>
@@ -197,18 +167,17 @@
     <main class="pt-24 pb-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <a href="{{ route('home') }}" class="inline-flex items-center text-sm font-bold text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 mb-8 transition-colors group">
+            {{-- 🔙 ENLLAÇ DE TORNAR DINÀMIC --}}
+            <a href="{{ $isFromSearch ? $previousUrl : route('home') }}" class="inline-flex items-center text-sm font-bold text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 mb-8 transition-colors group">
                 <svg class="w-4 h-4 mr-1 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                {{ __('Tornar al catàleg') }}
+                {{ $isFromSearch ? __('Tornar a la cerca') : __('Tornar al catàleg') }}
             </a>
 
-            {{-- FITXA DEL LLIBRE --}}
+            {{-- FITXA --}}
             <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 mb-16">
                 <div class="grid grid-cols-1 md:grid-cols-12">
-                    
-                    {{-- Portada --}}
                     <div class="md:col-span-5 bg-slate-100 dark:bg-slate-900/50 p-8 flex items-center justify-center">
                         <div class="relative group">
                             @if($llibre->img_portada)
@@ -217,9 +186,8 @@
                             <div class="w-64 h-96 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-6xl shadow-inner">📘</div>
                             @endif
                             
-                            {{-- ETIQUETA DE NOTA (DINÀMICA) --}}
+                            {{-- ETIQUETA NOTA --}}
                             <div class="absolute -top-4 -right-4 bg-white dark:bg-slate-900 px-4 py-2 rounded-full shadow-lg border border-slate-100 dark:border-slate-700 flex items-center gap-1">
-                                {{-- Si hi ha nota: Estrella groga. Si no: Estrella grisa --}}
                                 <span class="text-xl {{ $teRessenyes ? 'text-yellow-500' : 'text-slate-300' }}">★</span>
                                 <span class="font-black text-slate-900 dark:text-white">
                                     {{ $teRessenyes ? number_format($mitjana, 1) : '-' }}
@@ -228,7 +196,6 @@
                         </div>
                     </div>
 
-                    {{-- Informació --}}
                     <div class="md:col-span-7 p-8 md:p-12 flex flex-col justify-center">
                         <div class="mb-6">
                             <span class="inline-block px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-4">
@@ -265,13 +232,12 @@
                 </div>
             </div>
 
-            {{-- ZONA RESSENYES (XAT) --}}
+            {{-- ZONA RESSENYES --}}
             <div class="max-w-4xl mx-auto">
                 <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-3">
                     <span>💬</span> {{ __('Comunitat de lectors') }}
                 </h3>
 
-                {{-- FORMULARI RESSENYA --}}
                 @auth
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mb-10">
                     <h4 class="font-bold text-lg mb-4 dark:text-white">{{ __('Publicar una ressenya') }}</h4>
@@ -311,12 +277,11 @@
                 </div>
                 @endauth
 
-                {{-- LLISTAT RESSENYES --}}
+                {{-- LLISTAT --}}
                 <div class="space-y-8">
                     @foreach($llibre->ressenyes->whereNull('resposta_a_id') as $ressenya)
                     <div x-data="{ replyOpen: false }">
 
-                        {{-- Missatge Principal --}}
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative">
                             <div class="flex justify-between items-start mb-3">
                                 <div class="flex items-center gap-3">
@@ -345,7 +310,6 @@
                             </div>
                         </div>
 
-                        {{-- Respostes --}}
                         @if(method_exists($ressenya, 'respostes') && $ressenya->respostes->count() > 0)
                         <div class="ml-8 mt-2 space-y-2 border-l-2 border-slate-200 dark:border-slate-700 pl-4">
                             @foreach($ressenya->respostes as $resposta)
@@ -363,7 +327,6 @@
                         </div>
                         @endif
 
-                        {{-- Formulari Resposta --}}
                         <div x-show="replyOpen" x-cloak class="ml-8 mt-3 animate-fade-in-up">
                             @auth
                             <form action="{{ route('ressenyes.store') }}" method="POST" class="bg-slate-100 dark:bg-slate-900 p-4 rounded-xl">

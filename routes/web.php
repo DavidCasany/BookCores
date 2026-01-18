@@ -6,7 +6,8 @@ use App\Http\Controllers\LlibreController;
 use App\Http\Controllers\CercaController;
 use App\Http\Controllers\CistellaController;
 use App\Http\Controllers\RessenyaController;
-use App\Http\Controllers\PagamentController; // <--- AFEGIT (Necessari per pagar)
+use App\Http\Controllers\PagamentController;
+
 
 // Pàgina d'inici
 Route::get('/', [LlibreController::class, 'index'])->name('home');
@@ -53,3 +54,8 @@ Route::get('/biblioteca', [App\Http\Controllers\LlibreController::class, 'biblio
 
 // Llegir llibre (PDF)
 Route::get('/llegir/{id}', [App\Http\Controllers\LlibreController::class, 'llegir'])->name('llibre.llegir');
+
+// Rutes Públiques
+Route::get('/cerca', [CercaController::class, 'index'])->name('cerca.index');
+Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
+Route::get('/api/validar-tag', [CercaController::class, 'validarTag'])->name('cerca.validar'); // <--- NOVA RUTA
