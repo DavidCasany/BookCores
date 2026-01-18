@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@bookcores.test',
-            'password' => Hash::make('password'),
+            'password' => 'Admin1',
         ]);
 
         $clientId = User::factory()->create([
