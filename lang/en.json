@@ -140,5 +140,36 @@
     "Poesia": "Poetry",
     "Ciència": "Science",
     "Aventures": "Adventure",
-    "Terror": "Horror"
+    "Terror": "Horror",
+
+    
+    "El meu Perfil": "My Profile",
+    "Tornar a l'Inici": "Back to Home",
+    "Anar a l'Inici": "Go to Home",
+    "BIBLIOTECA": "LIBRARY",
+    "Cerca": "Search",
+    "La teva cistella": "Your Cart",
+    "Hola,": "Hello,",
+    "Tancar sessió": "Log Out",
+    "La meva Biblioteca": "My Library",
+    "La teva biblioteca està buida": "Your library is empty",
+    "Sembla que encara no has comprat cap llibre.": "It seems you haven't bought any books yet.",
+    "Explorar llibres": "Browse Books",
+    "Veure Detalls": "View Details",
+    "Llegir Ara": "Read Now",
+    "Autor desconegut": "Unknown Author",
+    "Afegir a la Cistella": "Add to Cart",
+    "Login per comprar": "Login to Buy",
+    "Preu": "Price",
+    "Comunitat de lectors": "Readers Community",
+    "Publicar una ressenya": "Post a Review",
+    "Puntuació": "Rating",
+    "Publicar": "Post",
+    "Vols participar?": "Want to participate?",
+    "Inicia sessió": "Log In",
+    "Contestar": "Reply",
+    "Enviar": "Send",
+    "Login": "Login",
+    "per contestar.": "to reply."
+
 }

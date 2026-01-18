@@ -162,5 +162,38 @@
     "Poesia": "Poesia",
     "Ciència": "Ciència",
     "Aventures": "Aventures",
-    "Terror": "Terror"
+    "Terror": "Terror",
+
+    
+    "Profile Information": "Informació del perfil",
+    "Update your account's profile information and email address.": "Actualitza la informació del perfil i l'adreça de correu.",
+    "Name": "Nom",
+    "Email": "Correu electrònic",
+    "Unverified Email": "Correu no verificat",
+    "Your email address is unverified.": "La teva adreça de correu no està verificada.",
+    "Click here to re-send the verification email.": "Fes clic aquí per reenviar el correu de verificació.",
+    "A new verification link has been sent to your email address.": "S'ha enviat un nou enllaç de verificació al teu correu.",
+    "Save": "Desa",
+    "Saved.": "Desat.",
+    "Update Password": "Actualitzar contrasenya",
+    "Ensure your account is using a long, random password to stay secure.": "Assegura't d'usar una contrasenya llarga i segura.",
+    "Current Password": "Contrasenya actual",
+    "New Password": "Nova contrasenya",
+    "Confirm Password": "Confirma la contrasenya",
+    "Delete Account": "Esborrar compte",
+    "Once your account is deleted, all of its resources and data will be permanently deleted.": "Un cop esborrat el compte, totes les dades s'eliminaran permanentment.",
+    "Are you sure you want to delete your account?": "Estàs segur que vols esborrar el compte?",
+    "Before deleting your account, please download any data or information that you wish to retain.": "Abans d'esborrar-lo, descarrega qualsevol dada que vulguis conservar.",
+    "Please enter your password to confirm you would like to permanently delete your account.": "Introdueix la contrasenya per confirmar l'eliminació permanent.",
+    "Password": "Contrasenya",
+    "Cancel": "Cancel·lar",
+    "Log Out": "Tancar sessió",
+    
+    "El meu Perfil": "El meu Perfil",
+    "BIBLIOTECA": "BIBLIOTECA",
+    "Cerca": "Cerca",
+    "La teva cistella": "La teva cistella",
+    "Tancar sessió": "Tancar sessió",
+    "La meva Biblioteca": "La meva Biblioteca"
+
 }
