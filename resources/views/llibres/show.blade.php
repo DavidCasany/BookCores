@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $llibre->titol }} - BookCores</title>
+    <title>{{ __($llibre->titol) }} - BookCores</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900|georgia:400&display=swap" rel="stylesheet" />
@@ -143,7 +143,7 @@
                         {{-- SI ÉS CONVIDAT: LINKS DE TEXT --}}
                         <div class="flex items-center gap-4">
                             <a href="{{ route('login') }}" class="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors">{{ __('Inicia sessió') }}</a>
-                            <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __('Registra\'t') }}</a>
+                            <a href="{{ route('register') }}" class="hidden sm:inline-block text-sm font-bold px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md">{{ __("Registra't") }}</a>
                         </div>
                     @endauth
 
@@ -181,7 +181,7 @@
                     <div class="md:col-span-5 bg-slate-100 dark:bg-slate-900/50 p-8 flex items-center justify-center">
                         <div class="relative group">
                             @if($llibre->img_portada)
-                            <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ $llibre->titol }}" class="w-64 rounded-lg shadow-2xl transform group-hover:scale-105 transition duration-500">
+                            <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ __($llibre->titol) }}" class="w-64 rounded-lg shadow-2xl transform group-hover:scale-105 transition duration-500">
                             @else
                             <div class="w-64 h-96 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center text-6xl shadow-inner">📘</div>
                             @endif
@@ -199,14 +199,14 @@
                     <div class="md:col-span-7 p-8 md:p-12 flex flex-col justify-center">
                         <div class="mb-6">
                             <span class="inline-block px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-4">
-                                {{ $llibre->genere ?? 'General' }}
+                                {{ __($llibre->genere ?? 'General') }}
                             </span>
-                            <h1 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-2 leading-tight">{{ $llibre->titol }}</h1>
-                            <p class="text-xl text-slate-500 dark:text-slate-400 font-serif italic">{{ __('per') }} {{ $llibre->autor ? $llibre->autor->nom : 'Autor Desconegut' }}</p>
+                            <h1 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-2 leading-tight">{{ __($llibre->titol) }}</h1>
+                            <p class="text-xl text-slate-500 dark:text-slate-400 font-serif italic">{{ __('per') }} {{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                         </div>
 
                         <div class="prose dark:prose-invert text-slate-600 dark:text-slate-300 mb-8">
-                            <p>{{ $llibre->descripcio }}</p>
+                            <p>{{ __($llibre->descripcio) }}</p>
                         </div>
 
                         <div class="mt-auto pt-8 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
@@ -263,7 +263,7 @@
                             </div>
                         </div>
 
-                        <textarea name="text" rows="3" class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl p-4 focus:ring-2 focus:ring-blue-500 dark:text-white" placeholder="Què t'ha semblat?" required></textarea>
+                        <textarea name="text" rows="3" class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-xl p-4 focus:ring-2 focus:ring-blue-500 dark:text-white" placeholder="{{ __("Què t'ha semblat?") }}" required></textarea>
 
                         <div class="mt-4 text-right">
                             <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition">{{ __('Publicar') }}</button>
@@ -335,7 +335,7 @@
                                 <input type="hidden" name="llibre_id" value="{{ $llibre->id_llibre }}">
 
                                 <div class="flex gap-2">
-                                    <input type="text" name="text" class="w-full bg-white dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-blue-500 text-sm dark:text-white" placeholder="Escriu resposta..." required>
+                                    <input type="text" name="text" class="w-full bg-white dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-blue-500 text-sm dark:text-white" placeholder="{{ __('Escriu resposta...') }}" required>
                                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700">{{ __('Enviar') }}</button>
                                 </div>
                             </form>
@@ -352,5 +352,4 @@
         </div>
     </main>
 </body>
-
 </html>

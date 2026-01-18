@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cerca - BookCores</title>
+    <title>{{ __('Cerca') }} - BookCores</title>
     
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600,900|georgia:400&display=swap" rel="stylesheet" />
@@ -78,10 +78,10 @@
             {{-- Desplegable Tipus --}}
             <div class="relative shrink-0">
                 <select x-model="type" @change="updateUrl()" class="w-full md:w-auto bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-2xl py-4 pl-6 pr-12 text-lg font-bold focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer shadow-lg hover:border-blue-500 transition">
-                    <option value="llibre">📖 Llibre</option>
-                    <option value="autor">✍️ Autor</option>
-                    <option value="editorial">🏢 Editorial</option>
-                    <option value="tag">🏷️ Tag / Gènere</option>
+                    <option value="llibre">📖 {{ __('Llibre') }}</option>
+                    <option value="autor">✍️ {{ __('Autor') }}</option>
+                    <option value="editorial">🏢 {{ __('Editorial') }}</option>
+                    <option value="tag">🏷️ {{ __('Tag / Gènere') }}</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-slate-400">
                     <svg class="h-5 w-5 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
@@ -112,14 +112,14 @@
                     <button x-show="type === 'tag' && query.length > 0 && !validating" 
                             @click="addTag()"
                             class="mr-3 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-xl text-sm font-bold transition shadow-md">
-                        Afegir
+                        {{ __('Afegir') }}
                     </button>
                 </div>
 
                 {{-- Error Tag --}}
                 <div x-show="inputError" x-cloak x-transition class="absolute -bottom-8 left-2 text-red-500 dark:text-red-400 text-xs font-bold flex items-center gap-1 bg-red-100 dark:bg-red-900/20 px-2 py-1 rounded border border-red-500/30">
                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    Tag no trobat (Prova un altre gènere o autor)
+                    {{ __('Tag no trobat (Prova un altre gènere o autor)') }}
                 </div>
 
                 {{-- Tags Actius --}}
@@ -142,16 +142,16 @@
             
             <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">
                 <span x-show="!loading">
-                    S'han trobat <span class="text-slate-900 dark:text-white font-bold text-lg" x-text="results.length"></span> resultats
+                    {{ __("S'han trobat") }} <span class="text-slate-900 dark:text-white font-bold text-lg" x-text="results.length"></span> {{ __('resultats') }}
                 </span>
-                <span x-show="loading" class="animate-pulse">Cercant...</span>
+                <span x-show="loading" class="animate-pulse">{{ __('Cercant...') }}</span>
             </p>
 
             {{-- ✨ CUSTOM DROPDOWN --}}
             <div x-data="{ openSort: false }" class="relative z-20">
                 <button @click="openSort = !openSort" @click.outside="openSort = false"
                         class="flex items-center gap-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-white pl-4 pr-3 py-2.5 rounded-xl font-bold transition shadow-md border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-sm">
-                    <span class="text-slate-400 dark:text-slate-400 font-normal uppercase text-xs tracking-wider">Ordenar:</span>
+                    <span class="text-slate-400 dark:text-slate-400 font-normal uppercase text-xs tracking-wider">{{ __('Ordenar:') }}</span>
                     <span x-text="sortLabel" class="min-w-[140px] text-left"></span>
                     <svg class="w-4 h-4 text-slate-400 transition-transform duration-200" :class="openSort ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
@@ -199,7 +199,7 @@
                             <h2 class="text-3xl font-black mb-6 text-slate-900 dark:text-white flex items-center gap-3">
                                 <span class="bg-gradient-to-r from-blue-600 to-purple-600 w-1.5 h-8 rounded-full"></span>
                                 <span x-text="item.nom"></span>
-                                <span class="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-200 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-500/30 font-bold uppercase tracking-wider">Coincidència Exacta</span>
+                                <span class="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-200 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-500/30 font-bold uppercase tracking-wider">{{ __('Coincidència Exacta') }}</span>
                             </h2>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
                                 <template x-for="llibre in item.llibres" :key="llibre.id_llibre">
@@ -237,7 +237,7 @@
 
                                 <div class="p-5 flex flex-col flex-grow">
                                     <h3 class="font-bold text-lg leading-tight mb-1 text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition line-clamp-2" x-text="item.titol"></h3>
-                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-4 line-clamp-1" x-text="item.autor ? item.autor.nom : 'Autor desconegut'"></p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium mb-4 line-clamp-1" x-text="item.autor ? item.autor.nom : '{{ __('Autor Desconegut') }}'"></p>
                                     
                                     <div class="mt-auto flex items-center justify-between border-t border-slate-100 dark:border-slate-700/50 pt-4">
                                         <span class="text-slate-900 dark:text-white font-black text-xl tracking-tight" x-text="parseFloat(item.preu).toFixed(2) + ' €'"></span>
@@ -255,8 +255,8 @@
                 <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-200 dark:bg-slate-800 mb-6">
                     <span class="text-5xl">🔍</span>
                 </div>
-                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">No s'han trobat llibres</h3>
-                <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto">Prova de canviar els filtres, revisar l'ortografia o utilitzar termes més generals.</p>
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">{{ __("No s'han trobat llibres") }}</h3>
+                <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto">{{ __("Prova de canviar els filtres, revisar l'ortografia o utilitzar termes més generals.") }}</p>
             </div>
         </div>
     </div>
@@ -273,12 +273,12 @@
                 validating: false,
                 inputError: false,
 
-                // Opcions d'ordenació
+                // Opcions d'ordenació (TRADUÏDES)
                 sortOptions: {
-                    'relevance': '⭐ Millor Valorants',
-                    'preu_asc': '📉 Preu: Baix a Alt',
-                    'preu_desc': '📈 Preu: Alt a Baix',
-                    'newest': '📅 Més recents'
+                    'relevance': '⭐ {{ __("Millor Valorants") }}',
+                    'preu_asc': '📉 {{ __("Preu: Baix a Alt") }}',
+                    'preu_desc': '📈 {{ __("Preu: Alt a Baix") }}',
+                    'newest': '📅 {{ __("Més recents") }}'
                 },
 
                 get sortLabel() {
@@ -286,10 +286,10 @@
                 },
 
                 get placeholderText() {
-                    if (this.type === 'llibre') return 'Escriu el títol del llibre...';
-                    if (this.type === 'autor') return 'Busca un autor...';
-                    if (this.type === 'editorial') return 'Busca una editorial...';
-                    return 'Escriu un gènere i prem Enter...';
+                    if (this.type === 'llibre') return '{{ __("Escriu el títol del llibre...") }}';
+                    if (this.type === 'autor') return '{{ __("Busca un autor...") }}';
+                    if (this.type === 'editorial') return '{{ __("Busca una editorial...") }}';
+                    return '{{ __("Escriu un gènere i prem Enter...") }}';
                 },
 
                 init() {

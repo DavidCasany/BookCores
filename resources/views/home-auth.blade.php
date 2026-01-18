@@ -64,7 +64,7 @@
     $llibresCollection = $llibresRecents->map(function($llibre) {
         return [
             'id' => $llibre->id_llibre,
-            'titol' => $llibre->titol,
+            'titol' => __($llibre->titol), // <--- TRADUCCIÓ AFEGIDA AQUÍ
             'autor' => $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut'),
             'img' => $llibre->img_hero ? asset('img/' . $llibre->img_hero) : ($llibre->img_portada ? asset('img/' . $llibre->img_portada) : null),
         ];
@@ -122,19 +122,18 @@
                         </svg>
                     </a>
 
-                    {{-- 🛒 CISTELLA (LÒGICA CORREGIDA PER A STRIPE) --}}
+                    {{-- 🛒 CISTELLA --}}
                     @php
                     $totalItems = 0;
                     if(auth()->check()){
-                    // Aquesta línia és el canvi important: filtre 'en_proces'
-                    $cistella = \App\Models\Compra::where('user_id', auth()->id())
-                    ->where('estat', 'en_proces')
-                    ->latest()
-                    ->first();
+                        $cistella = \App\Models\Compra::where('user_id', auth()->id())
+                        ->where('estat', 'en_proces')
+                        ->latest()
+                        ->first();
 
-                    if($cistella) {
-                    $totalItems = $cistella->llibres->sum('pivot.quantitat');
-                    }
+                        if($cistella) {
+                            $totalItems = $cistella->llibres->sum('pivot.quantitat');
+                        }
                     }
                     @endphp
 
@@ -266,7 +265,7 @@
                                 
                                 <div class="aspect-[2/3] w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700 relative shadow-md group-hover:shadow-lg transition mb-4">
                                     @if($llibre->img_portada)
-                                    <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ $llibre->titol }}" class="object-cover w-full h-full group-hover:scale-110 transition duration-700 ease-in-out">
+                                    <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ __($llibre->titol) }}" class="object-cover w-full h-full group-hover:scale-110 transition duration-700 ease-in-out">
                                     @else
                                     <div class="flex items-center justify-center h-full text-slate-400"><span class="text-4xl">📖</span></div>
                                     @endif
@@ -280,7 +279,7 @@
 
                                 <div class="flex flex-col flex-grow">
                                     <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
-                                        {{ $llibre->titol }}
+                                        {{ __($llibre->titol) }} {{-- <--- TRADUCCIÓ AFEGIDA --}}
                                     </h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                                     
@@ -338,7 +337,7 @@
                                     </span>
                                 </div>
                                 <div class="flex flex-col flex-grow">
-                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition">{{ $llibre->titol }}</h3>
+                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-blue-600 transition">{{ __($llibre->titol) }}</h3> {{-- <--- TRADUCCIÓ AFEGIDA --}}
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
                                     
                                     {{-- NOMÉS PREU --}}
