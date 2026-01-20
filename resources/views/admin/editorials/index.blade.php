@@ -7,7 +7,7 @@
             </a>
         </div>
 
-        <div class="bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-slate-700">
+        <div class="bg-slate-800 overflow-visible shadow-sm sm:rounded-lg border border-slate-700">
             <table class="w-full text-left text-slate-300">
                 <thead class="bg-slate-900 text-slate-100 uppercase text-xs tracking-wider">
                     <tr>
@@ -38,7 +38,8 @@
                                 </button>
                                 
                                 <div x-show="open" @click.away="open = false" style="display: none;" 
-                                     class="absolute right-0 mt-2 w-72 bg-slate-900 border border-slate-600 rounded-lg shadow-xl z-50 p-4">
+     class="absolute right-0 w-72 bg-slate-900 border border-slate-600 rounded-lg shadow-xl z-50 p-4 
+            {{ $loop->iteration > $loop->count - 2 ? 'bottom-full mb-2' : 'mt-2' }}">
                                     <p class="text-white text-sm mb-3 font-bold">⚠️ Aquesta editorial té {{ $ed->llibres_count }} llibres.</p>
                                     <p class="text-slate-400 text-xs mb-3">Què en vols fer?</p>
                                     

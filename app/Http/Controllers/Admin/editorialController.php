@@ -129,7 +129,7 @@ class EditorialController extends Controller
     {
         $request->validate([
             'origen' => 'required|in:nou,existent',
-            'llibre_id' => 'required_if:origen,existent|exists:llibres,id'
+            'llibre_id' => 'required_if:origen,existent|exists:llibres,id_llibre'
         ]);
 
         if ($request->origen === 'nou') {
