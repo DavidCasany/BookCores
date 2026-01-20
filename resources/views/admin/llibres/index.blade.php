@@ -8,9 +8,9 @@
         </div>
 
         @if(session('success'))
-            <div class="bg-green-500 text-white p-4 rounded mb-6 shadow-lg">
-                {{ session('success') }}
-            </div>
+        <div class="bg-green-500 text-white p-4 rounded mb-6 shadow-lg">
+            {{ session('success') }}
+        </div>
         @endif
 
         <div class="bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg border border-slate-700">
@@ -29,9 +29,9 @@
                     <tr class="hover:bg-slate-700 transition">
                         <td class="p-4">
                             @if($llibre->img_portada)
-                                <img src="{{ asset($llibre->img_portada) }}" class="h-16 w-12 object-cover rounded shadow-sm">
+                            <img src="{{ asset('img/' . $llibre->img_portada) }}" class="h-16 w-12 object-cover rounded shadow-sm">
                             @else
-                                <div class="h-16 w-12 bg-slate-600 rounded flex items-center justify-center text-xs">No img</div>
+                            <div class="h-16 w-12 bg-slate-600 rounded flex items-center justify-center text-xs">No img</div>
                             @endif
                         </td>
                         <td class="p-4">
@@ -47,7 +47,7 @@
                         <td class="p-4 font-bold text-white">{{ $llibre->preu }}€</td>
                         <td class="p-4 text-right space-x-2">
                             <a href="{{ route('admin.llibres.edit', $llibre->id_llibre) }}" class="text-yellow-400 hover:text-yellow-300 font-bold">Editar</a>
-                            
+
                             <form action="{{ route('admin.llibres.destroy', $llibre->id_llibre) }}" method="POST" class="inline-block" onsubmit="return confirm('Segur que vols eliminar aquest llibre?');">
                                 @csrf @method('DELETE')
                                 <button class="text-red-400 hover:text-red-300 font-bold">Eliminar</button>

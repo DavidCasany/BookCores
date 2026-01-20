@@ -59,9 +59,7 @@
                     <label class="text-blue-400 block font-bold">📸 Portada</label>
                     <div class="flex gap-4 items-start">
                         @if($llibre->img_portada)
-                        @if($llibre->img_portada)
-                        <img src="{{ asset($llibre->img_portada) }}" class="w-20 rounded shadow border border-slate-600" title="Portada Actual">
-                        @endif
+                        <img src="{{ asset('img/' . $llibre->img_portada) }}" class="w-20 rounded shadow border border-slate-600" title="Portada Actual">
                         @endif
                         <div class="flex-1">
                             <input type="file" name="img_portada" accept="image/*" class="w-full text-slate-400 text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-blue-600 file:text-white hover:file:bg-blue-700">
@@ -93,7 +91,7 @@
                         @if($llibre->img_hero)
                         <div class="mb-4">
                             <p class="text-xs text-slate-400 mb-2">Imatge actual:</p>
-                            <img src="{{ asset($llibre->img_hero) }}" class="w-full h-32 object-cover rounded border border-slate-600">
+                            <img src="{{ asset('img/' . $llibre->img_hero) }}" class="w-full h-32 object-cover rounded border border-slate-600">
                         </div>
                         @endif
 
