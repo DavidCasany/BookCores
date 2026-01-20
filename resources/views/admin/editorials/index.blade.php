@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto py-12 px-4">
         
-        {{-- FLETXA TORNAR AL DASHBOARD --}}
+        <!-- tornar al dashboard -->
         <div class="mb-6">
             <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center text-slate-400 hover:text-white transition duration-150 ease-in-out">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -11,7 +11,7 @@
             </a>
         </div>
 
-        {{-- ENCAPÇALAMENT --}}
+        <!-- capçalera -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-white">Gestió d'Editorials 📚</h1>
             <a href="{{ route('admin.editorials.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-bold transition shadow-lg">
@@ -19,7 +19,7 @@
             </a>
         </div>
 
-        {{-- BARRA DE CERCA --}}
+        <!-- barra busca -->
         <div class="bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg mb-6 p-4 border border-slate-700">
             <form action="{{ route('admin.editorials.index') }}" method="GET" class="flex gap-2">
                 <input type="text" 
@@ -40,7 +40,7 @@
             </form>
         </div>
 
-        {{-- MISSATGES DE SESSIÓ --}}
+        <!-- missatge feetback -->
         @if(session('success'))
             <div x-data="{ show: true }"
                  x-init="setTimeout(() => show = false, 3000)"
@@ -51,7 +51,7 @@
             </div>
         @endif
 
-        {{-- TAULA --}}
+        <!-- taula -->
         <div class="bg-slate-800 overflow-visible shadow-sm sm:rounded-lg border border-slate-700">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-slate-300">
