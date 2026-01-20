@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Comprovem si la columna ja existeix per no donar error
+ 
         if (!Schema::hasColumn('llibres', 'img_hero')) {
             Schema::table('llibres', function (Blueprint $table) {
                 $table->string('img_hero')->nullable()->after('img_portada');

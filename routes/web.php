@@ -67,6 +67,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         return view('admin.dashboard');
     })->name('dashboard');
 
+    // Rutes per gestionar llibres des de l'editor d'autors
+    Route::delete('/autors/llibre/{id}/delete', [AutorController::class, 'destroyLlibre'])->name('autors.llibre.destroy');
+    Route::post('/autors/llibre/{id}/anonim', [AutorController::class, 'moureAAnonim'])->name('autors.llibre.anonim');
+    Route::post('/autors/llibre/{id}/transferir', [AutorController::class, 'transferirLlibre'])->name('autors.llibre.transferir');
+
+    // NOVA RUTA: Assignar llibre
+    Route::post('/autors/{autor}/assignar-llibre', [AutorController::class, 'assignarLlibre'])->name('autors.assignar-llibre');
+
+    // La ruta resource que ja tenies
     Route::resource('autors', AutorController::class);
 
     // CRUD Complet d'Editorials

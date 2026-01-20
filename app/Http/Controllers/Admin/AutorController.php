@@ -8,38 +8,157 @@ use Illuminate\Http\Request;
 
 class AutorController extends Controller
 {
-    /**
-     * Llistar autors (amb cerca inclosa)
-     */
+
     public function index(Request $request)
     {
-        // Iniciem la consulta
         $query = Autor::query();
 
-        // Si hi ha alguna cosa al buscador, filtrem pel nom
+
         if ($request->has('search')) {
             $query->where('nom', 'like', '%' . $request->search . '%');
         }
 
-        // Recuperem els autors amb la llista de llibres carregada (per mostrar-los o comptar-los)
-        // I paginem els resultats (10 per pàgina)
-        $autors = $query->with('llibres')->orderBy('created_at', 'desc')->paginate(10);
+  
+        $autors = $query->with('llibres')
+            ->withCount('llibres')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('admin.autors.index', compact('autors'));
     }
 
-    /**
-     * Eliminar un autor
-     */
-    public function destroy(Autor $autor)
+
+    public function create()
     {
-        // La base de dades ja s'encarrega d'esborrar els llibres (Cascade)
-        // així que només hem d'esborrar l'autor.
+        return view('admin.autors.create');
+    }
+
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nom' => 'required|string|max:255|unique:autors,nom',
+            'biografia' => 'nullable|string',
+        ], [
+            'nom.required' => 'El nom de l\'autor és obligatori.',
+            'nom.unique' => 'Aquest autor ja existeix a la base de dades.',
+        ]);
+
+        Autor::create([
+            'nom' => $request->nom,
+            'biografia' => $request->biografia,
+        ]);
+
+        return redirect()->route('admin.autors.index')
+            ->with('success', 'Autor creat correctament!');
+    }
+
+
+    public function edit(Autor $autor)
+    {
+        $autor->load('llibres');
+
+        $altresAutors = Autor::where('id', '!=', $autor->id)->orderBy('nom')->get();
+
+        
+        $llibresExterns = \App\Models\Llibre::where('autor_id', '!=', $autor->id)
+            ->orderBy('titol')
+            ->get();
+        return view('admin.autors.edit', compact('autor', 'altresAutors', 'llibresExterns'));
+    }
+
+
+    public function assignarLlibre(Request $request, Autor $autor)
+    {
+        if ($request->origen === 'nou') {
+
+            return redirect()->route('admin.llibres.create', ['autor_id' => $autor->id]);
+        }
+
+       
+        $request->validate([
+            'llibre_id' => 'required|exists:llibres,id_llibre', 
+        ]);
+
+        $llibre = \App\Models\Llibre::findOrFail($request->llibre_id);
+        $llibre->update(['autor_id' => $autor->id]);
+
+        return back()->with('success', 'Llibre assignat correctament a l\'autor.');
+    }
+
+
+    public function update(Request $request, Autor $autor)
+    {
+        $request->validate([
+            'nom' => 'required|string|max:255|unique:autors,nom,' . $autor->id,
+            'biografia' => 'nullable|string',
+        ]);
+
+        $autor->update([
+            'nom' => $request->nom,
+            'biografia' => $request->biografia,
+        ]);
+
+        return redirect()->route('admin.autors.index')
+            ->with('success', 'Dades de l\'autor actualitzades.');
+    }
+
+    public function destroy(Request $request, Autor $autor)
+    {
+    
+        $accio = $request->input('accio_llibres');
+
+        if ($accio === 'anonim') {
+
+            $anonim = Autor::firstOrCreate(
+                ['nom' => 'Anònim'],
+                ['biografia' => 'Autor genèric del sistema per a llibres orfes.']
+            );
+
+          
+            $autor->llibres()->update(['autor_id' => $anonim->id]);
+
+            $missatge = "Autor eliminat. Els seus llibres s'han mogut a 'Anònim'.";
+        } else {
+            
+            $missatge = "Autor i tots els seus llibres eliminats definitivament.";
+        }
+
         $autor->delete();
 
         return redirect()->route('admin.autors.index')
-            ->with('success', 'Autor i els seus llibres eliminats correctament.');
+            ->with('success', $missatge);
     }
+
     
-    // ... Els mètodes create, store, edit, update els farem més endavant
+
+    public function destroyLlibre($id_llibre)
+    {
+        $llibre = \App\Models\Llibre::findOrFail($id_llibre);
+        $llibre->delete();
+
+        return back()->with('success', 'Llibre eliminat definitivament.');
+    }
+
+    public function moureAAnonim($id_llibre)
+    {
+        $llibre = \App\Models\Llibre::findOrFail($id_llibre);
+        $anonim = Autor::firstOrCreate(['nom' => 'Anònim']);
+
+        $llibre->update(['autor_id' => $anonim->id]);
+
+        return back()->with('success', 'Llibre mogut a "Anònim".');
+    }
+
+    public function transferirLlibre(Request $request, $id_llibre)
+    {
+        $request->validate([
+            'nou_autor_id' => 'required|exists:autors,id',
+        ]);
+
+        $llibre = \App\Models\Llibre::findOrFail($id_llibre);
+        $llibre->update(['autor_id' => $request->nou_autor_id]);
+
+        return back()->with('success', 'Llibre transferit correctament.');
+    }
 }
