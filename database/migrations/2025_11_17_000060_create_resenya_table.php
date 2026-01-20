@@ -15,15 +15,15 @@ return new class extends Migration
             
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             
-            // Relació amb llibres (assegura't que la taula es diu 'llibres' i la clau 'id_llibre')
+            
             $table->foreignId('llibre_id')
                   ->constrained('llibres', column: 'id_llibre')
                   ->cascadeOnDelete();
             
-            // AQUESTA ÉS LA CLAU PER A LES RESPOSTES
+      
             $table->foreignId('resposta_a_id')
                   ->nullable()
-                  ->constrained('ressenyes') // Es relaciona amb si mateixa
+                  ->constrained('ressenyes') 
                   ->cascadeOnDelete();
             
             $table->timestamps();

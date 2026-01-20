@@ -41,5 +41,37 @@ class AutorController extends Controller
             ->with('success', 'Autor i els seus llibres eliminats correctament.');
     }
     
-    // ... Els mètodes create, store, edit, update els farem més endavant
+    /**
+     * Mostrar el formulari per crear un nou autor.
+     */
+    public function create()
+    {
+        return view('admin.autors.create');
+    }
+
+    /**
+     * Guardar el nou autor a la base de dades.
+     */
+    public function store(Request $request)
+    {
+        // 1. Validem les dades
+        $request->validate([
+            'nom' => 'required|string|max:255|unique:autors,nom', // Nom obligatori i únic
+            // Si tens camp descripció a la BD, descomenta la línia de sota:
+            // 'biografia' => 'nullable|string', 
+        ], [
+            'nom.required' => 'El nom de l\'autor és obligatori.',
+            'nom.unique' => 'Aquest autor ja existeix a la base de dades.',
+        ]);
+
+        // 2. Creem l'autor
+        Autor::create([
+            'nom' => $request->nom,
+            // 'biografia' => $request->biografia, // Si en tens
+        ]);
+
+        // 3. Redirigim amb missatge d'èxit
+        return redirect()->route('admin.autors.index')
+            ->with('success', 'Autor creat correctament!');
+    }
 }

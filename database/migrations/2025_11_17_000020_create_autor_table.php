@@ -16,11 +16,11 @@ public function up(): void
         $table->string('nom'); 
         $table->text('biografia')->nullable();
         
-        // Això permet crear autors que NO siguin usuaris registrats.
+        
         $table->foreignId('user_id')
               ->nullable() 
               ->constrained()
-              ->onDelete('set null'); // Si l'usuari s'esborra, l'autor es manté però es desvincula.
+              ->onDelete('set null');
         $table->timestamps();
     });
 }
