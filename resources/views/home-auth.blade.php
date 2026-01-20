@@ -16,17 +16,31 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Figtree', 'sans-serif'], serif: ['Georgia', 'serif'] },
-                    animation: { 'spin-slow': 'spin 4s linear infinite' }
+                    fontFamily: {
+                        sans: ['Figtree', 'sans-serif'],
+                        serif: ['Georgia', 'serif']
+                    },
+                    animation: {
+                        'spin-slow': 'spin 4s linear infinite'
+                    }
                 }
             }
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
-        [x-cloak] { display: none !important; }
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 
@@ -62,12 +76,12 @@
     {{-- Dades PHP per al Slider --}}
     @php
     $llibresCollection = $llibresRecents->map(function($llibre) {
-        return [
-            'id' => $llibre->id_llibre,
-            'titol' => __($llibre->titol),
-            'autor' => $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut'),
-            'img' => $llibre->img_hero ? asset('img/' . $llibre->img_hero) : ($llibre->img_portada ? asset('img/' . $llibre->img_portada) : null),
-        ];
+    return [
+    'id' => $llibre->id_llibre,
+    'titol' => __($llibre->titol),
+    'autor' => $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut'),
+    'img' => $llibre->img_hero ? asset('img/' . $llibre->img_hero) : ($llibre->img_portada ? asset('img/' . $llibre->img_portada) : null),
+    ];
     })->values();
     @endphp
 
@@ -81,8 +95,12 @@
             :style="darkMode ? 'background: conic-gradient(from 0deg, #ef4444, #f97316, #eab308, #ef4444);' : 'background: conic-gradient(from 0deg, #a855f7, #3b82f6, #06b6d4, #a855f7);'"></div>
         <button @click="toggleTheme()" class="relative z-10 p-4 rounded-full transition-all duration-300 transform hover:scale-110 border border-slate-200/20 dark:border-slate-700/50"
             :class="darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white text-slate-800'">
-            <svg x-show="darkMode" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-            <svg x-show="!darkMode" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            <svg x-show="darkMode" class="h-8 w-8 animate-[spin_10s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg x-show="!darkMode" class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
         </button>
     </div>
 
@@ -124,8 +142,8 @@
                     @php
                     $totalItems = 0;
                     if(auth()->check()){
-                        $cistella = \App\Models\Compra::where('user_id', auth()->id())->where('estat', 'en_proces')->latest()->first();
-                        if($cistella) { $totalItems = $cistella->llibres->sum('pivot.quantitat'); }
+                    $cistella = \App\Models\Compra::where('user_id', auth()->id())->where('estat', 'en_proces')->latest()->first();
+                    if($cistella) { $totalItems = $cistella->llibres->sum('pivot.quantitat'); }
                     }
                     @endphp
 
@@ -175,6 +193,13 @@
                                 <p class="text-sm font-bold text-slate-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
                             </div>
                             <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 transition-colors">{{ __('El meu perfil') }}</a>
+                            
+                            @if(Auth::user()->email === 'admin@bookcores.com')
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 transition-colors">
+                                {{ __('Zona Admin') }}
+                            </a>
+                            @endif
                             <div class="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
@@ -229,7 +254,7 @@
     {{-- CONTINGUT PRINCIPAL --}}
     <main id="novetats" class="relative z-30 -mt-12 bg-slate-50/90 dark:bg-slate-800/90 backdrop-blur-md min-h-screen rounded-t-[3rem] transition-all duration-700 ease-out">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            
+
             {{-- 1.MILLOR VALORATS --}}
             <div class="mb-16" x-data="{ 
                 scrollLeft() { $refs.container.scrollBy({ left: -300, behavior: 'smooth' }); },
@@ -238,29 +263,33 @@
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2 ml-2">
                     {{ __('Millor Valorats') }} <span class="text-yellow-500">⭐</span>
                 </h2>
-                
+
                 <div class="relative group/carousel">
                     <button @click="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
                     </button>
 
                     <div x-ref="container" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
                         @foreach ($millorValorats as $llibre)
                         @php $notaLoop = $llibre->ressenyes->avg('puntuacio'); @endphp
-                        
+
                         <div class="flex-shrink-0 w-64 snap-center">
                             <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="group relative bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full cursor-pointer decoration-0">
-                                
+
                                 <div class="aspect-[2/3] w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700 relative shadow-md group-hover:shadow-lg transition mb-4">
                                     @if($llibre->img_portada)
                                     <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ __($llibre->titol) }}" class="object-cover w-full h-full group-hover:scale-110 transition duration-700 ease-in-out">
                                     @else
                                     <div class="flex items-center justify-center h-full text-slate-400"><span class="text-4xl">📖</span></div>
                                     @endif
-                                    
+
                                     {{-- NOTA FIXADA AQUÍ: Si és 0 mostra gris i guió --}}
                                     <span class="absolute top-2 right-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-slate-900 dark:text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
-                                        <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                        <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
                                         {{ $notaLoop ? number_format($notaLoop, 1) : '-' }}
                                     </span>
                                 </div>
@@ -270,7 +299,7 @@
                                         {{ __($llibre->titol) }}
                                     </h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
-                                    
+
                                     <div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
                                         <p class="text-lg font-extrabold text-slate-900 dark:text-white">{{ number_format($llibre->preu, 2, ',', '.') }} €</p>
                                     </div>
@@ -281,7 +310,9 @@
                     </div>
 
                     <button @click="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -295,29 +326,33 @@
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2 ml-2 uppercase tracking-wide">
                     {{ __($genere) }} <span class="text-blue-500">📚</span>
                 </h2>
-                
+
                 <div class="relative group/carousel">
                     <button @click="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
                     </button>
 
                     <div x-ref="container" class="flex gap-6 overflow-x-auto hide-scroll pb-8 snap-x snap-mandatory">
                         @foreach ($llibres as $llibre)
                         @php $notaLoop = $llibre->ressenyes->avg('puntuacio'); @endphp
-                        
+
                         <div class="flex-shrink-0 w-64 snap-center">
                             <a href="{{ route('llibres.show', $llibre->id_llibre) }}" class="group relative bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full cursor-pointer decoration-0">
-                                
+
                                 <div class="aspect-[2/3] w-full overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-700 relative shadow-md group-hover:shadow-lg transition mb-4">
                                     @if($llibre->img_portada)
                                     <img src="{{ asset('img/' . $llibre->img_portada) }}" alt="{{ __($llibre->titol) }}" class="object-cover w-full h-full group-hover:scale-110 transition duration-700 ease-in-out">
                                     @else
                                     <div class="flex items-center justify-center h-full text-slate-400"><span class="text-4xl">📖</span></div>
                                     @endif
-                                    
+
                                     {{-- Nota --}}
                                     <span class="absolute top-2 right-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur text-slate-900 dark:text-white text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
-                                        <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                        <svg class="w-3 h-3 {{ $notaLoop ? 'text-yellow-500' : 'text-slate-400' }}" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                        </svg>
                                         {{ $notaLoop ? number_format($notaLoop, 1) : '-' }}
                                     </span>
                                 </div>
@@ -327,7 +362,7 @@
                                         {{ __($llibre->titol) }}
                                     </h3>
                                     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">{{ $llibre->autor ? $llibre->autor->nom : __('Autor Desconegut') }}</p>
-                                    
+
                                     <div class="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-700">
                                         <p class="text-lg font-extrabold text-slate-900 dark:text-white">{{ number_format($llibre->preu, 2, ',', '.') }} €</p>
                                     </div>
@@ -338,7 +373,9 @@
                     </div>
 
                     <button @click="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-black/80 text-white rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -382,27 +419,46 @@
                 books: window.sliderData || [],
                 isAnimating: false,
                 autoplay: null,
-                init() { this.startAutoplay(); },
-                startAutoplay() { 
-                    if (this.books.length > 1) { 
-                        this.autoplay = setInterval(() => { this.slide(); }, 6000); 
-                    } 
+                init() {
+                    this.startAutoplay();
                 },
-                slide() { this.isAnimating = true; },
-                handleTransitionEnd() { 
-                    if (!this.isAnimating) return; 
-                    this.isAnimating = false; 
-                    const firstBook = this.books.shift(); 
-                    this.books.push(firstBook); 
+                startAutoplay() {
+                    if (this.books.length > 1) {
+                        this.autoplay = setInterval(() => {
+                            this.slide();
+                        }, 6000);
+                    }
                 },
-                stopAutoplay() { if (this.autoplay) clearInterval(this.autoplay); }
+                slide() {
+                    this.isAnimating = true;
+                },
+                handleTransitionEnd() {
+                    if (!this.isAnimating) return;
+                    this.isAnimating = false;
+                    const firstBook = this.books.shift();
+                    this.books.push(firstBook);
+                },
+                stopAutoplay() {
+                    if (this.autoplay) clearInterval(this.autoplay);
+                }
             }));
         });
     </script>
 
     <style>
-        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </body>
+
 </html>

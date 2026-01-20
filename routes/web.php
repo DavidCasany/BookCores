@@ -7,6 +7,7 @@ use App\Http\Controllers\CercaController;
 use App\Http\Controllers\CistellaController;
 use App\Http\Controllers\RessenyaController;
 use App\Http\Controllers\PagamentController;
+use App\Http\Controllers\Admin\AutorController;
 
 // Pàgina d'inici
 Route::get('/', [LlibreController::class, 'index'])->name('home');
@@ -41,7 +42,6 @@ Route::middleware('auth')->group(function () {
 
     // Llegir llibre (PDF)
     Route::get('/llegir/{id}', [LlibreController::class, 'llegir'])->name('llibre.llegir');
-    
 });
 require __DIR__ . '/auth.php';
 
@@ -61,19 +61,11 @@ Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.sho
 
 // Grup de rutes per a l'ADMINISTRADOR
 
-Route::middleware(['auth', 'admin']) 
-    ->prefix('admin')                
-    ->name('admin.')                 
-    ->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
-        // 1. Panell Principal (Dashboard)
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
 
-        // Més endavant aquí posarem: Route::resource('llibres', LlibreController::class);
-    });
-
-
-
-
+    Route::resource('autors', AutorController::class);
+});
