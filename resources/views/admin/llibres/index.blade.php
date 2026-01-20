@@ -29,7 +29,7 @@
                     <tr class="hover:bg-slate-700 transition">
                         <td class="p-4">
                             @if($llibre->img_portada)
-                                <img src="{{ asset('storage/' . $llibre->img_portada) }}" class="h-16 w-12 object-cover rounded shadow-sm">
+                                <img src="{{ asset($llibre->img_portada) }}" class="h-16 w-12 object-cover rounded shadow-sm">
                             @else
                                 <div class="h-16 w-12 bg-slate-600 rounded flex items-center justify-center text-xs">No img</div>
                             @endif
