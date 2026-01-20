@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="max-w-4xl mx-auto py-12 px-4">
         <div class="flex items-center gap-4 mb-6">
-            <a href="{{ route('admin.llibres.index') }}" class="text-slate-400 hover:text-white transition">&larr; Tornar a la llista</a>
+            <a href="{{ route('admin.llibres.index') }}" class="text-slate-400 hover:text-white transition">&larr; </a>
             <h1 class="text-2xl font-bold text-white">Editar: {{ $llibre->titol }}</h1>
         </div>
 

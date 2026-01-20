@@ -7,17 +7,28 @@ use App\Models\Llibre;
 use App\Models\Autor;
 use App\Models\Editorial;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\File; 
 
 class LlibreController extends Controller
 {
-    public function index()
-    {
-        $llibres = Llibre::with(['autor', 'editorial'])
-            ->latest('created_at')
-            ->paginate(10);
-        return view('admin.llibres.index', compact('llibres'));
+    public function index(Request $request)
+{
+   
+    $query = Llibre::with(['autor', 'editorial']);
+
+    
+    if ($request->has('search') && $request->search != '') {
+        $cerca = $request->search;
+        $query->where(function($q) use ($cerca) {
+            $q->where('titol', 'like', "%{$cerca}%")
+              ->orWhere('genere', 'like', "%{$cerca}%"); 
+        });
     }
+
+    $llibres = $query->paginate(10)->withQueryString();
+
+    return view('admin.llibres.index', compact('llibres'));
+}
 
     public function create(Request $request)
     {
@@ -28,7 +39,7 @@ class LlibreController extends Controller
         return view('admin.llibres.create', compact('autors', 'editorials', 'editorialPreseleccionada'));
     }
 
-    // --- GUARDAR (MANERA ANTIGA: NOMÉS NOM FITXER) ---
+    // --- GUARDAR NOU LLIBRE ---
     public function store(Request $request)
     {
         $request->validate([
@@ -40,24 +51,26 @@ class LlibreController extends Controller
             'genere' => 'required|string',
             'descripcio' => 'nullable|string',
             'img_portada' => 'required|image|max:2048',
-            'img_hero'    => 'nullable|image|max:4096',
+            'img_hero'    => 'nullable|image|max:4096', // Validació Hero (4MB màx)
             'fitxer_pdf' => 'required|mimes:pdf|max:10000',
         ]);
 
-        // 1. PORTADA -> Guardem només "nom.jpg"
+        // 1. GESTIÓ PORTADA (A public/img)
         $filePortada = $request->file('img_portada');
         $nomPortada = time() . '_' . $filePortada->getClientOriginalName();
         $filePortada->move(public_path('img'), $nomPortada);
+        $rutaPortada = 'img/' . $nomPortada;
 
-        // 2. HERO -> Guardem només "nom.jpg"
-        $nomHero = null;
+        // 2. GESTIÓ HERO (A public/img)
+        $rutaHero = null;
         if ($request->hasFile('img_hero')) {
             $fileHero = $request->file('img_hero');
             $nomHero = time() . '_hero_' . $fileHero->getClientOriginalName();
             $fileHero->move(public_path('img'), $nomHero);
+            $rutaHero = 'img/' . $nomHero;
         }
 
-        // 3. PDF (A storage/app/pdfs - Es manté privat)
+        // 3. GESTIÓ PDF (Privat a storage/app/pdfs)
         $nomPdf = time() . '_' . $request->file('fitxer_pdf')->getClientOriginalName();
         $request->file('fitxer_pdf')->storeAs('pdfs', $nomPdf);
 
@@ -69,8 +82,8 @@ class LlibreController extends Controller
             'pagines' => $request->pagines,
             'genere' => $request->genere,
             'descripcio' => $request->descripcio,
-            'img_portada' => $nomPortada, // SENSE 'img/'
-            'img_hero'    => $nomHero,    // SENSE 'img/'
+            'img_portada' => $rutaPortada,
+            'img_hero'    => $rutaHero,
             'fitxer_pdf' => $nomPdf,
         ]);
 
@@ -84,7 +97,7 @@ class LlibreController extends Controller
         return view('admin.llibres.edit', compact('llibre', 'autors', 'editorials'));
     }
 
-    // --- ACTUALITZAR (MANERA ANTIGA) ---
+    // --- ACTUALITZAR LLIBRE ---
     public function update(Request $request, Llibre $llibre)
     {
         $request->validate([
@@ -104,25 +117,28 @@ class LlibreController extends Controller
 
         // ACTUALITZAR PORTADA
         if ($request->hasFile('img_portada')) {
-            // Esborrem la vella (Afegim 'img/' manualment per trobar-la)
-            if ($llibre->img_portada && File::exists(public_path('img/' . $llibre->img_portada))) {
-                File::delete(public_path('img/' . $llibre->img_portada));
+            // Esborrem la vella
+            if ($llibre->img_portada && File::exists(public_path($llibre->img_portada))) {
+                File::delete(public_path($llibre->img_portada));
             }
+            // Pugem la nova
             $file = $request->file('img_portada');
             $nom = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('img'), $nom);
-            $dades['img_portada'] = $nom; // Només el nom
+            $dades['img_portada'] = 'img/' . $nom;
         }
 
-        // ACTUALITZAR HERO
+        // ACTUALITZAR HERO (NOU)
         if ($request->hasFile('img_hero')) {
-            if ($llibre->img_hero && File::exists(public_path('img/' . $llibre->img_hero))) {
-                File::delete(public_path('img/' . $llibre->img_hero));
+            // Esborrem la vella
+            if ($llibre->img_hero && File::exists(public_path($llibre->img_hero))) {
+                File::delete(public_path($llibre->img_hero));
             }
+            // Pugem la nova
             $file = $request->file('img_hero');
             $nom = time() . '_hero_' . $file->getClientOriginalName();
             $file->move(public_path('img'), $nom);
-            $dades['img_hero'] = $nom; // Només el nom
+            $dades['img_hero'] = 'img/' . $nom;
         }
 
         // ACTUALITZAR PDF
@@ -140,17 +156,18 @@ class LlibreController extends Controller
         return redirect()->route('admin.llibres.index')->with('success', 'Llibre actualitzat!');
     }
 
-    // --- ELIMINAR (MANERA ANTIGA) ---
+    // --- ELIMINAR LLIBRE ---
     public function destroy(Llibre $llibre)
     {
-        // Afegim 'img/' manualment al path per esborrar
-        if ($llibre->img_portada && File::exists(public_path('img/' . $llibre->img_portada))) {
-            File::delete(public_path('img/' . $llibre->img_portada));
+        // Esborrar imatges de public/img
+        if ($llibre->img_portada && File::exists(public_path($llibre->img_portada))) {
+            File::delete(public_path($llibre->img_portada));
         }
-        if ($llibre->img_hero && File::exists(public_path('img/' . $llibre->img_hero))) {
-            File::delete(public_path('img/' . $llibre->img_hero));
+        if ($llibre->img_hero && File::exists(public_path($llibre->img_hero))) {
+            File::delete(public_path($llibre->img_hero));
         }
 
+        // Esborrar PDF de storage
         if ($llibre->fitxer_pdf && file_exists(storage_path('app/pdfs/' . $llibre->fitxer_pdf))) {
             unlink(storage_path('app/pdfs/' . $llibre->fitxer_pdf));
         }
