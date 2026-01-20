@@ -22,14 +22,17 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-   public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
 
         $request->session()->regenerate();
-
-        // CANVI: De 'dashboard' a 'home'
-        return redirect()->intended(route('home', absolute: false));
+        
+        if ($request->user()->email === 'admin@bookcores.com') {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+        
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

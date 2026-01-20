@@ -59,6 +59,21 @@ Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index'
 // Detall llibre
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
 
+// Grup de rutes per a l'ADMINISTRADOR
+
+Route::middleware(['auth', 'admin']) 
+    ->prefix('admin')                
+    ->name('admin.')                 
+    ->group(function () {
+
+        // 1. Panell Principal (Dashboard)
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+
+        // Més endavant aquí posarem: Route::resource('llibres', LlibreController::class);
+    });
+
 
 
 
