@@ -9,23 +9,30 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('llibres', function (Blueprint $table) {
-            $table->id();
+            // 1. ID PERSONALITZAT
+            $table->id('id_llibre');
+
+            // 2. DADES DEL LLIBRE
             $table->string('titol');
-            $table->text('descripcio')->nullable(); 
+            $table->string('genere'); 
+            $table->text('descripcio')->nullable();
             $table->decimal('preu', 8, 2);
-            $table->integer('pagines');
-            $table->string('genere');
-
-
-            $table->foreignId('autor_id')
-                ->constrained('autors')
-                ->cascadeOnDelete();
-
-            $table->foreignId('editorial_id')
-                ->constrained('editorials')
-                ->cascadeOnDelete();
             
 
+            // 3. CAMPS EXTRES (Nota i Hero)
+            $table->decimal('nota_promig', 3, 1)->nullable(); 
+            $table->string('img_hero')->nullable();
+
+            // 4. RELACIONS (Amb cascada)
+            $table->foreignId('autor_id')
+                  ->constrained('autors')
+                  ->cascadeOnDelete();
+
+            $table->foreignId('editorial_id')
+                  ->constrained('editorials')
+                  ->cascadeOnDelete();
+
+            // 5. FITXERS
             $table->string('img_portada')->nullable();
             $table->string('fitxer_pdf')->nullable();
 
