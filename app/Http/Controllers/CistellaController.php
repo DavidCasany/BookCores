@@ -35,7 +35,7 @@ class CistellaController extends Controller
             $cistella = Compra::create([
                 'user_id' => $user->id,
                 'total' => 0,
-                'estat' => 'en_proces' // Forcem l'estat per seguretat
+                'estat' => 'en_proces' 
             ]);
         }
         $llibreALaCistella = $cistella->llibres()->where('compra_llibre.llibre_id', $llibre_id)->first();

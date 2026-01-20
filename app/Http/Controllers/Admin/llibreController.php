@@ -97,7 +97,7 @@ class LlibreController extends Controller
         return view('admin.llibres.edit', compact('llibre', 'autors', 'editorials'));
     }
 
-    // --- ACTUALITZAR LLIBRE ---
+    
     public function update(Request $request, Llibre $llibre)
     {
         $request->validate([
@@ -121,20 +121,19 @@ class LlibreController extends Controller
             if ($llibre->img_portada && File::exists(public_path($llibre->img_portada))) {
                 File::delete(public_path($llibre->img_portada));
             }
-            // Pugem la nova
+         
             $file = $request->file('img_portada');
             $nom = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('img'), $nom);
             $dades['img_portada'] = 'img/' . $nom;
         }
 
-        // ACTUALITZAR HERO (NOU)
+        // ACTUALITZAR HERO
         if ($request->hasFile('img_hero')) {
             // Esborrem la vella
             if ($llibre->img_hero && File::exists(public_path($llibre->img_hero))) {
                 File::delete(public_path($llibre->img_hero));
             }
-            // Pugem la nova
             $file = $request->file('img_hero');
             $nom = time() . '_hero_' . $file->getClientOriginalName();
             $file->move(public_path('img'), $nom);
@@ -156,10 +155,10 @@ class LlibreController extends Controller
         return redirect()->route('admin.llibres.index')->with('success', 'Llibre actualitzat!');
     }
 
-    // --- ELIMINAR LLIBRE ---
+    
     public function destroy(Llibre $llibre)
     {
-        // Esborrar imatges de public/img
+   
         if ($llibre->img_portada && File::exists(public_path($llibre->img_portada))) {
             File::delete(public_path($llibre->img_portada));
         }
@@ -167,7 +166,6 @@ class LlibreController extends Controller
             File::delete(public_path($llibre->img_hero));
         }
 
-        // Esborrar PDF de storage
         if ($llibre->fitxer_pdf && file_exists(storage_path('app/pdfs/' . $llibre->fitxer_pdf))) {
             unlink(storage_path('app/pdfs/' . $llibre->fitxer_pdf));
         }
