@@ -37,15 +37,15 @@ class DatabaseSeeder extends Seeder
         // autors
         
         DB::table('autors')->insert([
-            ['id' => 0, 'nom' => 'Anònim', 'biografia' => 'Autor genèric del sistema.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 1, 'nom' => 'Sandra Martínez Romero', 'biografia' => 'Escriptora apassionada pels dracs.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'nom' => 'Anaïs F. Gómez', 'biografia' => 'Autora especialitzada en misteris.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 3, 'nom' => 'Laura P. Martínez', 'biografia' => 'Navegant i escriptora.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 4, 'nom' => 'Marc Vilar', 'biografia' => 'Historiador i novel·lista.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 5, 'nom' => 'Elena Rossell', 'biografia' => 'Experta en tecnologia i IA.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 6, 'nom' => 'Jordi Pi', 'biografia' => 'Escriptor de thrillers psicològics.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 7, 'nom' => 'Sofia Deulofeu', 'biografia' => 'Poeta i somiadora.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 8, 'nom' => 'Kevin Smith', 'biografia' => 'Autor internacional de Best Sellers.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 1, 'nom' => 'Anònim', 'biografia' => 'Autor genèric del sistema.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'nom' => 'Sandra Martínez Romero', 'biografia' => 'Escriptora apassionada pels dracs.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 3, 'nom' => 'Anaïs F. Gómez', 'biografia' => 'Autora especialitzada en misteris.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 4, 'nom' => 'Laura P. Martínez', 'biografia' => 'Navegant i escriptora.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 5, 'nom' => 'Marc Vilar', 'biografia' => 'Historiador i novel·lista.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 6, 'nom' => 'Elena Rossell', 'biografia' => 'Experta en tecnologia i IA.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 7, 'nom' => 'Jordi Pi', 'biografia' => 'Escriptor de thrillers psicològics.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 8, 'nom' => 'Sofia Deulofeu', 'biografia' => 'Poeta i somiadora.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 9, 'nom' => 'Kevin Smith', 'biografia' => 'Autor internacional de Best Sellers.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // llibres
