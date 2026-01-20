@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto py-12 px-4 space-y-8">
         
         <div class="flex items-center gap-4">
-            <a href="{{ route('admin.editorials.index') }}" class="text-slate-400 hover:text-white">&larr; Tornar a la llista</a>
+            <a href="{{ route('admin.editorials.index') }}" class="text-slate-400 hover:text-white">&larr; </a>
             <h1 class="text-3xl font-bold text-white">Gestió Editorial</h1>
         </div>
 

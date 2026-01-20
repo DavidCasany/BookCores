@@ -35,7 +35,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // autors
+        
         DB::table('autors')->insert([
+            ['id' => 0, 'nom' => 'Anònim', 'biografia' => 'Autor genèric del sistema.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
             ['id' => 1, 'nom' => 'Sandra Martínez Romero', 'biografia' => 'Escriptora apassionada pels dracs.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'nom' => 'Anaïs F. Gómez', 'biografia' => 'Autora especialitzada en misteris.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
             ['id' => 3, 'nom' => 'Laura P. Martínez', 'biografia' => 'Navegant i escriptora.', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
