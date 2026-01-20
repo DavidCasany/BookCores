@@ -9,22 +9,24 @@
             <nav class="mt-4 px-4 space-y-2">
                 <a href="{{ route('admin.dashboard') }}" 
                    class="flex items-center px-4 py-3 rounded-md transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-blue-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                   📊 Resum
+                    📊 Resum
                 </a>
 
                 <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
 
-                <a href="#" class="flex items-center px-4 py-3 rounded-md transition-colors text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                   📚 Llibres
+                <a href="{{ route('admin.llibres.index') }}" 
+                   class="flex items-center px-4 py-3 rounded-md transition-colors {{ request()->routeIs('admin.llibres.*') ? 'bg-blue-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                    📚 Llibres
                 </a>
 
                 <a href="{{ route('admin.autors.index') }}" 
                    class="flex items-center px-4 py-3 rounded-md transition-colors {{ request()->routeIs('admin.autors.*') ? 'bg-blue-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
-                   ✍️ Autors
+                    ✍️ Autors
                 </a>
 
-                <a href="#" class="flex items-center px-4 py-3 rounded-md transition-colors text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                   🏢 Editorials
+                <a href="{{ route('admin.editorials.index') }}" 
+                   class="flex items-center px-4 py-3 rounded-md transition-colors {{ request()->routeIs('admin.editorials.*') ? 'bg-blue-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700' }}">
+                    🏢 Editorials
                 </a>
             </nav>
         </aside>
@@ -37,34 +39,40 @@
                         <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Benvingut al Centre de Comandament 🚀</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-lg border border-blue-200 dark:border-blue-800">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-sm font-medium text-blue-600 dark:text-blue-300">Total Llibres</p>
-                                        <h4 class="text-3xl font-bold text-blue-800 dark:text-white">{{ \App\Models\Llibre::count() }}</h4>
+                            <div class="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-lg border border-blue-200 dark:border-blue-800 hover:shadow-lg transition">
+                                <a href="{{ route('admin.llibres.index') }}" class="block">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="text-sm font-medium text-blue-600 dark:text-blue-300">Total Llibres</p>
+                                            <h4 class="text-3xl font-bold text-blue-800 dark:text-white">{{ \App\Models\Llibre::count() }}</h4>
+                                        </div>
+                                        <span class="text-3xl">📚</span>
                                     </div>
-                                    <span class="text-3xl">📚</span>
-                                </div>
+                                </a>
                             </div>
 
-                            <div class="bg-green-50 dark:bg-green-900/30 p-6 rounded-lg border border-green-200 dark:border-green-800">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-sm font-medium text-green-600 dark:text-green-300">Autors</p>
-                                        <h4 class="text-3xl font-bold text-green-800 dark:text-white">{{ \App\Models\Autor::count() }}</h4>
+                            <div class="bg-green-50 dark:bg-green-900/30 p-6 rounded-lg border border-green-200 dark:border-green-800 hover:shadow-lg transition">
+                                <a href="{{ route('admin.autors.index') }}" class="block">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="text-sm font-medium text-green-600 dark:text-green-300">Autors</p>
+                                            <h4 class="text-3xl font-bold text-green-800 dark:text-white">{{ \App\Models\Autor::count() }}</h4>
+                                        </div>
+                                        <span class="text-3xl">✍️</span>
                                     </div>
-                                    <span class="text-3xl">✍️</span>
-                                </div>
+                                </a>
                             </div>
 
-                            <div class="bg-purple-50 dark:bg-purple-900/30 p-6 rounded-lg border border-purple-200 dark:border-purple-800">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="text-sm font-medium text-purple-600 dark:text-purple-300">Editorials</p>
-                                        <h4 class="text-3xl font-bold text-purple-800 dark:text-white">{{ \App\Models\Editorial::count() }}</h4>
+                            <div class="bg-purple-50 dark:bg-purple-900/30 p-6 rounded-lg border border-purple-200 dark:border-purple-800 hover:shadow-lg transition">
+                                <a href="{{ route('admin.editorials.index') }}" class="block">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="text-sm font-medium text-purple-600 dark:text-purple-300">Editorials</p>
+                                            <h4 class="text-3xl font-bold text-purple-800 dark:text-white">{{ \App\Models\Editorial::count() }}</h4>
+                                        </div>
+                                        <span class="text-3xl">🏢</span>
                                     </div>
-                                    <span class="text-3xl">🏢</span>
-                                </div>
+                                </a>
                             </div>
                         </div>
                     </div>
