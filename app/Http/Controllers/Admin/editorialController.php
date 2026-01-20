@@ -10,12 +10,29 @@ use Illuminate\Http\Request;
 class EditorialController extends Controller
 {
     // 1. LLISTAR
-    public function index()
-    {
-        // Paginem i comptem llibres
-        $editorials = Editorial::withCount('llibres')->paginate(10);
-        return view('admin.editorials.index', compact('editorials'));
+// Assegura't de tenir això a dalt de tot de l'arxiu:
+// use Illuminate\Http\Request;
+// use App\Models\Editorial;
+
+public function index(Request $request)
+{
+    // Comencem la consulta comptant els llibres (com ja feies)
+    $query = Editorial::withCount('llibres');
+
+    // Si hi ha una cerca, filtrem per nom o descripció
+    if ($request->has('search') && $request->search != '') {
+        $cerca = $request->search;
+        $query->where(function($q) use ($cerca) {
+            $q->where('nom', 'like', "%{$cerca}%")
+              ->orWhere('descripcio', 'like', "%{$cerca}%");
+        });
     }
+
+    // Paginem els resultats i mantenim el text de la cerca als enllaços de pàgina
+    $editorials = $query->paginate(10)->withQueryString();
+
+    return view('admin.editorials.index', compact('editorials'));
+}
 
     // 2. CREAR
     public function create()

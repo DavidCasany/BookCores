@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto py-12 px-4 space-y-8">
         
         <div class="flex items-center gap-4">
-            <a href="{{ route('admin.autors.index') }}" class="text-slate-400 hover:text-white transition duration-150">&larr; Tornar a la llista</a>
+            <a href="{{ route('admin.autors.index') }}" class="text-slate-400 hover:text-white transition duration-150">&larr;</a>
             <h1 class="text-3xl font-bold text-white">Gestió d'Autor</h1>
         </div>
 
