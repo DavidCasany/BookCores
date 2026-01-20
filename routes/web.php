@@ -8,6 +8,7 @@ use App\Http\Controllers\CistellaController;
 use App\Http\Controllers\RessenyaController;
 use App\Http\Controllers\PagamentController;
 use App\Http\Controllers\Admin\AutorController;
+use App\Http\Controllers\Admin\EditorialController; // <--- 1. AFEGEIX AQUESTA IMPORTACIÓ
 
 // Pàgina d'inici
 Route::get('/', [LlibreController::class, 'index'])->name('home');
@@ -17,7 +18,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rutes d'usuaris registrats
-
 Route::middleware('auth')->group(function () {
     // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     // Llegir llibre (PDF)
     Route::get('/llegir/{id}', [LlibreController::class, 'llegir'])->name('llibre.llegir');
 });
+
 require __DIR__ . '/auth.php';
 
 // Rutes publiques
@@ -50,7 +51,7 @@ require __DIR__ . '/auth.php';
 // Cerca i Validació de Tags
 Route::get('/cerca', [CercaController::class, 'index'])->name('cerca.index');
 Route::get('/api/cerca', [CercaController::class, 'buscar'])->name('cerca.api');
-Route::get('/api/validar-tag', [CercaController::class, 'validarTag'])->name('cerca.validar'); // <--- NOVA RUTA
+Route::get('/api/validar-tag', [CercaController::class, 'validarTag'])->name('cerca.validar');
 
 // Idioma
 Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index')
@@ -60,7 +61,6 @@ Route::get('/lang/{idioma}', 'App\Http\Controllers\LocalizationController@index'
 Route::get('/llibre/{id}', [LlibreController::class, 'show'])->name('llibres.show');
 
 // Grup de rutes per a l'ADMINISTRADOR
-
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', function () {
@@ -68,4 +68,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     })->name('dashboard');
 
     Route::resource('autors', AutorController::class);
+
+    // CRUD Complet d'Editorials
+    Route::resource('editorials', EditorialController::class);
+
+    //gestió de llibres
+    Route::resource('llibres', \App\Http\Controllers\Admin\LlibreController::class);
+
+    // Rutes especials per gestionar llibres dins de l'editorial
+    Route::post('/llibres/{llibre}/desvincular', [EditorialController::class, 'desvincularLlibre'])->name('llibres.desvincular');
+    Route::post('/editorials/{editorial}/afegir-llibre', [EditorialController::class, 'afegirLlibre'])->name('editorials.afegir-llibre');
 });
