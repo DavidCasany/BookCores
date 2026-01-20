@@ -39,7 +39,7 @@ class LlibreController extends Controller
         return view('admin.llibres.create', compact('autors', 'editorials', 'editorialPreseleccionada'));
     }
 
-    // --- GUARDAR NOU LLIBRE ---
+    // GUARDAR NOU LLIBRE
     public function store(Request $request)
     {
         $request->validate([
@@ -55,13 +55,13 @@ class LlibreController extends Controller
             'fitxer_pdf' => 'required|mimes:pdf|max:10000',
         ]);
 
-        // 1. GESTIÓ PORTADA (A public/img)
+        // GESTIÓ PORTADA (A public/img)
         $filePortada = $request->file('img_portada');
         $nomPortada = time() . '_' . $filePortada->getClientOriginalName();
         $filePortada->move(public_path('img'), $nomPortada);
         $rutaPortada = 'img/' . $nomPortada;
 
-        // 2. GESTIÓ HERO (A public/img)
+        // GESTIÓ HERO (A public/img)
         $rutaHero = null;
         if ($request->hasFile('img_hero')) {
             $fileHero = $request->file('img_hero');
@@ -70,7 +70,7 @@ class LlibreController extends Controller
             $rutaHero = 'img/' . $nomHero;
         }
 
-        // 3. GESTIÓ PDF (Privat a storage/app/pdfs)
+        // GESTIÓ PDF (Privat a storage/app/pdfs)
         $nomPdf = time() . '_' . $request->file('fitxer_pdf')->getClientOriginalName();
         $request->file('fitxer_pdf')->storeAs('pdfs', $nomPdf);
 
