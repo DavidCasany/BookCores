@@ -69,7 +69,7 @@
                             <select id="select-existent" name="llibre_id" disabled class="w-full bg-slate-900 text-white rounded border-slate-600 text-sm opacity-50 transition">
                                 <option value="">-- Cerca per títol --</option>
                                 @foreach($llibresExterns as $l)
-                                    <option value="{{ $l->id }}">{{ $l->titol }} (Actual: {{ $l->editorial->nom ?? 'Cap' }})</option>
+                                    <option value="{{ $l->id_llibre }}">{{ $l->titol }} (Actual: {{ $l->editorial->nom ?? 'Cap' }})</option>
                                 @endforeach
                             </select>
                         </div>
@@ -105,7 +105,7 @@
                                     <div class="text-xs text-slate-400 flex gap-3">
                                         <span>Autor: {{ $llibre->autor->nom ?? 'Desconegut' }}</span>
                                         <span>Preu: {{ $llibre->preu }}€</span>
-                                        <a href="{{ route('admin.llibres.edit', $llibre->id) }}" class="text-blue-400 hover:underline">Editar Fitxa &rarr;</a>
+                                        <a href="{{ route('admin.llibres.edit', $llibre->id_llibre) }}" class="text-blue-400 hover:underline">Editar Fitxa &rarr;</a>
                                     </div>
                                 </div>
                             </div>
