@@ -22,10 +22,10 @@ class PagamentController extends Controller
             return redirect()->route('cistella.index');
         }
 
-        // Stripe amb clau secreta (en el .env)
+        
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        // Se li passa a Stripe la llista de llibres per pagar
+        
         $lineItems = [];
         foreach ($cistella->llibres as $llibre) {
             $lineItems[] = [
@@ -40,7 +40,7 @@ class PagamentController extends Controller
             ];
         }
 
-        // Sessió de pagament Stripe
+        
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
