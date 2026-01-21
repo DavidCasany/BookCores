@@ -8,9 +8,9 @@ use App\Http\Controllers\CistellaController;
 use App\Http\Controllers\RessenyaController;
 use App\Http\Controllers\PagamentController;
 use App\Http\Controllers\Admin\AutorController;
-use App\Http\Controllers\Admin\EditorialController; // <--- 1. AFEGEIX AQUESTA IMPORTACIÓ
+use App\Http\Controllers\Admin\EditorialController; 
 
-// Pàgina d'inici
+
 Route::get('/', [LlibreController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
@@ -83,7 +83,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     //gestió de llibres
     Route::resource('llibres', \App\Http\Controllers\Admin\LlibreController::class);
-    
+
     Route::post('/llibres/{llibre}/desvincular', [EditorialController::class, 'desvincularLlibre'])->name('llibres.desvincular');
     Route::post('/editorials/{editorial}/afegir-llibre', [EditorialController::class, 'afegirLlibre'])->name('editorials.afegir-llibre');
 });
